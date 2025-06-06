@@ -1,2 +1,8 @@
-package model;public enum Role {
+package model;
+
+public enum Role {
+    MANAGER,
+    STAFF,
+    DIRECTOR,
+    EMPLOYEE;
 }
