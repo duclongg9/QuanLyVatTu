@@ -26,10 +26,10 @@
             </plugin>
         </plugins>
     </build>
-
+    <!-- MySQL JDBC Driver -->
     <dependencies>
         <dependency>
-            <groupId>com.mysql</groupId>
+            <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>

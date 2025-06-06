@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -42,3 +43,13 @@ public class Role {
   
     
 }
+=======
+package model;
+
+public enum Role {
+    MANAGER,
+    STAFF,
+    DIRECTOR,
+    EMPLOYEE;
+}
+>>>>>>> origin/main
