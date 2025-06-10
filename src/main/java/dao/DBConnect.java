@@ -1,20 +1,20 @@
-package DAO;
+package dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnect {
-    private static final String URL = "jdbc:mysql://localhost:3306/ql_vat_tu?encrypt=true&trustServerCertificate=true";
-    private static final String USER = "root"; 
-    private static final String PASSWORD = "123456"; 
+    private static final String URL = "jdbc:mysql://localhost:3306/ql_vattu"; // <--- sửa DB name
+    private static final String USERNAME = "root"; // <--- sửa nếu user khác
+    private static final String PASSWORD = "Quany@1234";     // <--- nhập mật khẩu nếu có
 
     // Hàm lấy kết nối mới mỗi lần được gọi
     public static Connection getConnection() {
         Connection conn = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             System.out.println("Kết nối thành công đến database!");
         } catch (ClassNotFoundException e) {
             System.err.println("Lỗi: Không tìm thấy driver JDBC!");
