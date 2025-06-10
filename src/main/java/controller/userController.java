@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package Controller;
+package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.User;
-import DAO.UserDAO;
+import dao.UserDAO;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -81,7 +81,7 @@ public class userController extends HttpServlet {
         }
         request.setAttribute("endP", endPage);
 
-        request.getRequestDispatcher("Admin/listUser.jsp").forward(request, response);
+        request.getRequestDispatcher("Admin/table.jsp").forward(request, response);
     }
 
     @Override

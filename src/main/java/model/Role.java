@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package model;
 
 /**
@@ -20,7 +16,7 @@ public class Role {
         this.id = id;
         this.roleName = roleName;
     }
-    
+
     public int getId() {
         return id;
     }
@@ -37,19 +33,4 @@ public class Role {
         this.roleName = roleName;
     }
 
-
-    
-
-  
-    
 }
-=======
-package model;
-
-public enum Role {
-    MANAGER,
-    STAFF,
-    DIRECTOR,
-    EMPLOYEE;
-}
->>>>>>> origin/main
