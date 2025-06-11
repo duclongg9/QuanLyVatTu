@@ -1,0 +1,191 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Jun 10, 2025, 6:58:20 PM
+    Author     : DELL
+*/
+/* Reset mặc định và phong cách chung */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+main.content {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+}
+
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.error {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+    padding: 10px;
+    background-color: #fadbd8;
+    border-radius: 5px;
+    border-left: 4px solid #e74c3c;
+}
+
+/* Phong cách bảng form */
+.register {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+
+.register thead th {
+    background-color: #3498db;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 5px 5px 0 0;
+    text-transform: uppercase;
+}
+
+.register tbody td {
+    padding: 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.register td:first-child {
+    font-weight: 500;
+    color: #34495e;
+    width: 20%;
+    text-align: right;
+    padding-right: 15px;
+}
+
+.register input[type="text"],
+.register input[type="password"],
+.register input[type="email"],
+.register input[type="date"],
+.register select,
+.register input[type="file"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.register input[type="text"]:focus,
+.register input[type="password"]:focus,
+.register input[type="email"]:focus,
+.register input[type="date"]:focus,
+.register select:focus,
+.register input[type="file"]:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 6px rgba(52, 152, 219, 0.3);
+}
+
+.register select {
+    appearance: none;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%233498db"><polygon points="0,0 12,0 6,6"/></svg>') no-repeat right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+    cursor: pointer;
+}
+
+.register input[type="file"] {
+    padding: 8px 12px;
+    background-color: #f9f9f9;
+}
+
+.register input[type="password"]::placeholder {
+    color: #7f8c8d;
+    opacity: 0.8;
+}
+
+/* Nút Submit và Cancel */
+.submit-row {
+    text-align: center;
+    padding-top: 20px;
+}
+
+button {
+    padding: 12px 25px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button[type="submit"] {
+    background-color: #2ecc71;
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+}
+
+.button-cancel {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.button-cancel:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    main.content {
+        padding: 20px;
+        margin: 10px;
+    }
+
+    .register td {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 8px 0;
+    }
+
+    .register td:first-child {
+        margin-top: 10px;
+        text-align: left;
+        padding-right: 0;
+    }
+
+    button {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
