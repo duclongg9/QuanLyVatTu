@@ -1,0 +1,70 @@
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.readonly-text {
+    padding: 8px;
+    font-size: 14px;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-group select {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.form-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.submit-row {
+  text-align: center;
+  padding-top: 15px;
+}
+ .button-cancel,
+ button[type="submit"]
+ {
+  background-color: #009879;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+ .button-cancel:hover ,
+button[type="submit"]:hover
+{
+  background-color: #007f6e;
+}
+
+img .avata {
+  display: flex;
+  justify-content: center;  /* canh giữa ngang */
+  align-items: center;      /* canh giữa dọc */
+  height: 300px;            /* chiều cao tùy theo bạn */
+  border: 1px solid #ccc;   /* chỉ để thấy rõ khung */
+}
