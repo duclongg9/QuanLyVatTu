@@ -48,4 +48,4 @@ public class DBConnect {
             System.out.println("Database connection failed!");
         }
     }
-}
+};

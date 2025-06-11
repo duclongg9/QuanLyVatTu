@@ -1,2 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Context path="/SWP_MaterialManagement"/>
+<web-app>
+    <welcome-file-list>
+        <welcome-file>Admin/dashboardUser.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
