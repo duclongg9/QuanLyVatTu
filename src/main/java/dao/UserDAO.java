@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -22,7 +21,7 @@ import model.User;
  */
 public class UserDAO {
 
-    private static final int PAGE_SIZE = 2;
+    private static final int PAGE_SIZE = 5;
 
     private static final String COL_ID = "id";
     private static final String COL_USERNAME = "username";
@@ -58,6 +57,20 @@ public class UserDAO {
         }
         return false;
     }
+    
+    //kiểm tra xem đã có CEO hay chưa
+    public boolean isCEOExit() {
+        String sql = "SELECT 1 FROM User WHERE roleId = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, 3);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next(); // tồn tại nếu có kết quả
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     //kiểm tra xem số điện thoại này đã tồn tại chưa
     public boolean isPhoneExits(String phone) {
@@ -76,7 +89,7 @@ public class UserDAO {
     //Kiểm tra số điện thoại hợp lệ
 
     //Tạo mới User
-    public boolean createUser(
+    public int createUser(
             String username,
             String fullname,
             String phone,
@@ -102,11 +115,11 @@ public class UserDAO {
             ps.setBoolean(10, status);
             ps.setInt(11, roleId);
             int affectedRows = ps.executeUpdate();
-            return affectedRows > 0;
+            return affectedRows ;
         } catch (Exception e) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
         }
-        return false;
+        return 0;
     }
 
     //Cập nhật User
@@ -280,7 +293,10 @@ public class UserDAO {
     //Lấy danh sách người dùng trong database
     public List<User> getListUser() {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT * FROM user  ";
+        String sql = """
+                     SELECT * FROM user
+                     ORDER BY id DESC
+                     """;
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
             // Chỉ lấy sản phẩm theo cId
@@ -314,52 +330,18 @@ public class UserDAO {
 
     public static void main(String[] args) throws SQLException {
         UserDAO udao = new UserDAO();
-//
+
 //        udao.deleteStaffById(1);
-//        List<User> list = udao.pagingStaff(2);
-//       
-//        int count = udao.getTotalStaff();
+        List<User> list = udao.pagingStaff(1);
+       
+        int count = udao.getTotalStaff();
 //        System.out.println(count);
-//        for (User staff : list) {
-//            System.out.println(staff);
-//        }
-
-        System.out.println(udao.updateUser(7, false, 2));
-
-    }
-
-=======
-package dao;
-
-import model.User;
-import utils.DBContext;
-
-import java.sql.*;
-
-public class UserDAO {
-    public User login(String username, String password) {
-        String sql = "SELECT * FROM users WHERE username = ? AND password = ? AND active = 1";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return new User(
-                        rs.getInt("id"),
-                        rs.getString("username"),
-                        rs.getString("password"),
-                        rs.getString("role"),
-                        rs.getBoolean("active")
-                );
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (User staff : list) {
+            System.out.println(staff);
         }
-        return null;
+
+//        System.out.println(udao.updateUser(7, false, 2));
+
     }
->>>>>>> origin/main
+
 }

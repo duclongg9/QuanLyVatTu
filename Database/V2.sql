@@ -1,116 +1,196 @@
-CREATE TABLE CategoryMaterial (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	category VARCHAR(255)
+CREATE TABLE `CategoryMaterial` (
+	`id` INTEGER AUTO_INCREMENT,
+	`category` VARCHAR(255) NOT NULL,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE Status (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	status VARCHAR(255)
+
+CREATE TABLE `MaterialStatus` (
+	`id` INTEGER AUTO_INCREMENT,
+	`status` VARCHAR(255) NOT NULL,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE Role (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	role VARCHAR(255) NOT NULL
+
+CREATE TABLE `RequestStatus` (
+	`id` INTEGER AUTO_INCREMENT,
+	`status` VARCHAR(255) NOT NULL,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE Permission (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	url VARCHAR(255)
+
+CREATE TABLE `Role` (
+	`id` INTEGER AUTO_INCREMENT,
+	`role` VARCHAR(255) NOT NULL,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE User (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	username VARCHAR(255) NOT NULL,
-	fullname VARCHAR(255) NOT NULL,
-	phone VARCHAR(255) NOT NULL,
-	password VARCHAR(255) NOT NULL,
-	email VARCHAR(255) NOT NULL,
-	address VARCHAR(255) NOT NULL,
-	roleId INT NOT NULL,
-	FOREIGN KEY (roleId) REFERENCES Role(id)
+
+CREATE TABLE `Permission` (
+	`id` INTEGER AUTO_INCREMENT,
+	`url` VARCHAR(255) NOT NULL,
+	`status` BOOLEAN NOT NULL,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE Permission_Role (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	permissionId INT NOT NULL,
-	roleId INT NOT NULL,
-	FOREIGN KEY (permissionId) REFERENCES Permission(id),
-	FOREIGN KEY (roleId) REFERENCES Role(id)
+
+CREATE TABLE `User` (
+	`id` INTEGER AUTO_INCREMENT,
+	`username` VARCHAR(255) NOT NULL,
+	`fullname` VARCHAR(255) NOT NULL,
+	`phone` VARCHAR(255) NOT NULL,
+	`password` VARCHAR(255) NOT NULL,
+	`email` VARCHAR(255) NOT NULL,
+	`address` VARCHAR(255) NOT NULL,
+	`gender` BOOLEAN,
+	`birthDate` DATE,
+	`image` VARCHAR(255),
+	`status` BOOLEAN DEFAULT true,
+	`roleId` INTEGER NOT NULL,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE Materials (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(255) NOT NULL,
-	unit VARCHAR(255) NOT NULL,
-	image VARCHAR(255),
-	status VARCHAR(255),  -- nếu dùng bảng Status thì đổi thành statusId INT + FK
-	categoryId INT,
-	FOREIGN KEY (categoryId) REFERENCES CategoryMaterial(id)
+
+CREATE TABLE `Permission_Role` (
+	`id` INTEGER AUTO_INCREMENT,
+	`permissionId` INTEGER NOT NULL,
+	`roleId` INTEGER NOT NULL,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE Supplier (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(255) NOT NULL,
-	phone VARCHAR(255) NOT NULL,
-	address VARCHAR(255) NOT NULL
+
+CREATE TABLE `Materials` (
+	`id` INTEGER AUTO_INCREMENT,
+	`name` VARCHAR(255) NOT NULL,
+	`unit` VARCHAR(255) NOT NULL,
+	`image` VARCHAR(255),
+	`statusId` INTEGER NOT NULL,
+	`categoryId` INTEGER NOT NULL,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE materials_Supplier (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	materialId INT NOT NULL,
-	supplierId INT NOT NULL,
-	note VARCHAR(255),
-	FOREIGN KEY (materialId) REFERENCES Materials(id),
-	FOREIGN KEY (supplierId) REFERENCES Supplier(id)
+
+CREATE TABLE `Supplier` (
+	`id` INTEGER AUTO_INCREMENT,
+	`name` VARCHAR(255) NOT NULL,
+	`phone` VARCHAR(255) NOT NULL,
+	`address` VARCHAR(255) NOT NULL,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE InputWarehouse (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	dateInput DATE NOT NULL
+
+CREATE TABLE `materials_Supplier` (
+	`id` INTEGER AUTO_INCREMENT,
+	`materialId` INTEGER NOT NULL,
+	`supplierId` INTEGER NOT NULL,
+	`note` VARCHAR(255),
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE OutputWarehouse (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	date DATE NOT NULL
+
+CREATE TABLE `InputWarehouse` (
+	`id` INTEGER AUTO_INCREMENT,
+	`dateInput` DATE NOT NULL,
+	`userId` INTEGER,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE InputDetail (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	quantity INT NOT NULL,
-	inputWarehouseId INT,
-	materialId INT,
-	inputPrice DOUBLE,
-	userId INT,
-	FOREIGN KEY (inputWarehouseId) REFERENCES InputWarehouse(id),
-	FOREIGN KEY (materialId) REFERENCES Materials(id),
-	FOREIGN KEY (userId) REFERENCES User(id)
+
+CREATE TABLE `OutputWarehouse` (
+	`id` INTEGER AUTO_INCREMENT,
+	`date` DATE NOT NULL,
+	`userId` INTEGER,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE OutputDetail (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	quantity INT,
-	materialId INT,
-	outputWarehouseId INT,
-	userId INT,
-	FOREIGN KEY (outputWarehouseId) REFERENCES OutputWarehouse(id),
-	FOREIGN KEY (materialId) REFERENCES Materials(id),
-	FOREIGN KEY (userId) REFERENCES User(id)
+
+CREATE TABLE `InputDetail` (
+	`id` INTEGER AUTO_INCREMENT,
+	`quantity` INTEGER NOT NULL,
+	`inputWarehouseId` INTEGER,
+	`requestDetailId` INTEGER,
+	`inputPrice` DOUBLE,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE Request (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	date DATE,
-	statusId INT,
-	userId INT,
-	note VARCHAR(255),
-	FOREIGN KEY (statusId) REFERENCES Status(id),
-	FOREIGN KEY (userId) REFERENCES User(id)
+
+CREATE TABLE `OutputDetail` (
+	`id` INTEGER AUTO_INCREMENT,
+	`quantity` INTEGER NOT NULL,
+	`requestDetailId` INTEGER,
+	`outputWarehouseId` INTEGER,
+	PRIMARY KEY(`id`)
 );
 
-CREATE TABLE requestDetail (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	requestId INT NOT NULL,
-	materialId INT NOT NULL,
-	FOREIGN KEY (requestId) REFERENCES Request(id),
-	FOREIGN KEY (materialId) REFERENCES Materials(id)
+
+CREATE TABLE `Request` (
+	`id` INTEGER AUTO_INCREMENT,
+	`date` DATE,
+	`statusId` INTEGER,
+	`userId` INTEGER,
+	`note` VARCHAR(255),
+	PRIMARY KEY(`id`)
 );
+
+
+CREATE TABLE `requestDetail` (
+	`id` INTEGER NOT NULL AUTO_INCREMENT,
+	`requestId` INTEGER NOT NULL,
+	`materialId` INTEGER NOT NULL,
+	`quantity` INTEGER NOT NULL,
+	`note` VARCHAR(255) NOT NULL,
+	PRIMARY KEY(`id`)
+);
+
+
+ALTER TABLE `User`
+ADD FOREIGN KEY(`roleId`) REFERENCES `Role`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `Permission_Role`
+ADD FOREIGN KEY(`permissionId`) REFERENCES `Permission`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `Permission_Role`
+ADD FOREIGN KEY(`roleId`) REFERENCES `Role`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `Materials`
+ADD FOREIGN KEY(`statusId`) REFERENCES `MaterialStatus`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `Materials`
+ADD FOREIGN KEY(`categoryId`) REFERENCES `CategoryMaterial`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `materials_Supplier`
+ADD FOREIGN KEY(`materialId`) REFERENCES `Materials`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `materials_Supplier`
+ADD FOREIGN KEY(`supplierId`) REFERENCES `Supplier`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `InputDetail`
+ADD FOREIGN KEY(`inputWarehouseId`) REFERENCES `InputWarehouse`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `OutputDetail`
+ADD FOREIGN KEY(`outputWarehouseId`) REFERENCES `OutputWarehouse`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `Request`
+ADD FOREIGN KEY(`statusId`) REFERENCES `RequestStatus`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `Request`
+ADD FOREIGN KEY(`userId`) REFERENCES `User`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `requestDetail`
+ADD FOREIGN KEY(`requestId`) REFERENCES `Request`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `requestDetail`
+ADD FOREIGN KEY(`materialId`) REFERENCES `Materials`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `InputWarehouse`
+ADD FOREIGN KEY(`userId`) REFERENCES `User`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `OutputWarehouse`
+ADD FOREIGN KEY(`userId`) REFERENCES `User`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `InputDetail`
+ADD FOREIGN KEY(`requestDetailId`) REFERENCES `requestDetail`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `OutputDetail`
+ADD FOREIGN KEY(`requestDetailId`) REFERENCES `requestDetail`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;

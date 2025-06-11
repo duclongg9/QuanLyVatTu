@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package Controller;
+package controller;
 
 import DAO.RoleDAO;
 import DAO.UserDAO;
@@ -16,12 +16,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 import model.Role;
 import model.User;
+import units.RandomCode;
 import units.Validator;
 
 /**
@@ -35,6 +38,11 @@ public class createUser extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        // In toàn bộ thông tin gửi lên
+        Collection<Part> parts = request.getParts();
+        for (Part part : parts) {
+            System.out.println("Part Name: " + part.getName());
+        }
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
 
@@ -45,7 +53,6 @@ public class createUser extends HttpServlet {
     UserDAO udao = new UserDAO();
     User u = new User();
     RoleDAO rdao = new RoleDAO();
-
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -65,13 +72,17 @@ public class createUser extends HttpServlet {
             String username = getValue(request.getPart("username"));
             String fullname = getValue(request.getPart("fullname"));
             String phone = getValue(request.getPart("phone"));
-            String password = getValue(request.getPart("password"));
+            String password = RandomCode.generateRandomString(8);
             String email = getValue(request.getPart("email"));
             String address = getValue(request.getPart("address"));
-            boolean gender = Boolean.parseBoolean(getValue(request.getPart("gender")));
             String birthDate = getValue(request.getPart("birthDate"));
-            boolean status = Boolean.parseBoolean(getValue(request.getPart("status")));
-            int roleId = Integer.parseInt(getValue(request.getPart("roleId")));
+            String genderParam = getValue(request.getPart("gender"));
+            String statusParam = getValue(request.getPart("status"));
+            String roleIdParam = getValue(request.getPart("roleId"));
+
+            boolean gender = Boolean.parseBoolean(genderParam);
+            boolean status = Boolean.parseBoolean(statusParam);
+            int roleId = Integer.parseInt(roleIdParam);
 
             //lấy lại list vai trò 
             List<Role> lr = rdao.getAllRole();
@@ -81,6 +92,10 @@ public class createUser extends HttpServlet {
             boolean emailExists = udao.isEmailExists(email);
             boolean phoneExists = udao.isPhoneExits(phone);
 
+            if (request.getParameter("roleId") == null || request.getParameter("roleId").isEmpty()) {
+                errorMessage = "Vui lòng chọn role!";
+            }
+
             if (emailExists && phoneExists) {
                 errorMessage = "Email và số điện thoại đã tồn tại!";
             } else if (emailExists) {
@@ -89,10 +104,10 @@ public class createUser extends HttpServlet {
                 errorMessage = "Số điện thoại đã tồn tại";
             }
             if (!Validator.isValidPhone(phone)) {
-                 errorMessage += " Số điện thoại không hợp lệ (phải bắt đầu bằng 0 và đủ 10 chữ số)";
+                errorMessage += " Số điện thoại không hợp lệ (phải bắt đầu bằng 0 và đủ 10 chữ số)";
             }
 
-            if (errorMessage != null) {
+            if (!errorMessage.isEmpty()) {
                 request.setAttribute("error", errorMessage);
                 request.setAttribute("listRole", lr);
                 request.getRequestDispatcher("/Admin/createUser.jsp").forward(request, response);
@@ -100,7 +115,7 @@ public class createUser extends HttpServlet {
             }
 
             Part imagePart = request.getPart("image");
-            String imageName;
+            String imageName = null;
             if (imagePart != null && imagePart.getSize() > 0) {
                 imageName = Path.of(imagePart.getSubmittedFileName()).getFileName().toString();
                 String uploadPath = getServletContext().getRealPath("/images");
@@ -109,30 +124,16 @@ public class createUser extends HttpServlet {
                     uploadDir.mkdirs();
                 }
                 imagePart.write(uploadPath + File.separator + imageName);
-            } else {
-                imageName = null;
             }
 
-            User user = new User();
-            user.setUsername(username);
-            user.setFullName(fullname);
-            user.setPhone(phone);
-            user.setPassword(password);
-            user.setEmail(email);
-            user.setAddress(address);
-            user.setGender(gender);
-            user.setBirthDate(birthDate);
-            user.setImage(imageName);
-            user.setStatus(status);
-            user.setRole(rdao.getRoleById(roleId));
-
-            boolean updated = udao.createUser(username, fullname, phone, password, email, address, gender, birthDate, imageName, status, roleId);
-
-            if (updated) {
+            int updated = udao.createUser(username, fullname, phone, password, email, address, gender, birthDate, imageName, status, roleId);
+            System.out.println(updated);
+            if (updated>0) {
                 response.sendRedirect("userList");
             } else {
-                request.setAttribute("error", "Tạo user thất bại");
-                request.getRequestDispatcher("Admin/updateUser.jsp").forward(request, response);
+                request.setAttribute("error", "Tạo user thất bại" + updated);
+                request.setAttribute("listRole", lr);
+                request.getRequestDispatcher("Admin/createUser.jsp").forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,10 +143,9 @@ public class createUser extends HttpServlet {
     }
 
     private String getValue(Part part) throws IOException {
-        try (Scanner scanner = new Scanner(part.getInputStream(), "UTF-8")) {
-            scanner.useDelimiter("\\A");
-            return scanner.hasNext() ? scanner.next() : "";
-        }
+        InputStream inputStream = part.getInputStream();
+        byte[] bytes = inputStream.readAllBytes();
+        return new String(bytes, "UTF-8").trim();
     }
 
     /**

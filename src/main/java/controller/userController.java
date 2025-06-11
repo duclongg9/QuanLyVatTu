@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package Controller;
+package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,6 +24,8 @@ import java.util.logging.Logger;
  */
 @WebServlet(name = "userListController", urlPatterns = {"/userList"})
 public class userController extends HttpServlet {
+    
+    public static final int PAGE_NUMBER = 5;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -74,14 +76,14 @@ public class userController extends HttpServlet {
 
         //Lấy tổng số staff trong database
         int count = dao.getTotalStaff();
-        int endPage = count / 2;
+        int endPage = count / PAGE_NUMBER;
         //để nếu chia dư thì 1 trang sẽ có phần tử ít hơn
-        if (count % 2 != 0) {
+        if (count % PAGE_NUMBER != 0) {
             endPage++;
         }
         request.setAttribute("endP", endPage);
 
-        request.getRequestDispatcher("Admin/listUser.jsp").forward(request, response);
+        request.getRequestDispatcher("Admin/userList.jsp").forward(request, response);
     }
 
     @Override

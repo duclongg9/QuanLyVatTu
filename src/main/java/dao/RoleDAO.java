@@ -32,9 +32,11 @@ public class RoleDAO {
     //Lấy Role theo id 
     public Role getRoleById(int id) {
 
-        String sql = "SELECT * \n"
-                + "FROM role \n"
-                + "WHERE id =?";
+        String sql ="""
+                     SELECT * 
+                     FROM role 
+                     WHERE id =?
+                    """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -66,9 +68,12 @@ public class RoleDAO {
 
                 while (rs.next()) {
                     Role r = new Role();
-                    r.setId(rs.getInt(COL_ID));
-                    r.setRoleName(rs.getString(COL_ROLE));
-                    lr.add(r);
+                    if (rs.getInt(COL_ID) != 1) { //trừ ADMIN ra 
+                        r.setId(rs.getInt(COL_ID));
+                        r.setRoleName(rs.getString(COL_ROLE));
+                        lr.add(r);
+                    }
+
                 }
                 return lr;
             }
@@ -78,7 +83,7 @@ public class RoleDAO {
 
         return null;
     }
-    
+
     public static void main(String[] args) {
         RoleDAO rdao = new RoleDAO();
 //
