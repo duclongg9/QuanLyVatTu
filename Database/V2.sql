@@ -201,3 +201,6 @@ ADD COLUMN type ENUM('Import', 'Export') NOT NULL;
 
 ALTER TABLE Request ADD approvedBy INT; -- FK tới User(id)
 	ALTER TABLE Request ADD FOREIGN KEY (approvedBy) REFERENCES User(id);
+
+ALTER TABLE Materials
+ADD COLUMN stockQuantity INT DEFAULT 0;
