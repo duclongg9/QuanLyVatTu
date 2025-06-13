@@ -194,3 +194,10 @@ ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE `OutputDetail`
 ADD FOREIGN KEY(`requestDetailId`) REFERENCES `requestDetail`(`id`)
 ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+-- sự sửa đổi database:
+ALTER TABLE Request
+ADD COLUMN type ENUM('Import', 'Export') NOT NULL; 
+
+ALTER TABLE Request ADD approvedBy INT; -- FK tới User(id)
+	ALTER TABLE Request ADD FOREIGN KEY (approvedBy) REFERENCES User(id);
