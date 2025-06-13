@@ -1,41 +1,37 @@
+-- Bảng danh mục loại vật tư
 CREATE TABLE `CategoryMaterial` (
-	`id` INTEGER AUTO_INCREMENT,
-	`category` VARCHAR(255) NOT NULL,
-	PRIMARY KEY(`id`)
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`category` VARCHAR(255) NOT NULL
 );
 
-
+-- Bảng trạng thái vật tư
 CREATE TABLE `MaterialStatus` (
-	`id` INTEGER AUTO_INCREMENT,
-	`status` VARCHAR(255) NOT NULL,
-	PRIMARY KEY(`id`)
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`status` VARCHAR(255) NOT NULL
 );
 
-
+-- Bảng trạng thái yêu cầu nhập/xuất
 CREATE TABLE `RequestStatus` (
-	`id` INTEGER AUTO_INCREMENT,
-	`status` VARCHAR(255) NOT NULL,
-	PRIMARY KEY(`id`)
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`status` VARCHAR(255) NOT NULL
 );
 
-
+-- Bảng vai trò người dùng
 CREATE TABLE `Role` (
-	`id` INTEGER AUTO_INCREMENT,
-	`role` VARCHAR(255) NOT NULL,
-	PRIMARY KEY(`id`)
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`role` VARCHAR(255) NOT NULL
 );
 
-
+-- Bảng quyền
 CREATE TABLE `Permission` (
-	`id` INTEGER AUTO_INCREMENT,
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
 	`url` VARCHAR(255) NOT NULL,
-	`status` BOOLEAN NOT NULL,
-	PRIMARY KEY(`id`)
+	`status` BOOLEAN NOT NULL
 );
 
-
+-- Bảng người dùng
 CREATE TABLE `User` (
-	`id` INTEGER AUTO_INCREMENT,
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
 	`username` VARCHAR(255) NOT NULL,
 	`fullname` VARCHAR(255) NOT NULL,
 	`phone` VARCHAR(255) NOT NULL,
@@ -45,162 +41,155 @@ CREATE TABLE `User` (
 	`gender` BOOLEAN,
 	`birthDate` DATE,
 	`image` VARCHAR(255),
-	`status` BOOLEAN DEFAULT true,
-	`roleId` INTEGER NOT NULL,
-	PRIMARY KEY(`id`)
+	`status` BOOLEAN DEFAULT TRUE,
+	`roleId` INT NOT NULL
 );
 
-
+-- Bảng liên kết quyền - vai trò
 CREATE TABLE `Permission_Role` (
-	`id` INTEGER AUTO_INCREMENT,
-	`permissionId` INTEGER NOT NULL,
-	`roleId` INTEGER NOT NULL,
-	PRIMARY KEY(`id`)
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`permissionId` INT NOT NULL,
+	`roleId` INT NOT NULL
 );
 
+-- Bảng đơn vị tính
+CREATE TABLE `MaterialUnit` (
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`unit` VARCHAR(255) NOT NULL
+);
 
+-- Bảng vật tư
 CREATE TABLE `Materials` (
-	`id` INTEGER AUTO_INCREMENT,
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
 	`name` VARCHAR(255) NOT NULL,
-	`unit` VARCHAR(255) NOT NULL,
+	`unitId` INT NOT NULL,
 	`image` VARCHAR(255),
-	`statusId` INTEGER NOT NULL,
-	`categoryId` INTEGER NOT NULL,
-	PRIMARY KEY(`id`)
+	`categoryId` INT NOT NULL
 );
 
-
+-- Bảng nhà cung cấp
 CREATE TABLE `Supplier` (
-	`id` INTEGER AUTO_INCREMENT,
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
 	`name` VARCHAR(255) NOT NULL,
 	`phone` VARCHAR(255) NOT NULL,
-	`address` VARCHAR(255) NOT NULL,
-	PRIMARY KEY(`id`)
+	`address` VARCHAR(255) NOT NULL
 );
 
-
+-- Bảng liên kết vật tư - nhà cung cấp
 CREATE TABLE `materials_Supplier` (
-	`id` INTEGER AUTO_INCREMENT,
-	`materialId` INTEGER NOT NULL,
-	`supplierId` INTEGER NOT NULL,
-	`note` VARCHAR(255),
-	PRIMARY KEY(`id`)
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`materialId` INT NOT NULL,
+	`supplierId` INT NOT NULL,
+	`note` VARCHAR(255)
 );
 
-
+-- Bảng nhập kho
 CREATE TABLE `InputWarehouse` (
-	`id` INTEGER AUTO_INCREMENT,
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
 	`dateInput` DATE NOT NULL,
-	`userId` INTEGER,
-	PRIMARY KEY(`id`)
+	`userId` INT
 );
 
-
+-- Bảng xuất kho
 CREATE TABLE `OutputWarehouse` (
-	`id` INTEGER AUTO_INCREMENT,
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
 	`date` DATE NOT NULL,
-	`userId` INTEGER,
-	PRIMARY KEY(`id`)
+	`userId` INT
 );
 
-
+-- Bảng chi tiết nhập kho
 CREATE TABLE `InputDetail` (
-	`id` INTEGER AUTO_INCREMENT,
-	`quantity` INTEGER NOT NULL,
-	`inputWarehouseId` INTEGER,
-	`requestDetailId` INTEGER,
-	`inputPrice` DOUBLE,
-	PRIMARY KEY(`id`)
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`quantity` INT NOT NULL,
+	`inputWarehouseId` INT,
+	`requestDetailId` INT,
+	`inputPrice` DOUBLE
 );
 
-
+-- Bảng chi tiết xuất kho
 CREATE TABLE `OutputDetail` (
-	`id` INTEGER AUTO_INCREMENT,
-	`quantity` INTEGER NOT NULL,
-	`requestDetailId` INTEGER,
-	`outputWarehouseId` INTEGER,
-	PRIMARY KEY(`id`)
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`quantity` INT NOT NULL,
+	`requestDetailId` INT,
+	`outputWarehouseId` INT
 );
 
-
+-- Bảng yêu cầu nhập/xuất kho
 CREATE TABLE `Request` (
-	`id` INTEGER AUTO_INCREMENT,
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
 	`date` DATE,
-	`statusId` INTEGER,
-	`userId` INTEGER,
+	`statusId` INT,
+	`userId` INT,
 	`note` VARCHAR(255),
-	PRIMARY KEY(`id`)
+	`type` ENUM('Import', 'Export') NOT NULL,
+	`approvedBy` INT
 );
 
-
+-- Bảng chi tiết yêu cầu nhập/xuất kho
 CREATE TABLE `requestDetail` (
-	`id` INTEGER NOT NULL AUTO_INCREMENT,
-	`requestId` INTEGER NOT NULL,
-	`materialId` INTEGER NOT NULL,
-	`quantity` INTEGER NOT NULL,
-	`note` VARCHAR(255) NOT NULL,
-	PRIMARY KEY(`id`)
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`requestId` INT NOT NULL,
+	`materialId` INT NOT NULL,
+	`quantity` INT NOT NULL,
+	`note` VARCHAR(255) NOT NULL
 );
 
+-- Bảng lưu tình trạng & số lượng từng trạng thái của vật tư
+CREATE TABLE `MaterialItem` (
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`materialId` INT NOT NULL,
+	`statusId` INT NOT NULL,
+	`quantity` INT NOT NULL DEFAULT 0
+);
+ 
+ 
+ -- User
+ALTER TABLE `User` 
+ADD CONSTRAINT `fk_user_role` FOREIGN KEY (`roleId`) REFERENCES `Role`(`id`);
 
-ALTER TABLE `User`
-ADD FOREIGN KEY(`roleId`) REFERENCES `Role`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `Permission_Role`
-ADD FOREIGN KEY(`permissionId`) REFERENCES `Permission`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `Permission_Role`
-ADD FOREIGN KEY(`roleId`) REFERENCES `Role`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `Materials`
-ADD FOREIGN KEY(`statusId`) REFERENCES `MaterialStatus`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `Materials`
-ADD FOREIGN KEY(`categoryId`) REFERENCES `CategoryMaterial`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `materials_Supplier`
-ADD FOREIGN KEY(`materialId`) REFERENCES `Materials`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `materials_Supplier`
-ADD FOREIGN KEY(`supplierId`) REFERENCES `Supplier`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `InputDetail`
-ADD FOREIGN KEY(`inputWarehouseId`) REFERENCES `InputWarehouse`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `OutputDetail`
-ADD FOREIGN KEY(`outputWarehouseId`) REFERENCES `OutputWarehouse`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `Request`
-ADD FOREIGN KEY(`statusId`) REFERENCES `RequestStatus`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `Request`
-ADD FOREIGN KEY(`userId`) REFERENCES `User`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `requestDetail`
-ADD FOREIGN KEY(`requestId`) REFERENCES `Request`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `requestDetail`
-ADD FOREIGN KEY(`materialId`) REFERENCES `Materials`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `InputWarehouse`
-ADD FOREIGN KEY(`userId`) REFERENCES `User`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `OutputWarehouse`
-ADD FOREIGN KEY(`userId`) REFERENCES `User`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `InputDetail`
-ADD FOREIGN KEY(`requestDetailId`) REFERENCES `requestDetail`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE `OutputDetail`
-ADD FOREIGN KEY(`requestDetailId`) REFERENCES `requestDetail`(`id`)
-ON UPDATE NO ACTION ON DELETE NO ACTION;
+-- Permission_Role
+ALTER TABLE `Permission_Role` 
+ADD CONSTRAINT `fk_permrole_permission` FOREIGN KEY (`permissionId`) REFERENCES `Permission`(`id`),
+ADD CONSTRAINT `fk_permrole_role` FOREIGN KEY (`roleId`) REFERENCES `Role`(`id`);
 
--- sự sửa đổi database:
-ALTER TABLE Request
-ADD COLUMN type ENUM('Import', 'Export') NOT NULL; 
+-- Materials
+ALTER TABLE `Materials` 
+ADD CONSTRAINT `fk_materials_unit` FOREIGN KEY (`unitId`) REFERENCES `MaterialUnit`(`id`),
+ADD CONSTRAINT `fk_materials_category` FOREIGN KEY (`categoryId`) REFERENCES `CategoryMaterial`(`id`);
 
-ALTER TABLE Request ADD approvedBy INT; -- FK tới User(id)
-	ALTER TABLE Request ADD FOREIGN KEY (approvedBy) REFERENCES User(id);
+-- materials_Supplier
+ALTER TABLE `materials_Supplier` 
+ADD CONSTRAINT `fk_matsupp_material` FOREIGN KEY (`materialId`) REFERENCES `Materials`(`id`),
+ADD CONSTRAINT `fk_matsupp_supplier` FOREIGN KEY (`supplierId`) REFERENCES `Supplier`(`id`);
 
-ALTER TABLE Materials
-ADD COLUMN stockQuantity INT DEFAULT 0;
+-- InputWarehouse, OutputWarehouse
+ALTER TABLE `InputWarehouse` 
+ADD CONSTRAINT `fk_inputwh_user` FOREIGN KEY (`userId`) REFERENCES `User`(`id`);
+
+ALTER TABLE `OutputWarehouse` 
+ADD CONSTRAINT `fk_outputwh_user` FOREIGN KEY (`userId`) REFERENCES `User`(`id`);
+
+-- InputDetail, OutputDetail
+ALTER TABLE `InputDetail` 
+ADD CONSTRAINT `fk_inputdetail_inputwh` FOREIGN KEY (`inputWarehouseId`) REFERENCES `InputWarehouse`(`id`),
+ADD CONSTRAINT `fk_inputdetail_requestdetail` FOREIGN KEY (`requestDetailId`) REFERENCES `requestDetail`(`id`);
+
+ALTER TABLE `OutputDetail` 
+ADD CONSTRAINT `fk_outputdetail_outputwh` FOREIGN KEY (`outputWarehouseId`) REFERENCES `OutputWarehouse`(`id`),
+ADD CONSTRAINT `fk_outputdetail_requestdetail` FOREIGN KEY (`requestDetailId`) REFERENCES `requestDetail`(`id`);
+
+-- Request
+ALTER TABLE `Request` 
+ADD CONSTRAINT `fk_request_status` FOREIGN KEY (`statusId`) REFERENCES `RequestStatus`(`id`),
+ADD CONSTRAINT `fk_request_user` FOREIGN KEY (`userId`) REFERENCES `User`(`id`),
+ADD CONSTRAINT `fk_request_approvedby` FOREIGN KEY (`approvedBy`) REFERENCES `User`(`id`);
+
+-- requestDetail
+ALTER TABLE `requestDetail` 
+ADD CONSTRAINT `fk_requestdetail_request` FOREIGN KEY (`requestId`) REFERENCES `Request`(`id`),
+ADD CONSTRAINT `fk_requestdetail_material` FOREIGN KEY (`materialId`) REFERENCES `Materials`(`id`);
+
+-- MaterialItem
+ALTER TABLE `MaterialItem` 
+ADD CONSTRAINT `fk_materialitem_material` FOREIGN KEY (`materialId`) REFERENCES `Materials`(`id`),
+ADD CONSTRAINT `fk_materialitem_status` FOREIGN KEY (`statusId`) REFERENCES `MaterialStatus`(`id`);
