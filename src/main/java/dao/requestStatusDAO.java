@@ -24,7 +24,7 @@ public class requestStatusDAO {
         conn = DBConnect.getConnection();
     }
     
-     //Lấy Role theo id 
+     //Lấy trạng thái yêu cầu theo id
     public RequestStatus getStatusById(int id) {
 
         String sql ="""

@@ -6,7 +6,7 @@
 package controller;
 
 import static controller.requestListController.PAGE_NUMBER;
-import dao.MaterialDAO;
+import dao.MaterialsDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -40,7 +40,7 @@ public class createRequestImportController extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
    
-    MaterialDAO mdao = new MaterialDAO();
+    MaterialsDAO mdao = new MaterialsDAO();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

@@ -25,7 +25,7 @@ public class MaterialUnitDAO {
         conn = DBConnect.getConnection();
     }
     
-    //Lấy Role theo id 
+   //lấy vật tư theo id
     public MaterialUnit getUnitById(int id) {
 
         String sql ="""

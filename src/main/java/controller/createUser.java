@@ -18,14 +18,14 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Scanner;
 import model.Role;
 import model.User;
 import units.RandomCode;
+import units.SendMail;
 import units.Validator;
+import units.Encoding;
 
 /**
  *
@@ -79,7 +79,7 @@ public class createUser extends HttpServlet {
             String genderParam = getValue(request.getPart("gender"));
             String statusParam = getValue(request.getPart("status"));
             String roleIdParam = getValue(request.getPart("roleId"));
-
+            String encodingPassword = Encoding.toSHA1(password);
             boolean gender = Boolean.parseBoolean(genderParam);
             boolean status = Boolean.parseBoolean(statusParam);
             int roleId = Integer.parseInt(roleIdParam);
@@ -106,7 +106,7 @@ public class createUser extends HttpServlet {
             if (!Validator.isValidPhone(phone)) {
                 errorMessage += " Số điện thoại không hợp lệ (phải bắt đầu bằng 0 và đủ 10 chữ số)";
             }
-
+            
             if (!errorMessage.isEmpty()) {
                 request.setAttribute("error", errorMessage);
                 request.setAttribute("listRole", lr);
@@ -126,9 +126,22 @@ public class createUser extends HttpServlet {
                 imagePart.write(uploadPath + File.separator + imageName);
             }
 
-            int updated = udao.createUser(username, fullname, phone, password, email, address, gender, birthDate, imageName, status, roleId);
+            int updated = udao.createUser(username, fullname, phone, encodingPassword, email, address, gender, birthDate, imageName, status, roleId);
             System.out.println(updated);
-            if (updated>0) {
+            if (updated > 0) {// Gửi email ở đây
+                String subject = "Thông tin tài khoản của bạn";
+                String messageText = "Chào " + fullname + ",\n\n"
+                        + "Tài khoản của bạn đã được tạo thành công.\n"
+                        + "Tên đăng nhập: " + username + "\n"
+                        + "Mật khẩu: " + password + "\n\n"
+                        + "Vui lòng đổi mật khẩu sau khi đăng nhập lần đầu.\n\n"
+                        + "Trân trọng,\nAdmin Material Management";
+
+                try {
+                    SendMail.sendMail(email, subject, messageText);
+                } catch (Exception e) {
+                    e.printStackTrace(); // log lỗi gửi mail (không làm hỏng luồng chính)
+                }
                 response.sendRedirect("userList");
             } else {
                 request.setAttribute("error", "Tạo user thất bại" + updated);
