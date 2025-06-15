@@ -40,7 +40,7 @@ public class MaterialsDAO {
     
     public List<Materials> getAllMaterial() {
         List<Materials> list = new ArrayList<>();
-        String sql = " SELECT * FROM Material ORDER BY id DESC";
+        String sql = " SELECT * FROM Materials ORDER BY id DESC";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
             try (ResultSet rs = ps.executeQuery()) {
