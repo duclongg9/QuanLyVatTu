@@ -122,6 +122,35 @@ public class requestDAO {
             return list;
         }
     }
+    
+    public Request getRequestById(int id) {
+
+        String sql = "SELECT * FROM ql_vat_tu.request where id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Request r = new Request();
+                    r.setId(rs.getInt(COL_ID));
+                    r.setDate(rs.getString(COL_DATE));
+                    r.setStatusId(rsdao.getStatusById(rs.getInt(COL_STATUS)));
+                    r.setUserId(udao.getUserById(rs.getInt(COL_USER)));
+                    r.setNote(rs.getString(COL_NOTE));
+                    String typeStr = rs.getString(COL_TYPE); // Lấy giá trị từ DB: "Import" hoặc "Export"
+                    RequestType type = RequestType.valueOf(typeStr.toUpperCase()); // Convert String -> Enum
+                    r.setType(type); // set đúng kiểu RequestType
+                    r.setApprovedBy(udao.getUserById(rs.getInt(COL_APPROVEDBY)));
+                    return r;
+                }
+            }
+
+        } catch (Exception e) {
+            Logger.getLogger(Request.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return null;
+    }
 
      public static void main(String[] args) throws SQLException {
         requestDAO rdao = new requestDAO();

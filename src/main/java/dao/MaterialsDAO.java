@@ -107,6 +107,32 @@ public class MaterialsDAO {
             return list;
         }
     }
+    
+    public Materials getMaterialsById(int id) {
+
+        String sql = "SELECT * FROM ql_vat_tu.materials where id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Materials m = new Materials();
+                    m.setId(rs.getInt(COL_ID));
+                    m.setName(rs.getString(COL_NAME));
+                    m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
+                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setImage(rs.getString(COL_IMAGE));
+                    return m;
+                }
+            }
+
+        } catch (Exception e) {
+            Logger.getLogger(Materials.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return null;
+    }
+    
      public static void main(String[] args) throws SQLException {
         MaterialsDAO mdao = new MaterialsDAO();
 
