@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao;
-import dao.DBConnect;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,13 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import dao.UserDAO;
 import model.Materials;
 /**
  *
  * @author D E L L
  */
-public class MaterialDAO {
+public class MaterialsDAO {
     private Connection conn;
     
     MaterialUnitDAO mudao = new MaterialUnitDAO();
@@ -32,17 +30,17 @@ public class MaterialDAO {
     
      private static final int PAGE_SIZE = 10;
 
-    public MaterialDAO(Connection conn) {
+    public MaterialsDAO(Connection conn) {
         this.conn = conn;
     }
     
-    public MaterialDAO(){
+    public MaterialsDAO(){
         this(DBConnect.getConnection());
     }
     
     public List<Materials> getAllMaterial() {
         List<Materials> list = new ArrayList<>();
-        String sql = " SELECT * FROM material ORDER BY id DESC";
+        String sql = " SELECT * FROM Material ORDER BY id DESC";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -65,9 +63,9 @@ public class MaterialDAO {
             return null;
         }
     }
-       //đếm số lượng yêu cầu trong database
+       //đếm số lượng vật tư trong database
     public int getTotalMaterials() {
-        String sql = "SELECT COUNT(*) FROM request;";
+        String sql = "SELECT COUNT(*) FROM Materials;";
         try (PreparedStatement ps = conn.prepareStatement(sql);) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -85,7 +83,7 @@ public class MaterialDAO {
     //Phân trang
     public List<Materials> pagingMaterials(int index) throws SQLException {
         List<Materials> list = new ArrayList<>();
-        String sql = "SELECT * FROM materials\n"
+        String sql = "SELECT * FROM Materials\n"
                 + "LIMIT ? OFFSET ?;";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -110,7 +108,7 @@ public class MaterialDAO {
         }
     }
      public static void main(String[] args) throws SQLException {
-        MaterialDAO mdao = new MaterialDAO();
+        MaterialsDAO mdao = new MaterialsDAO();
 
 //        udao.deleteStaffById(1);
         List<Materials> list = mdao.pagingMaterials(1);
