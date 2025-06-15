@@ -6,18 +6,18 @@ package model;
 
 /**
  *
- * @author KIET
+ * @author D E L L
  */
-public class Unit {
+public class MaterialStatus {
     private int id;
-    private String unitName;
+    private String status;
 
-    public Unit() {
+    public MaterialStatus() {
     }
 
-    public Unit(int id, String unitName) {
+    public MaterialStatus(int id, String status) {
         this.id = id;
-        this.unitName = unitName;
+        this.status = status;
     }
 
     public int getId() {
@@ -28,12 +28,12 @@ public class Unit {
         this.id = id;
     }
 
-    public String getName() {
-        return unitName;
+    public String getStatus() {
+        return status;
     }
 
-    public void setName(String unitName) {
-        this.unitName = unitName;
+    public void setStatus(String status) {
+        this.status = status;
     }
     
     
