@@ -10,14 +10,16 @@ package model;
  */
 public class Unit {
     private int id;
-    private String unitName;
+    private String name;
+    private boolean status;
 
     public Unit() {
     }
 
-    public Unit(int id, String unitName) {
+    public Unit(int id, String name, boolean status) {
         this.id = id;
-        this.unitName = unitName;
+        this.name = name;
+        this.status = status;
     }
 
     public int getId() {
@@ -28,12 +30,20 @@ public class Unit {
         this.id = id;
     }
 
-    public String getName() {
-        return unitName;
+    public boolean isStatus() {
+        return status;
     }
 
-    public void setName(String unitName) {
-        this.unitName = unitName;
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
     
     

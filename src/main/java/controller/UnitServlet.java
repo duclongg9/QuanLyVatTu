@@ -4,7 +4,7 @@
  */
 package controller;
 
-import dao.UnitDAO;
+import DAO.UnitDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Unit;
 
@@ -62,34 +63,86 @@ public class UnitServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         String action = request.getParameter("action");
         if (action == null) {
             action = "list";
         }
 
+        String message = (String) session.getAttribute("message");
+        String messageType = (String) session.getAttribute("messageType");
+        session.removeAttribute("message");
+        session.removeAttribute("messageType");
+
         switch (action) {
             case "add":
+                if (message != null) {
+                    request.setAttribute("message", message);
+                    request.setAttribute("messageType", messageType);
+                }
                 request.getRequestDispatcher("unitForm.jsp").forward(request, response);
                 break;
+
             case "edit":
                 int id = Integer.parseInt(request.getParameter("id"));
                 Unit u = unitDAO.getUnitById(id);
                 request.setAttribute("unit", u);
                 request.getRequestDispatcher("unitForm.jsp").forward(request, response);
                 break;
+
             case "delete":
-                unitDAO.deleteUnit(Integer.parseInt(request.getParameter("id")));
+                int deleteId = Integer.parseInt(request.getParameter("id"));
+                if (unitDAO.isUsedInMaterials(deleteId)) {
+                    session.setAttribute("message", "Không thể xóa đơn vị đang được sử dụng.");
+                    session.setAttribute("messageType", "danger");
+                } else {
+                    unitDAO.deactivateUnit(deleteId);
+                    session.setAttribute("message", "Xóa đơn vị thành công (đã ẩn).");
+                    session.setAttribute("messageType", "success");
+                }
                 response.sendRedirect("unit");
                 break;
+
             case "confirmDelete":
                 int idToConfirm = Integer.parseInt(request.getParameter("id"));
                 Unit unitToConfirm = unitDAO.getUnitById(idToConfirm);
                 request.setAttribute("unit", unitToConfirm);
                 request.getRequestDispatcher("unitConfirmDelete.jsp").forward(request, response);
                 break;
+
+            case "search":
+                String keyword = request.getParameter("keyword");
+                List<Unit> searchResults = unitDAO.searchByName(keyword);
+                request.setAttribute("list", searchResults);
+                request.setAttribute("keyword", keyword);
+                if (message != null) {
+                    request.setAttribute("message", message);
+                    request.setAttribute("messageType", messageType);
+                }
+                request.getRequestDispatcher("unitList.jsp").forward(request, response);
+                break;
+
             default: // list
-                List<Unit> list = unitDAO.getAllUnits();
+                int page = 1,
+                 size = 5;
+                String pageStr = request.getParameter("page");
+                if (pageStr != null) {
+                    page = Integer.parseInt(pageStr);
+                }
+                List<Unit> list = unitDAO.getUnitsByPage(page, size);
+                int total = unitDAO.countUnits();
+                int totalPage = (int) Math.ceil((double) total / size);
+
                 request.setAttribute("list", list);
+                request.setAttribute("page", page);
+                request.setAttribute("totalPage", totalPage);
+
+                // ✅ Dùng lại thông báo (nếu có) từ session
+                if (message != null) {
+                    request.setAttribute("message", message);
+                    request.setAttribute("messageType", messageType);
+                }
+
                 request.getRequestDispatcher("unitList.jsp").forward(request, response);
                 break;
         }
@@ -106,16 +159,54 @@ public class UnitServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+//        HttpSession session = request.getSession();
+//        String idStr = request.getParameter("id");
+//        String name = request.getParameter("name");
+//
+//        if (unitDAO.isDuplicateName(name)) {
+//            session.setAttribute("message", "Tên đơn vị đã tồn tại.");
+//            session.setAttribute("messageType", "warning");
+//            response.sendRedirect("unit?action=add");
+//            return;
+//        }
+//
+//        if (idStr == null || idStr.isEmpty()) {
+//            unitDAO.addOrRestoreUnit(name);
+//            session.setAttribute("message", "Thêm đơn vị thành công.");
+//            session.setAttribute("messageType", "success");
+//        } else {
+//            int id = Integer.parseInt(idStr);
+//            unitDAO.updateUnit(id, name);
+//            session.setAttribute("message", "Cập nhật đơn vị thành công.");
+//            session.setAttribute("messageType", "success");
+//        }
+//        List<Unit> list = unitDAO.getAllUnits();
+//request.setAttribute("list", list);
+//request.getRequestDispatcher("unitList.jsp").forward(request, response);
+//
+//        response.sendRedirect("unit");
+//    
+        HttpSession session = request.getSession();
         String idStr = request.getParameter("id");
         String name = request.getParameter("name");
 
-        if (idStr == null || idStr.isEmpty()) {
-            unitDAO.addUnit(name);
-        } else {
-            int id = Integer.parseInt(idStr);
-            unitDAO.updateUnit(id, name);
+        try {
+            if (idStr == null || idStr.isEmpty()) {
+                unitDAO.addOrRestoreUnit(name);
+                request.getSession().setAttribute("message", "Thêm đơn vị thành công!");
+            } else {
+                int id = Integer.parseInt(idStr);
+                unitDAO.updateUnit(id, name);
+                request.getSession().setAttribute("message", "Cập nhật đơn vị thành công!");
+            }
+            request.getSession().setAttribute("messageType", "success");
+            response.sendRedirect("unit");
+        } catch (RuntimeException e) {
+            // Gửi lại message lỗi khi bị trùng
+            request.getSession().setAttribute("message", e.getMessage());
+            request.getSession().setAttribute("messageType", "danger");
+            response.sendRedirect("unit?action=add"); // quay về form
         }
-        response.sendRedirect("unit"); // đúng tên servlet
     }
 
     /**
