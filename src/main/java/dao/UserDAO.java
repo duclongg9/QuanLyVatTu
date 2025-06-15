@@ -42,6 +42,12 @@ public class UserDAO {
 
     public UserDAO() {
         conn = DBConnect.getConnection();
+        if (conn == null) {
+            System.err.println("❌ Không thể kết nối CSDL trong UserDAO!");
+            throw new RuntimeException("Kết nối CSDL thất bại, không thể khởi tạo UserDAO.");
+        } else {
+            System.out.println("✅ Đã khởi tạo UserDAO với kết nối CSDL.");
+        }
     }
 
     //Kiểm tra email đã tồn tại chưa
