@@ -180,13 +180,12 @@ public class UserDAO {
     //Tìm kiếm nhân viên bằng tên
     public List<User> findStaffByName(String name) {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT * \n"
-                + "FROM user \n"
-                + "WHERE Name LIKE N'%?%'";
+        String sql = "SELECT * FROM user WHERE fullname LIKE ?";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
+        try (PreparedStatement ps = conn.prepareStatement(sql)) { // Sử dụng try-with-resource để đóng tài nguyên sau khi sử dụng
 
-            ps.setString(1, name);
+
+            ps.setString(1, "%" + name + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     User p = new User();

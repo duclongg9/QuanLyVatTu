@@ -6,8 +6,6 @@ package controller;
 
 import dao.RoleDAO;
 import dao.UserDAO;
-import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,20 +13,23 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.List;
 import model.Role;
 import model.User;
+import units.Encoding;
 import units.RandomCode;
 import units.SendMail;
 import units.Validator;
-import units.Encoding;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
 
 /**
- *
  * @author D E L L
  */
 @MultipartConfig
@@ -106,7 +107,7 @@ public class createUser extends HttpServlet {
             if (!Validator.isValidPhone(phone)) {
                 errorMessage += " Số điện thoại không hợp lệ (phải bắt đầu bằng 0 và đủ 10 chữ số)";
             }
-            
+
             if (!errorMessage.isEmpty()) {
                 request.setAttribute("error", errorMessage);
                 request.setAttribute("listRole", lr);
@@ -158,7 +159,7 @@ public class createUser extends HttpServlet {
     private String getValue(Part part) throws IOException {
         InputStream inputStream = part.getInputStream();
         byte[] bytes = inputStream.readAllBytes();
-        return new String(bytes, "UTF-8").trim();
+        return new String(bytes, StandardCharsets.UTF_8).trim();
     }
 
     /**
