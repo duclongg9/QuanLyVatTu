@@ -107,6 +107,71 @@ public class MaterialsDAO {
             return list;
         }
     }
+
+
+    // Lấy vật tư theo id
+    public Materials getMaterialById(int id) {
+        String sql = "SELECT * FROM Materials WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Materials m = new Materials();
+                    m.setId(rs.getInt(COL_ID));
+                    m.setName(rs.getString(COL_NAME));
+                    m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
+                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setImage(rs.getString(COL_IMAGE));
+                    return m;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Thêm mới vật tư
+    public int addMaterial(String name, int unitId, String image, int categoryId) {
+        String sql = "INSERT INTO Materials(name, unitId, image, categoryId) VALUES(?,?,?,?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, name);
+            ps.setInt(2, unitId);
+            ps.setString(3, image);
+            ps.setInt(4, categoryId);
+            ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    // Cập nhật vật tư
+    public void updateMaterial(int id, String name, int unitId, String image, int categoryId) {
+        String sql = "UPDATE Materials SET name=?, unitId=?, image=?, categoryId=? WHERE id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setInt(2, unitId);
+            ps.setString(3, image);
+            ps.setInt(4, categoryId);
+            ps.setInt(5, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Xóa mềm vật tư thông qua MaterialItem
+    public void deleteMaterial(int id) {
+        MaterialItemDAO midao = new MaterialItemDAO();
+        // 2 được giả định là trạng thái "Đã xóa" trong bảng MaterialStatus
+        midao.updateStatus(id, 2);
+    }
      public static void main(String[] args) throws SQLException {
         MaterialsDAO mdao = new MaterialsDAO();
 
