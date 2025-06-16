@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context docBase="D:\prj\Booking (1)\Booking\build\web" path="/Booking_Working_Space">
+  <Resources cacheMaxSize="10240">
+    <PostResources base="D:/prj/sqljdbc42/jakarta.servlet.jsp.jstl-2.0.0.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/jakarta.servlet.jsp.jstl-2.0.0.jar"/>
+    <PostResources base="D:/prj/sqljdbc42/sqljdbc42.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/sqljdbc42.jar"/>
+    <PostResources base="D:/prj/sqljdbc42/jakarta.servlet.jsp.jstl-api-2.0.0.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/jakarta.servlet.jsp.jstl-api-2.0.0.jar"/>
+    <PostResources base="D:/prj/sqljdbc42/jaxb-api-2.1.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/jaxb-api-2.1.jar"/>
+  </Resources>
+</Context>

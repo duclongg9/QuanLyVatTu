@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context docBase="D:\swp\plane\SWP391\web" path="/SWP391">
+  <Resources cacheMaxSize="10240">
+    <PostResources base="D:/swp/plane/SWP391/library/activation-1.1.1.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/activation-1.1.1.jar"/>
+    <PostResources base="D:/swp/plane/SWP391/library/commons-logging-1.2.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/commons-logging-1.2.jar"/>
+    <PostResources base="D:/swp/plane/SWP391/library/fluent-hc-4.5.5.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/fluent-hc-4.5.5.jar"/>
+    <PostResources base="D:/swp/plane/SWP391/library/gson-2.8.2.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/gson-2.8.2.jar"/>
+    <PostResources base="D:/swp/plane/SWP391/library/httpclient-4.5.5.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/httpclient-4.5.5.jar"/>
+    <PostResources base="D:/swp/plane/SWP391/library/httpcore-4.4.9.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/httpcore-4.4.9.jar"/>
+    <PostResources base="D:/swp/plane/SWP391/library/jakarta.servlet.jsp.jstl-2.0.0.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/jakarta.servlet.jsp.jstl-2.0.0.jar"/>
+    <PostResources base="D:/swp/plane/SWP391/library/javax.mail.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/javax.mail.jar"/>
+    <PostResources base="D:/swp/plane/SWP391/library/jaxb-api-2.1.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/jaxb-api-2.1.jar"/>
+    <PostResources base="D:/swp/plane/SWP391/library/mysql-connector-j-9.1.0.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/mysql-connector-j-9.1.0.jar"/>
+    <PostResources base="D:/swp/plane/SWP391/library/sqljdbc42.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/sqljdbc42.jar"/>
+  </Resources>
+</Context>
