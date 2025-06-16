@@ -60,7 +60,7 @@ public class RoleDAO {
     //lấy tất cả role
     public List<Role> getAllRole() {
         List<Role> lr = new ArrayList<>();
-        String sql = "SELECT * FROM ql_vat_tu.role";
+        String sql = "SELECT * FROM role";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
