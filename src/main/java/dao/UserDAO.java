@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DAO;
+package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,6 +42,12 @@ public class UserDAO {
 
     public UserDAO() {
         conn = DBConnect.getConnection();
+        if (conn == null) {
+            System.err.println("❌ Không thể kết nối CSDL trong UserDAO!");
+            throw new RuntimeException("Kết nối CSDL thất bại, không thể khởi tạo UserDAO.");
+        } else {
+            System.out.println("✅ Đã khởi tạo UserDAO với kết nối CSDL.");
+        }
     }
 
     //Kiểm tra email đã tồn tại chưa
@@ -180,13 +186,12 @@ public class UserDAO {
     //Tìm kiếm nhân viên bằng tên
     public List<User> findStaffByName(String name) {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT * \n"
-                + "FROM user \n"
-                + "WHERE Name LIKE N'%?%'";
+        String sql = "SELECT * FROM user WHERE fullname LIKE ?";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
+        try (PreparedStatement ps = conn.prepareStatement(sql)) { // Sử dụng try-with-resource để đóng tài nguyên sau khi sử dụng
 
-            ps.setString(1, name);
+
+            ps.setString(1, "%" + name + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     User p = new User();

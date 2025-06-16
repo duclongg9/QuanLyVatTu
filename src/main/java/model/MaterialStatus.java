@@ -6,19 +6,17 @@ package model;
 
 /**
  *
- * @author KIET
+ * @author D E L L
  */
-public class Unit {
+public class MaterialStatus {
     private int id;
-    private String name;
-    private boolean status;
+    private String status;
 
-    public Unit() {
+    public MaterialStatus() {
     }
 
-    public Unit(int id, String name, boolean status) {
+    public MaterialStatus(int id, String status) {
         this.id = id;
-        this.name = name;
         this.status = status;
     }
 
@@ -30,20 +28,12 @@ public class Unit {
         this.id = id;
     }
 
-    public boolean isStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
     
     

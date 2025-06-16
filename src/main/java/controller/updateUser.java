@@ -4,8 +4,8 @@
  */
 package controller;
 
-import DAO.RoleDAO;
-import DAO.UserDAO;
+import dao.RoleDAO;
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;

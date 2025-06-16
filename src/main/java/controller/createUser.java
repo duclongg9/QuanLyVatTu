@@ -4,10 +4,8 @@
  */
 package controller;
 
-import DAO.RoleDAO;
-import DAO.UserDAO;
-import java.io.IOException;
-import java.io.PrintWriter;
+import dao.RoleDAO;
+import dao.UserDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,20 +13,23 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Scanner;
 import model.Role;
 import model.User;
+import units.Encoding;
 import units.RandomCode;
+import units.SendMail;
 import units.Validator;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
+
 /**
- *
  * @author D E L L
  */
 @MultipartConfig
@@ -79,7 +80,7 @@ public class createUser extends HttpServlet {
             String genderParam = getValue(request.getPart("gender"));
             String statusParam = getValue(request.getPart("status"));
             String roleIdParam = getValue(request.getPart("roleId"));
-
+            String encodingPassword = Encoding.toSHA1(password);
             boolean gender = Boolean.parseBoolean(genderParam);
             boolean status = Boolean.parseBoolean(statusParam);
             int roleId = Integer.parseInt(roleIdParam);
@@ -126,9 +127,22 @@ public class createUser extends HttpServlet {
                 imagePart.write(uploadPath + File.separator + imageName);
             }
 
-            int updated = udao.createUser(username, fullname, phone, password, email, address, gender, birthDate, imageName, status, roleId);
+            int updated = udao.createUser(username, fullname, phone, encodingPassword, email, address, gender, birthDate, imageName, status, roleId);
             System.out.println(updated);
-            if (updated>0) {
+            if (updated > 0) {// Gửi email ở đây
+                String subject = "Thông tin tài khoản của bạn";
+                String messageText = "Chào " + fullname + ",\n\n"
+                        + "Tài khoản của bạn đã được tạo thành công.\n"
+                        + "Tên đăng nhập: " + username + "\n"
+                        + "Mật khẩu: " + password + "\n\n"
+                        + "Vui lòng đổi mật khẩu sau khi đăng nhập lần đầu.\n\n"
+                        + "Trân trọng,\nAdmin Material Management";
+
+                try {
+                    SendMail.sendMail(email, subject, messageText);
+                } catch (Exception e) {
+                    e.printStackTrace(); // log lỗi gửi mail (không làm hỏng luồng chính)
+                }
                 response.sendRedirect("userList");
             } else {
                 request.setAttribute("error", "Tạo user thất bại" + updated);
@@ -145,7 +159,7 @@ public class createUser extends HttpServlet {
     private String getValue(Part part) throws IOException {
         InputStream inputStream = part.getInputStream();
         byte[] bytes = inputStream.readAllBytes();
-        return new String(bytes, "UTF-8").trim();
+        return new String(bytes, StandardCharsets.UTF_8).trim();
     }
 
     /**

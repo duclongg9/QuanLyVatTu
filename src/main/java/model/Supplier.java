@@ -2,24 +2,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
 
-/**
- *
- * @author admin
- */
 public class Supplier {
     private int id;
     private String name;
     private String phone;
     private String address;
+
     private boolean status;
 
     // Constructors
     public Supplier() {
     }
 
-    public Supplier(int id, String name, String phone, String address, boolean status) {
+    
+
+    
+
+    public Supplier(int id, String name, String phone, String address) {
         this.id = id;
         this.name = name;
         this.phone = phone;
@@ -28,6 +28,10 @@ public class Supplier {
     }
 
     // Getters and Setters
+
+    
+
+
     public int getId() {
         return id;
     }
@@ -60,6 +64,7 @@ public class Supplier {
         this.address = address;
     }
 
+
     public boolean isStatus() {
         return status;
     }
@@ -68,7 +73,7 @@ public class Supplier {
         this.status = status;
     }
 
-    // toString (optional for debugging or logging)
+    
     @Override
     public String toString() {
         return "Supplier{" +
@@ -79,4 +84,5 @@ public class Supplier {
                 ", status=" + status +
                 '}';
     }
+
 }
