@@ -180,6 +180,35 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, ca
             return 0;
         }    }
 
+    // Lấy danh sách vật tư đã bị xóa (statusId = 2)
+    public List<Materials> getDeletedMaterials() {
+        List<Materials> list = new ArrayList<>();
+        String sql = "SELECT m.* FROM Materials m JOIN MaterialItem mi ON m.id = mi.materialId WHERE mi.statusId = 2 ORDER BY m.id DESC";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Materials m = new Materials();
+                    m.setId(rs.getInt(COL_ID));
+                    m.setName(rs.getString(COL_NAME));
+                    m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
+                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setImage(rs.getString(COL_IMAGE));
+                    list.add(m);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    // Khôi phục vật tư bằng cách chuyển trạng thái về hoạt động (statusId = 1)
+    public void activateMaterial(int id) {
+        MaterialItemDAO midao = new MaterialItemDAO();
+        midao.updateStatus(id, 1); // 1: trạng thái hoạt động
+    }
+    
     //soft delete material
     public void deactivateMaterial(int deleteId) {
  String sql = "UPDATE Materials SET status = false WHERE id = ?";

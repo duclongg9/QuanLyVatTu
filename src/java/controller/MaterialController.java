@@ -98,6 +98,22 @@ public class MaterialController extends HttpServlet {
                 mDao.deactivateMaterial(deleteId);
                 response.sendRedirect("materialController?action=list");
                 break;
+            case "confirmDelete":
+                int idToConfirm = Integer.parseInt(request.getParameter("id"));
+                Materials mcf = MaterialsDAO.getMaterialsById(idToConfirm);
+                request.setAttribute("material", mcf);
+                request.getRequestDispatcher("materialConfirmDelete.jsp").forward(request, response);
+                break;
+            case "deleted":
+                List<Materials> deleted = MaterialsDAO.getDeletedMaterials();
+                request.setAttribute("list", deleted);
+                request.getRequestDispatcher("materialDeletedList.jsp").forward(request, response);
+                break;
+            case "activate":
+                int idRestore = Integer.parseInt(request.getParameter("id"));
+                MaterialsDAO.activateMaterial(idRestore);
+                response.sendRedirect("material?action=deleted");
+                break;    
             default:
                 List<Materials> list = mDao.getAllMaterial();
                 request.setAttribute("materials", list);
