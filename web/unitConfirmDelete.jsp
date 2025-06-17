@@ -5,17 +5,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Xác nhận xóa đơn vị tính</title>
-    <link href="${pageContext.request.contextPath}/Admin2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/Admin2/css/style.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <%@ include file="Admin2/spinner.jsp" %>
+    <%@ include file="spinner.jsp" %>
 <div class="container-xxl position-relative bg-white d-flex p-0">
-    <%@ include file="Admin2/sidebar.jsp" %>
+    <%@ include file="sidebar.jsp" %>
 
     <div class="content d-flex flex-column min-vh-100">
-        <%@ include file="Admin2/navbar.jsp" %>
+        <%@ include file="navbar.jsp" %>
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="bg-light rounded p-5">
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <%@ include file="Admin2/footer.jsp" %>
+        <%@ include file="footer.jsp" %>
     </div>
 </div>
 <script>
