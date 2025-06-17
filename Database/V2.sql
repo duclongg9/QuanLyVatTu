@@ -121,7 +121,7 @@ CREATE TABLE `Request` (
 	`statusId` INT,
 	`userId` INT,
 	`note` VARCHAR(255),
-	`type` ENUM('Import', 'Export') NOT NULL,
+	`type` ENUM('Import', 'Export','Repair') NOT NULL,
 	`approvedBy` INT
 );
 
