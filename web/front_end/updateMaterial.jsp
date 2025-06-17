@@ -8,14 +8,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Update Material</title>
-    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
 </head>
 <body>
-<%@include file="header.jsp" %>
-<main>
-    <%@include file="leftSideBar.jsp" %>
-    <section class="main-content p-4">
-        <h2 class="mb-3">Update Material</h2>
+<%@include file="../spinner.jsp" %>
+<div class="container-xxl position-relative bg-white d-flex p-0">
+    <%@include file="../sidebar.jsp" %>
+    <div class="content d-flex flex-column min-vh-100">
+        <%@include file="../navbar.jsp" %>
+
+        <div class="container-fluid pt-4 px-4 flex-grow-1">
+            <div class="bg-light rounded p-4">
+                <h4 class="mb-4">Update Material</h4>
         <form action="${pageContext.request.contextPath}/materialController" method="post" enctype="multipart/form-data" class="w-50">
             <input type="hidden" name="id" value="<%=m.getId()%>">
             <div class="mb-3">
@@ -51,9 +58,31 @@
                 <a href="${pageContext.request.contextPath}/materialController?action=list" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
-    </section>
-</main>
-<%@include file="footer.jsp" %>
-<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+    </div>
+        </div>
+
+        <%@include file="../footer.jsp" %>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleBtn = document.querySelector(".sidebar-toggler");
+        const sidebar = document.querySelector(".sidebar");
+        const content = document.querySelector(".content");
+
+        if (toggleBtn && sidebar && content) {
+            toggleBtn.addEventListener("click", function () {
+                sidebar.classList.toggle("open");
+                content.classList.toggle("open");
+            });
+        }
+    });
+</script>
+
+<!-- JS -->
+<script src="${pageContext.request.contextPath}/js/jquery-3.4.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/main.js"></script>
 </body>
 </html>

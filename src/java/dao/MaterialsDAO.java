@@ -86,7 +86,7 @@ public class MaterialsDAO {
     //Phân trang
     public List<Materials> pagingMaterials(int index) throws SQLException {
         List<Materials> list = new ArrayList<>();
-        String sql = "SELECT * FROM Materials WHERE status = true\n";
+        String sql = "SELECT * FROM Materials WHERE status = true LIMIT ? OFFSET ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
