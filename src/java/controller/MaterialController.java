@@ -71,6 +71,12 @@ public class MaterialController extends HttpServlet {
         
         request.setAttribute("units", muDao.getAllUnit());
         request.setAttribute("categories", cmDao.getAllCategory());
+        if (request.getParameter("success") != null) {
+            request.setAttribute("success", "Thêm vật tư thành công");
+        }
+        
+        request.setAttribute("units", muDao.getAllUnit());
+        request.setAttribute("categories", cmDao.getAllCategory());
         request.getRequestDispatcher("/front_end/createMaterial.jsp").forward(request, response);
     }
 
@@ -103,7 +109,7 @@ public class MaterialController extends HttpServlet {
 
         int result = mDao.createMaterial(name, unitId, imageName, categoryId);
         if (result > 0) {
-            response.sendRedirect("...đường dẫn tới danh sách vật tư...");
+                        response.sendRedirect("materialController?success=1");
         } else {
             request.setAttribute("error", "Thêm vật tư thất bại");
             doGet(request, response);
