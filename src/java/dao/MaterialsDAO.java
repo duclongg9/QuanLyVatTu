@@ -17,7 +17,7 @@ import model.Materials;
  * @author D E L L
  */
 public class MaterialsDAO {
-    private Connection conn;
+//    private Connection conn;
     
     MaterialUnitDAO mudao = new MaterialUnitDAO();
     CategoryMaterialDAO cmdao = new CategoryMaterialDAO();
@@ -31,18 +31,18 @@ public class MaterialsDAO {
     
      private static final int PAGE_SIZE = 10;
 
-    public MaterialsDAO(Connection conn) {
-        this.conn = conn;
+    public MaterialsDAO() {
     }
     
-    public MaterialsDAO(){
-        this(DBConnect.getConnection());
-    }
+//    public MaterialsDAO(){
+//        this(DBConnect.getConnection());
+//    }
     
     public List<Materials> getAllMaterial() {
         List<Materials> list = new ArrayList<>();
         String sql = " SELECT * FROM Materials WHERE status = true ORDER BY id DESC";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             try (ResultSet rs = ps.executeQuery()) {
                 list.clear();
@@ -68,7 +68,8 @@ public class MaterialsDAO {
        //đếm số lượng vật tư trong database
     public int getTotalMaterials() {
         String sql = "SELECT COUNT(*) FROM Materials WHERE status = true;";
-        try (PreparedStatement ps = conn.prepareStatement(sql);) {
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     return rs.getInt(1);
@@ -86,7 +87,8 @@ public class MaterialsDAO {
     public List<Materials> pagingMaterials(int index) throws SQLException {
         List<Materials> list = new ArrayList<>();
         String sql = "SELECT * FROM Materials WHERE status = true\n";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, PAGE_SIZE);
             ps.setInt(2, (index - 1) * PAGE_SIZE);
@@ -114,7 +116,8 @@ public class MaterialsDAO {
 
         String sql = "SELECT * FROM Materials WHERE id = ?";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -139,17 +142,19 @@ public class MaterialsDAO {
     //create materials
     public int createMaterial(String name, int unitId, String image, int categoryId) {
     String sql = "INSERT INTO Materials(name, unitId, image, categoryId, status) VALUES(?,?,?,?, true)";
-    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setString(1, name);
-        ps.setInt(2, unitId);
-        ps.setString(3, image);
-        ps.setInt(4, categoryId);
-        return ps.executeUpdate(); // >0 nếu thành công
-    } catch (SQLException e) {
-        Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
-        return 0;
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setInt(2, unitId);
+            ps.setString(3, image);
+            ps.setInt(4, categoryId);
+            return ps.executeUpdate(); // >0 nếu thành công
+        } catch (SQLException e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+            return 0;
+        }
     }
-}
+
     
     
     //update materials
@@ -159,7 +164,8 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, ca
             sql.append(", image=?");
         }
         sql.append(" WHERE id=?");
-        try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
             int idx = 1;
             ps.setString(idx++, name);
             ps.setInt(idx++, unitId);
@@ -176,8 +182,9 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, ca
 
     //soft delete material
     public void deactivateMaterial(int deleteId) {
-String sql = "UPDATE Materials SET status = false WHERE id = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+ String sql = "UPDATE Materials SET status = false WHERE id = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, deleteId);
             ps.executeUpdate();
         } catch (SQLException e) {
