@@ -20,6 +20,7 @@
             <div class="bg-light rounded p-4">
                 <h4 class="mb-4">Material List</h4>
                 <a href="${pageContext.request.contextPath}/materialController?action=add" class="btn btn-primary mb-3">Add New</a>
+                <a href="${pageContext.request.contextPath}/materialController?action=deleted" class="btn btn-outline-secondary mb-3 ms-2">View Deleted</a>
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
