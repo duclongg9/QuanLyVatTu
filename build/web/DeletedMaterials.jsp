@@ -10,11 +10,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-<%@include file="../spinner.jsp" %>
+<%@include file="spinner.jsp" %>
 <div class="container-xxl position-relative bg-white d-flex p-0">
     <%@include file="../sidebar.jsp" %>
     <div class="content d-flex flex-column min-vh-100">
-        <%@include file="../navbar.jsp" %>
+        <%@include file="navbar.jsp" %>
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="bg-light rounded p-4">

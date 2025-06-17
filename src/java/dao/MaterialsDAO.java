@@ -180,12 +180,12 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, ca
             return 0;
         }    }
 
-    // Lấy danh sách vật tư đã bị xóa (statusId = 2)
+// Lấy danh sách vật tư đã bị xóa (statusId = 2)// Lấy danh sách vật tư đã bị xóa (status = false)
     public List<Materials> getDeletedMaterials() {
         List<Materials> list = new ArrayList<>();
-        String sql = "SELECT m.* FROM Materials m JOIN MaterialItem mi ON m.id = mi.materialId WHERE mi.statusId = 2 ORDER BY m.id DESC";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+        String sql = "SELECT * FROM Materials WHERE status = false ORDER BY id DESC";
+    try (Connection conn = DBConnect.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Materials m = new Materials();
@@ -194,6 +194,7 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, ca
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
                     m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
+                    m.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(m);
                 }
             }
@@ -201,12 +202,18 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, ca
             Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return list;
-    }
+            }
 
-    // Khôi phục vật tư bằng cách chuyển trạng thái về hoạt động (statusId = 1)
-    public void activateMaterial(int id) {
-        MaterialItemDAO midao = new MaterialItemDAO();
-        midao.updateStatus(id, 1); // 1: trạng thái hoạt động
+    // Khôi phục vật tư bằng cách chuyển trạng thái về hoạt động (statusId = true)
+     public void activateMaterial(int id) {
+        String sql = "UPDATE Materials SET status = true WHERE id = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     //soft delete material

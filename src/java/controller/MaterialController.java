@@ -107,7 +107,7 @@ public class MaterialController extends HttpServlet {
             case "deleted":
                 List<Materials> deleted = mDao.getDeletedMaterials();
                 request.setAttribute("list", deleted);
-                request.getRequestDispatcher("materialDeletedList.jsp").forward(request, response);
+                request.getRequestDispatcher("DeletedMaterials.jsp").forward(request, response);
                 break;
             case "activate":
                 int idRestore = Integer.parseInt(request.getParameter("id"));
