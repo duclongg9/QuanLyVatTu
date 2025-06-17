@@ -7,6 +7,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.MaterialUnit;
@@ -25,6 +27,24 @@ public class MaterialUnitDAO {
         conn = DBConnect.getConnection();
     }
     
+    //lấy tất cả đơn vị vật tư
+    public List<MaterialUnit> getAllUnit() {
+        List<MaterialUnit> list = new ArrayList<>();
+        String sql = "SELECT * FROM materialunit";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                MaterialUnit m = new MaterialUnit();
+                m.setId(rs.getInt(COL_ID));
+                m.setUnitName(rs.getString(COL_UNIT));
+                list.add(m);
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialUnit.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return list;
+    }
    //lấy vật tư theo id
     public MaterialUnit getUnitById(int id) {
 

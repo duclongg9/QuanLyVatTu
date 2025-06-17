@@ -133,6 +133,21 @@ public class MaterialsDAO {
         return null;
     }
     
+    //create materials
+    public int createMaterial(String name, int unitId, String image, int categoryId) {
+    String sql = "INSERT INTO Materials(name, unitId, image, categoryId) VALUES(?,?,?,?)";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, name);
+        ps.setInt(2, unitId);
+        ps.setString(3, image);
+        ps.setInt(4, categoryId);
+        return ps.executeUpdate(); // >0 nếu thành công
+    } catch (SQLException e) {
+        Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+        return 0;
+    }
+}
+    
      public static void main(String[] args) throws SQLException {
         MaterialsDAO mdao = new MaterialsDAO();
 
