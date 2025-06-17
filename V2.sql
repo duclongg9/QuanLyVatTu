@@ -64,7 +64,9 @@ CREATE TABLE `Materials` (
 	`name` VARCHAR(255) NOT NULL,
 	`unitId` INT NOT NULL,
 	`image` VARCHAR(255),
-	`categoryId` INT NOT NULL
+	`categoryId` INT NOT NULL,
+        `status` BOOLEAN DEFAULT TRUE
+
 );
 
 -- Bảng nhà cung cấp
