@@ -7,6 +7,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.CategoryMaterial;
@@ -24,6 +26,25 @@ public class CategoryMaterialDAO {
 
     public CategoryMaterialDAO() {
         conn = DBConnect.getConnection();
+    }
+    
+    //lấy tất cả danh mục vật tư
+    public List<CategoryMaterial> getAllCategory() {
+        List<CategoryMaterial> list = new ArrayList<>();
+        String sql = "SELECT * FROM categorymaterial";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                CategoryMaterial c = new CategoryMaterial();
+                c.setId(rs.getInt(COL_ID));
+                c.setCategory(rs.getString(COL_CATEGORY));
+                list.add(c);
+            }
+        } catch (Exception e) {
+            Logger.getLogger(CategoryMaterial.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return list;
     }
     
      //Lấy category theo id 
