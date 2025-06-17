@@ -28,7 +28,7 @@ import model.Materials;
 @MultipartConfig
 @WebServlet(name = "MaterialController", urlPatterns = {"/materialController"})
 public class MaterialController extends HttpServlet {
-
+public static final int PAGE_NUMBER = 10;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -110,13 +110,40 @@ public class MaterialController extends HttpServlet {
                 request.getRequestDispatcher("DeletedMaterials.jsp").forward(request, response);
                 break;
             case "activate":
-                int idRestore = Integer.parseInt(request.getParameter("id"));
-                mDao.activateMaterial(idRestore);
-                response.sendRedirect("materialController?action=deleted");
-                break;
-            default:
-                List<Materials> list = mDao.getAllMaterial();
+               int idRestore = Integer.parseInt(request.getParameter("id"));
+               mDao.activateMaterial(idRestore);
+               response.sendRedirect("materialController?action=deleted");
+               break;
+           default:
+                String indexPage = request.getParameter("index");
+                if (indexPage == null) {
+                    indexPage = "1";
+                }
+                int index = Integer.parseInt(indexPage);
+                String search = request.getParameter("search");
+                List<Materials> list;
+                int count;
+                try {
+                    if (search != null && !search.trim().isEmpty()) {
+                        list = mDao.searchMaterialsByName(search, index);
+                        count = mDao.getTotalMaterialsByName(search);
+                        request.setAttribute("searchValue", search);
+                    } else {
+                        list = mDao.pagingMaterials(index);
+                        count = mDao.getTotalMaterials();
+                    }
+                } catch (Exception e) {
+                    throw new ServletException(e);
+                }
+
+                int endP = count / PAGE_NUMBER;
+                if (count % PAGE_NUMBER != 0) {
+                    endP++;
+                }
                 request.setAttribute("materials", list);
+                request.setAttribute("endP", endP);
+                request.setAttribute("tag", index);
+                
                 request.getRequestDispatcher("/front_end/listMaterials.jsp").forward(request, response);
         }
     }

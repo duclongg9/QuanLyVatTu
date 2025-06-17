@@ -17,11 +17,18 @@
         <%@include file="../navbar.jsp" %>
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
-            <div class="bg-light rounded p-4">
-                <h4 class="mb-4">Material List</h4>
-                <a href="${pageContext.request.contextPath}/materialController?action=add" class="btn btn-primary mb-3">Add New</a>
-                <a href="${pageContext.request.contextPath}/materialController?action=deleted" class="btn btn-outline-secondary mb-3 ms-2">View Deleted</a>
-                <table class="table table-hover table-striped">
+            <div <div class="row g-4">
+                <div class="col-12">
+                    <div class="bg-light rounded p-4">
+                        <h4 class="mb-4">Material List</h4>
+                        <a href="${pageContext.request.contextPath}/materialController?action=add" class="btn btn-primary mb-3">Add New</a>
+                        <a href="${pageContext.request.contextPath}/materialController?action=deleted" class="btn btn-outline-secondary mb-3 ms-2">View Deleted</a>
+                        <form action="materialController" method="get" class="d-flex align-items-center gap-2 mb-3">
+                            <input type="hidden" name="action" value="list"/>
+                            <input class="form-control border-0" type="search" placeholder="Search" name="search" value="${param.search}" />
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </form>
+                          <table class="table table-hover table-striped">
                     <thead>
                         <tr>
                             <th>ID</th>

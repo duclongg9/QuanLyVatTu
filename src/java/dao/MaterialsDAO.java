@@ -112,6 +112,49 @@ public class MaterialsDAO {
         }
     }
     
+    // Search materials by name with pagination
+    public List<Materials> searchMaterialsByName(String name, int index) throws SQLException {
+        List<Materials> list = new ArrayList<>();
+        String sql = "SELECT * FROM Materials WHERE status = true AND name LIKE ? LIMIT ? OFFSET ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + name + "%");
+            ps.setInt(2, PAGE_SIZE);
+            ps.setInt(3, (index - 1) * PAGE_SIZE);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Materials m = new Materials();
+                    m.setId(rs.getInt(COL_ID));
+                    m.setName(rs.getString(COL_NAME));
+                    m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
+                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setImage(rs.getString(COL_IMAGE));
+                    m.setStatus(rs.getBoolean(COL_STATUS));
+                    list.add(m);
+                }
+            }
+        }
+        return list;
+    }
+
+    // Count materials when searching by name
+    public int getTotalMaterialsByName(String name) {
+        String sql = "SELECT COUNT(*) FROM Materials WHERE status = true AND name LIKE ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + name + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
+    }
+
+
     public Materials getMaterialsById(int id) {
 
         String sql = "SELECT * FROM Materials WHERE id = ?";
