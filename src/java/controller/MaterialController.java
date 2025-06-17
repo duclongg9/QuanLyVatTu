@@ -17,6 +17,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
+import model.Materials;
 
 /**
  *
@@ -68,16 +70,37 @@ public class MaterialController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        request.setAttribute("units", muDao.getAllUnit());
-        request.setAttribute("categories", cmDao.getAllCategory());
-        if (request.getParameter("success") != null) {
-            request.setAttribute("success", "Thêm vật tư thành công");
+       String action = request.getParameter("action");
+        if (action == null) {
+            action = "list";
         }
-        
-        request.setAttribute("units", muDao.getAllUnit());
-        request.setAttribute("categories", cmDao.getAllCategory());
-        request.getRequestDispatcher("/front_end/createMaterial.jsp").forward(request, response);
+
+        switch (action) {
+            case "add":
+                request.setAttribute("units", muDao.getAllUnit());
+                request.setAttribute("categories", cmDao.getAllCategory());
+                if (request.getParameter("success") != null) {
+                    request.setAttribute("success", "Thêm vật tư thành công");
+                }
+                request.getRequestDispatcher("/front_end/createMaterial.jsp").forward(request, response);
+                break;
+            case "edit":
+                int id = Integer.parseInt(request.getParameter("id"));
+                request.setAttribute("units", muDao.getAllUnit());
+                request.setAttribute("categories", cmDao.getAllCategory());
+                request.setAttribute("material", mDao.getMaterialsById(id));
+                request.getRequestDispatcher("/front_end/updateMaterial.jsp").forward(request, response);
+                break;
+            case "delete":
+                int deleteId = Integer.parseInt(request.getParameter("id"));
+                mDao.deactivateMaterial(deleteId);
+                response.sendRedirect("materialController?action=list");
+                break;
+            default:
+                List<Materials> list = mDao.getAllMaterial();
+                request.setAttribute("materials", list);
+                request.getRequestDispatcher("/front_end/listMaterials.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -91,6 +114,7 @@ public class MaterialController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String idParam = request.getParameter("id");
         String name = request.getParameter("name");
         int unitId = Integer.parseInt(request.getParameter("unitId"));
         int categoryId = Integer.parseInt(request.getParameter("categoryId"));
@@ -107,11 +131,17 @@ public class MaterialController extends HttpServlet {
             imagePart.write(uploadPath + File.separator + imageName);
         }
 
-        int result = mDao.createMaterial(name, unitId, imageName, categoryId);
-        if (result > 0) {
-                        response.sendRedirect("materialController?success=1");
+        int result;
+        if (idParam != null && !idParam.isEmpty()) {
+            int id = Integer.parseInt(idParam);
+            result = mDao.updateMaterial(id, name, unitId, imageName, categoryId);
         } else {
-            request.setAttribute("error", "Thêm vật tư thất bại");
+            result = mDao.createMaterial(name, unitId, imageName, categoryId);
+        }
+        if (result > 0) {
+                        response.sendRedirect("materialController?action=list");
+        } else {
+            request.setAttribute("error", "Xử lý thất bại");
             doGet(request, response);
         }
     }

@@ -17,16 +17,17 @@ public class Materials {
     private MaterialUnit unitId;
     private String image;
     private CategoryMaterial categoryId;
-
+    private boolean status;
     public Materials() {
     }
 
-    public Materials(int id, String name, MaterialUnit unitId, String image, CategoryMaterial categoryId) {
+    public Materials(int id, String name, MaterialUnit unitId, String image, CategoryMaterial categoryId, boolean status) {
         this.id = id;
         this.name = name;
         this.unitId = unitId;
         this.image = image;
         this.categoryId = categoryId;
+        this.status = status;
     }
 
     public int getId() {
@@ -68,7 +69,13 @@ public class Materials {
     public void setCategoryId(CategoryMaterial categoryId) {
         this.categoryId = categoryId;
     }
+public boolean isStatus() {
+        return status;
+    }
 
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
     
     
     

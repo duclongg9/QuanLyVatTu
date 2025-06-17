@@ -27,6 +27,7 @@ public class MaterialsDAO {
     private static final String COL_UNIT = "unitId";
     private static final String COL_IMAGE = "image";
     private static final String COL_CATEGORY = "categoryId";
+    private static final String COL_STATUS = "status";
     
      private static final int PAGE_SIZE = 10;
 
@@ -40,7 +41,7 @@ public class MaterialsDAO {
     
     public List<Materials> getAllMaterial() {
         List<Materials> list = new ArrayList<>();
-        String sql = " SELECT * FROM Material ORDER BY id DESC";
+        String sql = " SELECT * FROM Materials WHERE status = true ORDER BY id DESC";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -52,6 +53,7 @@ public class MaterialsDAO {
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
                     m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
+                    m.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(m);
                 }
                 return list;
@@ -65,7 +67,7 @@ public class MaterialsDAO {
     }
        //đếm số lượng vật tư trong database
     public int getTotalMaterials() {
-        String sql = "SELECT COUNT(*) FROM Materials;";
+        String sql = "SELECT COUNT(*) FROM Materials WHERE status = true;";
         try (PreparedStatement ps = conn.prepareStatement(sql);) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -83,8 +85,7 @@ public class MaterialsDAO {
     //Phân trang
     public List<Materials> pagingMaterials(int index) throws SQLException {
         List<Materials> list = new ArrayList<>();
-        String sql = "SELECT * FROM Materials\n"
-                + "LIMIT ? OFFSET ?;";
+        String sql = "SELECT * FROM Materials WHERE status = true\n";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, PAGE_SIZE);
@@ -98,6 +99,7 @@ public class MaterialsDAO {
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
                     m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
+                    m.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(m);
                 }
             } catch (Exception e) {
@@ -110,7 +112,7 @@ public class MaterialsDAO {
     
     public Materials getMaterialsById(int id) {
 
-        String sql = "SELECT * FROM ql_vat_tu.materials where id = ?";
+        String sql = "SELECT * FROM Materials WHERE id = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
 
@@ -123,6 +125,7 @@ public class MaterialsDAO {
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
                     m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
+                    m.setStatus(rs.getBoolean(COL_STATUS));
                     return m;
                 }
             }
@@ -135,7 +138,7 @@ public class MaterialsDAO {
     
     //create materials
     public int createMaterial(String name, int unitId, String image, int categoryId) {
-    String sql = "INSERT INTO Materials(name, unitId, image, categoryId) VALUES(?,?,?,?)";
+    String sql = "INSERT INTO Materials(name, unitId, image, categoryId, status) VALUES(?,?,?,?, true)";
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, name);
         ps.setInt(2, unitId);
@@ -147,6 +150,40 @@ public class MaterialsDAO {
         return 0;
     }
 }
+    
+    
+    //update materials
+    public int updateMaterial(int id, String name, int unitId, String imageName, int categoryId) {
+StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, categoryId=?");
+        if (imageName != null) {
+            sql.append(", image=?");
+        }
+        sql.append(" WHERE id=?");
+        try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            int idx = 1;
+            ps.setString(idx++, name);
+            ps.setInt(idx++, unitId);
+            ps.setInt(idx++, categoryId);
+            if (imageName != null) {
+                ps.setString(idx++, imageName);
+            }
+            ps.setInt(idx, id);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+            return 0;
+        }    }
+
+    //soft delete material
+    public void deactivateMaterial(int deleteId) {
+String sql = "UPDATE Materials SET status = false WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, deleteId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+        }    }
+    
     
      public static void main(String[] args) throws SQLException {
         MaterialsDAO mdao = new MaterialsDAO();
@@ -163,4 +200,8 @@ public class MaterialsDAO {
 //        System.out.println(udao.updateUser(7, false, 2));
 
     }
+
+    
+
+    
 }
