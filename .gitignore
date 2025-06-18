@@ -1,0 +1,9 @@
+# Ignore build and distribution directories
+build/
+dist/
+# Ignore NetBeans private configuration
+nbproject/private/
+# Ignore compiled class files
+*.class
+# Ignore war file
+*.war
