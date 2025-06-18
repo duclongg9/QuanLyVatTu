@@ -228,7 +228,7 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, ca
         List<Materials> list = new ArrayList<>();
         String sql = "SELECT * FROM Materials WHERE status = false ORDER BY id DESC";
     try (Connection conn = DBConnect.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Materials m = new Materials();
@@ -246,7 +246,42 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, ca
         }
         return list;
             }
+public int getTotalDeletedMaterials() {
+        String sql = "SELECT COUNT(*) FROM Materials WHERE status = false";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
+    }
 
+    public List<Materials> pagingDeletedMaterials(int index) throws SQLException {
+        List<Materials> list = new ArrayList<>();
+        String sql = "SELECT * FROM Materials WHERE status = false ORDER BY id DESC LIMIT ? OFFSET ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, PAGE_SIZE);
+            ps.setInt(2, (index - 1) * PAGE_SIZE);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Materials m = new Materials();
+                    m.setId(rs.getInt(COL_ID));
+                    m.setName(rs.getString(COL_NAME));
+                    m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
+                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setImage(rs.getString(COL_IMAGE));
+                    m.setStatus(rs.getBoolean(COL_STATUS));
+                    list.add(m);
+                }
+            }
+        }
+        return list;
+    }
     // Khôi phục vật tư bằng cách chuyển trạng thái về hoạt động (statusId = true)
      public void activateMaterial(int id) {
         String sql = "UPDATE Materials SET status = true WHERE id = ?";

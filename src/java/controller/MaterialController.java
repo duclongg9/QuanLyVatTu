@@ -20,7 +20,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import model.Materials;
-
+import java.sql.SQLException;
 /**
  *
  * @author Dell-PC
@@ -28,7 +28,7 @@ import model.Materials;
 @MultipartConfig
 @WebServlet(name = "MaterialController", urlPatterns = {"/materialController"})
 public class MaterialController extends HttpServlet {
-public static final int PAGE_NUMBER = 10;
+public static final int PAGE_NUMBER = 7;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -105,8 +105,24 @@ public static final int PAGE_NUMBER = 10;
                 request.getRequestDispatcher("materialConfirmDelete.jsp").forward(request, response);
                 break;
             case "deleted":
-                List<Materials> deleted = mDao.getDeletedMaterials();
-                request.setAttribute("list", deleted);
+                 String idxPage = request.getParameter("index");
+                if (idxPage == null) {
+                    idxPage = "1";
+                }
+                int idx = Integer.parseInt(idxPage);
+                try {
+                    List<Materials> deleted = mDao.pagingDeletedMaterials(idx);
+                    int totalDel = mDao.getTotalDeletedMaterials();
+                    int endDel = totalDel / PAGE_NUMBER;
+                    if (totalDel % PAGE_NUMBER != 0) {
+                        endDel++;
+                    }
+                    request.setAttribute("list", deleted);
+                    request.setAttribute("endP", endDel);
+                    request.setAttribute("tag", idx);
+                } catch (SQLException e) {
+                    throw new ServletException(e);
+                }
                 request.getRequestDispatcher("DeletedMaterials.jsp").forward(request, response);
                 break;
             case "activate":

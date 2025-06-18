@@ -17,7 +17,7 @@
         <%@include file="../navbar.jsp" %>
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
-            <div <div class="row g-4">
+            <div class="row g-4">
                 <div class="col-12">
                     <div class="bg-light rounded p-4">
                         <h4 class="mb-4">Material List</h4>
@@ -59,9 +59,18 @@
                         </c:forEach>
                     </tbody>
                 </table>
+                            <nav>
+                    <ul class="pagination justify-content-center">
+                        <c:forEach begin="1" end="${endP}" var="i">
+                            <li class="page-item ${tag == i ? 'active' : ''}">
+                                <a class="page-link" href="materialController?action=list&index=${i}&search=${param.search}">${i}</a>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </nav>
             </div>
         </div>
-
+</div>
         <%@include file="../footer.jsp" %>
     </div>
 </div>

@@ -44,6 +44,15 @@
                         </c:forEach>
                     </tbody>
                 </table>
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <c:forEach begin="1" end="${endP}" var="i">
+                            <li class="page-item ${tag == i ? 'active' : ''}">
+                                <a class="page-link" href="materialController?action=deleted&index=${i}">${i}</a>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </nav>
             </div>
         </div>
 
