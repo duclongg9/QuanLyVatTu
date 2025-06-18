@@ -1,5 +1,5 @@
 
-package DAO;
+package dao;
 
 import java.util.Date;
 import java.util.List;
@@ -7,7 +7,6 @@ import java.util.Properties;
 import java.util.Random;
 
 import javax.mail.*;
-import Model.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 

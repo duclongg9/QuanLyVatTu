@@ -1,11 +1,36 @@
-package DAO;
+package dao;
 
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import Model.User;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.Role;
+import model.User;
+
 
 public class UserDAO extends DBConnect {
+    
+    private static final int PAGE_SIZE = 5;
+
+    private static final String COL_ID = "id";
+    private static final String COL_USERNAME = "username";
+    private static final String COL_FULLNAME = "fullname";
+    private static final String COL_PHONE = "phone";
+    private static final String COL_PASSWORD = "password";
+    private static final String COL_EMAIL = "email";
+    private static final String COL_ADDRESS = "address";
+    private static final String COL_GENDER = "gender";
+    private static final String COL_BIRTHDATE = "birthDate";
+    private static final String COL_IMAGE = "image";
+    private static final String COL_STATUS = "status";
+    private static final String COL_ROLEID = "roleId";
+    
+    RoleDAO rdao = new RoleDAO();
 
     // Kiểm tra thông tin đăng nhập
     public User checkLogin(String username, String password) {
@@ -29,28 +54,40 @@ public class UserDAO extends DBConnect {
     }
 
     // Thêm một người dùng mới
-    public boolean insertUser(User user) {
-        String sql = "INSERT INTO User (username, fullname, phone, password, email, address, gender, birthDate, roleId) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getFullname());
-            stmt.setString(3, user.getPhone());
-            stmt.setString(4, user.getPassword());
-            stmt.setString(5, user.getEmail());
-            stmt.setString(6, user.getAddress());
-            stmt.setString(7, user.getGender());
-            stmt.setDate(8, user.getBirthDate());
-            stmt.setInt(9, user.getRoleId());
-
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Lỗi khi thêm user!");
-            e.printStackTrace();
+ public int createUser(
+            String username,
+            String fullname,
+            String phone,
+            String password,
+            String email,
+            String address,
+            boolean gender,
+            String birthDate,
+            String image,
+            boolean status,
+            int roleId) {
+        String sql = "CALL CreateNewUser(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, fullname);
+            ps.setString(3, phone);
+            ps.setString(4, password);
+            ps.setString(5, email);
+            ps.setString(6, address);
+            ps.setBoolean(7, gender);
+            ps.setString(8, birthDate);
+            ps.setString(9, image);
+            ps.setBoolean(10, status);
+            ps.setInt(11, roleId);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows ;
+        } catch (Exception e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
         }
-        return false;
+        return 0;
     }
+
 
     // Lấy user theo ID
     public User getUserById(int id) {
@@ -133,18 +170,156 @@ public class UserDAO extends DBConnect {
     }
 
     // Hàm hỗ trợ: đọc dữ liệu từ ResultSet và tạo đối tượng User
-    private User extractUserFromResultSet(ResultSet rs) throws SQLException {
+  private User extractUserFromResultSet(ResultSet rs) throws SQLException {
         User user = new User();
+        Role role = new Role();
+        role.setId(rs.getInt("roleId"));
+
         user.setId(rs.getInt("id"));
         user.setUsername(rs.getString("username"));
-        user.setFullname(rs.getString("fullname"));
+        user.setFullName(rs.getString("fullname"));
         user.setPhone(rs.getString("phone"));
         user.setPassword(rs.getString("password"));
         user.setEmail(rs.getString("email"));
         user.setAddress(rs.getString("address"));
-        user.setGender(rs.getString("gender"));
-        user.setBirthDate(rs.getDate("birthDate"));
-        user.setRoleId(rs.getInt("roleId"));
+        user.setGender(rs.getBoolean("gender"));
+        user.setBirthDate(rs.getString("birthDate"));
+        user.setImage(rs.getString("image"));
+        user.setStatus(rs.getBoolean("status"));
+        user.setRole(role);
         return user;
     }
+  
+  //Phân trang
+    public List<User> pagingStaff(int index) throws SQLException {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT * FROM user\n"
+                + "LIMIT ? OFFSET ?;";
+        try (Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, PAGE_SIZE);
+            ps.setInt(2, (index - 1) * PAGE_SIZE);
+            try (ResultSet rs = ps.executeQuery();) {
+
+                while (rs.next()) {
+                    User p = new User();
+                    p.setId(rs.getInt(COL_ID));
+                    p.setUsername(rs.getString(COL_USERNAME));
+                    p.setFullName(rs.getString(COL_FULLNAME));
+                    p.setPhone(rs.getString(COL_PHONE));
+                    p.setPassword(rs.getString(COL_PASSWORD));
+                    p.setEmail(rs.getString(COL_EMAIL));
+                    p.setAddress(rs.getString(COL_ADDRESS));
+                    p.setGender(rs.getBoolean(COL_GENDER));
+                    p.setBirthDate(rs.getString(COL_BIRTHDATE));
+                    p.setImage(rs.getString(COL_IMAGE));
+                    p.setStatus(rs.getBoolean(COL_STATUS));
+                    p.setRole(rdao.getRoleById(rs.getInt(COL_ROLEID)));
+                    list.add(p);
+                }
+            } catch (Exception e) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
+
+            return list;
+        }
+    }
+    
+    //Xóa mềm nhân viên bằng ID
+    public void deleteStaffById(int id) {
+        String getStatus = "SELECT status FROM user WHERE id = ?";
+        String updateSql = "UPDATE user SET status = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+                PreparedStatement getStatusPs = conn.prepareStatement(getStatus)) {
+
+            getStatusPs.setInt(1, id);
+            try (ResultSet rs = getStatusPs.executeQuery()) {
+                if (rs.next()) {
+                    boolean currentStatus = rs.getBoolean("status");
+                    boolean newStatus = !currentStatus;
+                    try (PreparedStatement updatePs = conn.prepareStatement(updateSql)) {
+                        updatePs.setBoolean(1, newStatus);
+                        updatePs.setInt(2, id);
+                        updatePs.executeUpdate();
+                    }
+
+                }
+            }
+
+        } catch (Exception e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    
+    //đếm số lượng người dùng trong database
+    public int getTotalStaff() {
+        String sql = "SELECT COUNT(*) FROM user;";
+        try (Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+
+        } catch (Exception e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return 0;
+    }
+//Cập nhật User
+    public boolean updateUser(int id,
+            boolean status,
+            int roleId) {
+        String sql = """
+                    UPDATE User
+                    SET status = ?, roleId = ?
+                    WHERE id = ?
+                    """;
+
+        try (Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(3, id);
+            ps.setBoolean(1, status);
+            ps.setInt(2, roleId);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+        } catch (Exception e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return false;
+    }
+    
+     //Kiểm tra email đã tồn tại chưa
+    public boolean isEmailExists(String email) {
+        String sql = "SELECT 1 FROM User WHERE email = ?";
+        try (Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next(); // tồn tại nếu có kết quả
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+     //kiểm tra xem số điện thoại này đã tồn tại chưa
+    public boolean isPhoneExits(String phone) {
+        String sql = "SELECT 1 FROM User WHERE phone = ?";
+        try (Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next(); // tồn tại nếu có kết quả
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

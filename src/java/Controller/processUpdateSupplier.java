@@ -1,8 +1,8 @@
-package Controller;
+package controller;
 
-import DAO.SupplierDAO;
+import dao.SupplierDAO;
 import units.Validator;
-import Model.Supplier;
+import model.Supplier;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

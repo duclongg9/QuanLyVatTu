@@ -3,11 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/swp/test2/quanlyvattu1/src/java/DAO/Email.java</file>
-            <file>file:/D:/swp/test2/quanlyvattu1/web/board.jsp</file>
-            <file>file:/D:/swp/test2/quanlyvattu1/src/java/Controller/deleteSupplier.java</file>
-            <file>file:/D:/swp/test2/quanlyvattu1/src/java/Model/Role.java</file>
-            <file>file:/D:/swp/test2/quanlyvattu1/nbproject/build-impl.xml</file>
+            <file>file:/D:/swp/test2/quanlyvattu1/src/java/controller/requestListController.java</file>
+            <file>file:/D:/swp/test2/quanlyvattu1/src/java/dao/requestDAO.java</file>
+            <file>file:/D:/swp/test2/quanlyvattu1/src/java/controller/listOut.java</file>
+            <file>file:/D:/swp/test2/quanlyvattu1/src/java/model/RequestStatus.java</file>
+            <file>file:/D:/swp/test2/quanlyvattu1/src/java/model/RequestDetail.java</file>
+            <file>file:/D:/swp/test2/quanlyvattu1/src/java/model/RequestType.java</file>
+            <file>file:/D:/swp/test2/quanlyvattu1/src/java/model/Request.java</file>
         </group>
     </open-files>
 </project-private>

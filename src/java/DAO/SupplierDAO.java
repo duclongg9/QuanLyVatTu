@@ -1,6 +1,7 @@
-package DAO;
+package dao;
 
-import Model.Supplier;
+import dao.DBConnect;
+import model.Supplier;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

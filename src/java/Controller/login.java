@@ -1,7 +1,8 @@
-package Controller;
+package controller;
 
-import DAO.UserDAO;
-import Model.User;
+import dao.UserDAO;
+import model.User;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie; // Import lớp Cookie
@@ -41,7 +42,7 @@ public class login extends HttpServlet {
             } else {
                 // Lưu thông tin vào session
                 session.setAttribute("account", account);
-                session.setAttribute("fullname", account.getFullname());
+                session.setAttribute("fullname", account.getFullName());
                 session.setAttribute("email", account.getEmail());
 
                 // Lưu cookie cho username
