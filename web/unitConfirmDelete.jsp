@@ -19,20 +19,20 @@
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="bg-light rounded p-5">
-                <h4 class="mb-4 text-danger">⚠️ Xác nhận xóa</h4>
+                <h4 class="mb-4 text-danger"> Confirm Delete</h4>
 
-                <p>Bạn có chắc chắn muốn xóa đơn vị tính:</p>
+                <p>Are you sure to inactive unit_Material?</p>
                 <ul>
                     <li><strong>ID:</strong> ${unit.id}</li>
-                    <li><strong>Tên:</strong> ${unit.name}</li>
+                    <li><strong>Name</strong> ${unit.name}</li>
                 </ul>
 
                 <form action="unit" method="get">
                     <input type="hidden" name="action" value="delete" />
                     <input type="hidden" name="id" value="${unit.id}" />
 
-                    <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
-                    <a href="unit" class="btn btn-secondary">Hủy</a>
+                    <button type="submit" class="btn btn-danger">Done</button>
+                    <a href="unit" class="btn btn-secondary">Cancel</a>
                 </form>
             </div>
         </div>

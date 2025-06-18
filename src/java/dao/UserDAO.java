@@ -435,8 +435,8 @@ public class UserDAO {
 //        udao.deleteStaffById(1);
         List<User> list = udao.findStaffByName(name, 1);
 
-        int count = udao.getTotalStaffBySearchName(name);
-//        System.out.println(count);
+//        int count = udao.createUser();
+        System.out.println();
         for (User staff : list) {
             System.out.println(staff);
         }

@@ -28,8 +28,8 @@ public class MaterialsDAO {
     private static final String COL_IMAGE = "image";
     private static final String COL_CATEGORY = "categoryId";
     private static final String COL_STATUS = "status";
-    
-     private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 7;
+     
 
     public MaterialsDAO() {
     }
