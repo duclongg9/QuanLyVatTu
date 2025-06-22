@@ -1,4 +1,3 @@
-
 package controller;
 
 import dao.CategoryMaterialDAO;
@@ -18,6 +17,8 @@ import java.nio.file.Path;
 import java.util.List;
 import model.Materials;
 import java.sql.SQLException;
+import java.util.Map;
+
 /**
  *
  * @author Dell-PC
@@ -25,7 +26,8 @@ import java.sql.SQLException;
 @MultipartConfig
 @WebServlet(name = "MaterialController", urlPatterns = {"/materialController"})
 public class MaterialController extends HttpServlet {
-public static final int PAGE_NUMBER = 7;
+
+    public static final int PAGE_NUMBER = 7;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -35,11 +37,11 @@ public static final int PAGE_NUMBER = 7;
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
+
     MaterialUnitDAO muDao = new MaterialUnitDAO();
     CategoryMaterialDAO cmDao = new CategoryMaterialDAO();
     MaterialsDAO mDao = new MaterialsDAO();
-    
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -69,7 +71,7 @@ public static final int PAGE_NUMBER = 7;
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       String action = request.getParameter("action");
+        String action = request.getParameter("action");
         if (action == null) {
             action = "list";
         }
@@ -102,7 +104,7 @@ public static final int PAGE_NUMBER = 7;
                 request.getRequestDispatcher("materialConfirmDelete.jsp").forward(request, response);
                 break;
             case "deleted":
-                 String idxPage = request.getParameter("index");
+                String idxPage = request.getParameter("index");
                 if (idxPage == null) {
                     idxPage = "1";
                 }
@@ -123,11 +125,11 @@ public static final int PAGE_NUMBER = 7;
                 request.getRequestDispatcher("DeletedMaterials.jsp").forward(request, response);
                 break;
             case "activate":
-               int idRestore = Integer.parseInt(request.getParameter("id"));
-               mDao.activateMaterial(idRestore);
-               response.sendRedirect("materialController?action=deleted");
-               break;
-           default:
+                int idRestore = Integer.parseInt(request.getParameter("id"));
+                mDao.activateMaterial(idRestore);
+                response.sendRedirect("materialController?action=deleted");
+                break;
+            default:
                 String indexPage = request.getParameter("index");
                 if (indexPage == null) {
                     indexPage = "1";
@@ -156,7 +158,9 @@ public static final int PAGE_NUMBER = 7;
                 request.setAttribute("materials", list);
                 request.setAttribute("endP", endP);
                 request.setAttribute("tag", index);
-                
+                Map<String, Integer> materialStats = mDao.getMaterialCountByCategory();
+                request.setAttribute("materialStats", materialStats);
+
                 request.getRequestDispatcher("/front_end/listMaterials.jsp").forward(request, response);
         }
     }
@@ -197,7 +201,7 @@ public static final int PAGE_NUMBER = 7;
             result = mDao.createMaterial(name, unitId, imageName, categoryId);
         }
         if (result > 0) {
-                        response.sendRedirect("materialController?action=list");
+            response.sendRedirect("materialController?action=list");
         } else {
             request.setAttribute("error", "Xử lý thất bại");
             doGet(request, response);

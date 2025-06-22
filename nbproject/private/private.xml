@@ -3,37 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/listMaterials.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/MaterialsDAO.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/unitForm.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/UnitDAO.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/userController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/unitConfirmDelete.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/requestDetailDAO.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/index.html</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/MaterialUnitDAO.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/DeletedMaterials.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/requestDetail.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/MaterialController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/Admin_Home.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/updateMaterial.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/model/Materials.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/materialConfirmDelete.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/createUser.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/footer.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/Admin/userList.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/createMaterial.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/leftSideBar.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/unitList.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/navbar.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/login.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/update_detail.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/CategoryMaterialDAO.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/crud-user.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/createImportRequest.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/sidebar.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/DBConnect.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/header.jsp</file>
+            <file>file:/C:/SS/QuanLyVatTu/src/java/model/MaterialCostDetail.java</file>
         </group>
     </open-files>
 </project-private>
