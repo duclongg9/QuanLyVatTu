@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Role;
 import model.User;
 
 /**
@@ -45,6 +46,28 @@ public class UserDAO {
         conn = DBConnect.getConnection();
     }
 
+    
+    // Kiểm tra thông tin đăng nhập
+    public User checkLogin(String username, String password) {
+        String sql = "SELECT * FROM User WHERE username = ? AND password = ?";
+        try ( PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return extractUserFromResultSet(rs);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi kiểm tra đăng nhập!");
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+    
     //Kiểm tra email đã tồn tại chưa
     public boolean isEmailExists(String email) {
         String sql = "SELECT 1 FROM User WHERE email = ?";
@@ -430,6 +453,26 @@ public class UserDAO {
 
         return 0;
     }
+    
+    // Hàm hỗ trợ: đọc dữ liệu từ ResultSet và tạo đối tượng User
+  private User extractUserFromResultSet(ResultSet rs) throws SQLException {
+        User user = new User();
+        Role role = new Role();
+        role.setId(rs.getInt("roleId"));
+        user.setId(rs.getInt("id"));
+        user.setUsername(rs.getString("username"));
+        user.setFullName(rs.getString("fullname"));
+        user.setPhone(rs.getString("phone"));
+        user.setPassword(rs.getString("password"));
+        user.setEmail(rs.getString("email"));
+        user.setAddress(rs.getString("address"));
+        user.setGender(rs.getBoolean("gender"));
+        user.setBirthDate(rs.getString("birthDate"));
+        user.setImage(rs.getString("image"));
+        user.setStatus(rs.getBoolean("status"));
+        user.setRole(role);
+        return user;
+    }
 
     public static void main(String[] args) throws SQLException {
         UserDAO udao = new UserDAO();
@@ -437,8 +480,8 @@ public class UserDAO {
 //        udao.deleteStaffById(1);
         List<User> list = udao.findStaffByName(name, 1);
 
-//        int count = udao.createUser();
-        System.out.println();
+        int count = udao.getTotalStaffBySearchName(name);
+//        System.out.println(count);
         for (User staff : list) {
             System.out.println(staff);
         }

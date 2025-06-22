@@ -6,11 +6,7 @@ package dao.request;
 
 import dao.connect.DBConnect;
 import dao.user.UserDAO;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;      
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,10 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.lang.model.util.Types;
+import java.sql.Types;
 import model.Request;
+import model.RequestDetail;
 import model.RequestType;
-
 
 /**
  *
@@ -52,45 +48,66 @@ public class requestDAO {
     public requestDAO() {
         this(DBConnect.getConnection());
     }
+    
+    public void updateRequestDetail(int detailId, int quantity, String note) throws SQLException {
+    String sql = "UPDATE RequestDetail SET quantity = ?, note = ? WHERE id = ?";
+    try (Connection conn = DBConnect.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
+        ps.setInt(1, quantity);  // cập nhật quantity
+        ps.setString(2, note);   // cập nhật note
+        ps.setInt(3, detailId);  // biết dòng nào cần update
+
+        ps.executeUpdate(); // chạy lệnh update
+    }
+}
+
+    
     // Thêm request mới, trả về requestId vừa tạo
     public int insertRequest(Connection conn, int userId, String note, Integer approverId) throws SQLException {
         String sql = "INSERT INTO Request (date, statusId, userId, note, type, approvedBy) VALUES (NOW(), ?, ?, ?, 'Import', ?)";
+
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, 1); // statusId (đang mặc định là 1-pending)
+            ps.setInt(1, 1); // statusId: 1 = Pending
             ps.setInt(2, userId);
             ps.setString(3, note);
-            if (approverId != null) {
-                ps.setInt(4, approverId);
-            } else {
-                ps.setNull(4, java.sql.Types.INTEGER);
-            }
-            ps.executeUpdate();
 
+            if (approverId != null) {
+                ps.setInt(4, approverId); // nếu có approverId
+            } else {
+                ps.setNull(4, Types.INTEGER); // nếu chưa có người duyệt
+            }
+
+            int affectedRows = ps.executeUpdate(); // execute
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating request failed, no rows affected.");
+            }
+
+            // Lấy ID của request mới tạo
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
-                    return rs.getInt(1); // trả về requestId mới tạo
+                    return rs.getInt(1); // Trả về requestId vừa tạo
+                } else {
+                    throw new SQLException("Creating request failed, no ID obtained.");
                 }
             }
         }
-        return -1; // lỗi
     }
-    
+
     // Thêm chi tiết các vật tư cho Request vào bảng RequestDetail
-    public void insertRequestDetails(Connection conn, int requestId, Map<Integer, Integer> materialQuantityMap) throws SQLException {
-        String sql = "INSERT INTO RequestDetail (requestId, materialId, quantity) VALUES (?, ?, ?)";
+    public void insertRequestDetail(Connection conn, int requestId,int materialId,int supplierId,int quantity, String note) throws SQLException {
+        String sql = "INSERT INTO RequestDetail (requestId, materialId, supplierId, quantity, note) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            for (Map.Entry<Integer, Integer> entry : materialQuantityMap.entrySet()) {
-                ps.setInt(1, requestId);
-                ps.setInt(2, entry.getKey()); // materialId
-                ps.setInt(3, entry.getValue()); // quantity
-                ps.addBatch();
-            }
-            ps.executeBatch(); // chạy 1 lần cho tất cả
+            ps.setInt(1, requestId); 
+            ps.setInt(2, materialId); 
+            ps.setInt(3, supplierId);
+            ps.setInt(4, quantity);
+            ps.setString(5, note);
+            ps.executeUpdate(); // Insert 1 bản ghi
         }
     }
-    
-    
+
     public List<Request> getAllRequest() {
         List<Request> list = new ArrayList<>();
         String sql = " SELECT * FROM request ORDER BY id DESC";
@@ -169,7 +186,7 @@ public class requestDAO {
             return list;
         }
     }
-    
+
     public Request getRequestById(int id) {
 
         String sql = "SELECT * FROM ql_vat_tu.request where id = ?";
@@ -199,12 +216,12 @@ public class requestDAO {
         return null;
     }
 
-     public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException {
         requestDAO rdao = new requestDAO();
 
 //        udao.deleteStaffById(1);
         List<Request> list = rdao.pagingStaff(1);
-       
+
         int count = rdao.getTotalRequest();
         System.out.println(count);
         for (Request r : list) {
@@ -212,7 +229,6 @@ public class requestDAO {
         }
 
 //        System.out.println(udao.updateUser(7, false, 2));
-
     }
-    
+
 }
