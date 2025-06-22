@@ -23,12 +23,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Materials;
 import dao.material.MaterialSupplierDAO;
 import model.MaterialSupplier;
-import model.Request;
-import model.RequestDetail;
-import model.Supplier;
 import model.User;
 
 /**
@@ -135,7 +131,7 @@ public class createRequestImportController extends HttpServlet {
                 }
             }
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect("requestList");
         } finally {
             if (conn != null) try {
                 conn.close();
