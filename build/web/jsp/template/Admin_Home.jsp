@@ -11,15 +11,15 @@
 
 <body>
     
-<%@include file="../template/header.jsp" %>
+<%@include file="../front_end/header.jsp" %>
 
     <main>
-<%@include file="../template/leftSideBar.jsp" %>
+<%@include file="../front_end/leftSideBar.jsp" %>
 
         <section class="main-content">
             
     </main>
-<%@include file="../template/footer.jsp" %>
+<%@include file="../front_end/footer.jsp" %>
 </body>
 
 </html>
