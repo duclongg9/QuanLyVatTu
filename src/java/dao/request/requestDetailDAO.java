@@ -2,9 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package dao;
+package dao.request;
 
 /*import com.oracle.wls.shaded.org.apache.bcel.generic.AALOAD;*/
+import dao.connect.DBConnect;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,8 +15,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.RequestDetail;
-import dao.requestDAO;
-import dao.MaterialsDAO;
+import dao.material.MaterialsDAO;
+import dao.user.UserDAO;
 
 /**
  *

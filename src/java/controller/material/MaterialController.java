@@ -1,9 +1,10 @@
 
-package controller;
+package controller.material;
 
-import dao.CategoryMaterialDAO;
-import dao.MaterialUnitDAO;
-import dao.MaterialsDAO;
+
+import dao.material.CategoryMaterialDAO;
+import dao.material.MaterialUnitDAO;
+import dao.material.MaterialsDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;

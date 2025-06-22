@@ -8,15 +8,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Page</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/Admin_Home_style.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/CSS/Admin_Home_style.css" />
 
 </head>
 
 <body>
-<%@include file="../front_end/header.jsp" %>
+<%@include file="../template/header.jsp" %>
 
     <main>
-<%@include file="../front_end/leftSideBar.jsp" %>
+<%@include file="../template/leftSideBar.jsp" %>
         <section class="main-content">
             <h2>Phần màn hình chức năng</h2>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -75,7 +75,7 @@
     </main>
 
 
-<%@include file="../front_end/footer.jsp" %>
+<%@include file="../template/footer.jsp" %>
 
 
 </body>

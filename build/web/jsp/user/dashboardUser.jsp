@@ -13,11 +13,11 @@
     <body>
         <div class="wrapper">
         <div class="container">
-<%@include file="sidebar.jsp" %>
+<%@include file="../template/sidebar.jsp" %>
 
                 <!-- Main content -->
                 <div class="main">
-<%@include file="header.jsp" %>
+<%@include file="../template/header.jsp" %>
 
                         <!-- Main content area -->
                         <main class="content">
@@ -28,7 +28,7 @@
                 </div>
                
         </div>
-<%@ include file="footer.jsp" %>
+<%@ include file="../template/footer.jsp" %>
                      </div>
     </body>
 

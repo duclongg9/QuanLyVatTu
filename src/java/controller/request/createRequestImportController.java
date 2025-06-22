@@ -2,12 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller;
+package controller.request;
 
+import static controller.material.MaterialController.PAGE_NUMBER;
 import java.sql.Connection;
-import static controller.requestListController.PAGE_NUMBER;
-import dao.DBConnect;
-import dao.MaterialsDAO;
+import controller.user.userController;
+import dao.connect.DBConnect;
+import dao.material.MaterialsDAO;
+import dao.request.requestDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -23,8 +25,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Materials;
-import dao.requestDAO;
-
 /**
  *
  * @author D E L L

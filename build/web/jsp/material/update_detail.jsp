@@ -11,10 +11,10 @@
 </head>
 
 <body>
- <%@include file="../front_end/header.jsp" %>
+ <%@include file="../template/header.jsp" %>
 
     <main>
-              <%@include file="../front_end/leftSideBar.jsp" %>
+              <%@include file="../template/leftSideBar.jsp" %>
         <section class="main-content">
             <h2>Chỉnh sửa thông tin cá nhân</h2>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
@@ -63,7 +63,7 @@
     </main>
 
 
-   <%@include file="../front_end/footer.jsp" %>
+   <%@include file="../template/footer.jsp" %>
 
 
 </body>

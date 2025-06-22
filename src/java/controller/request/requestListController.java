@@ -3,9 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller;
+package controller.request;
 
-import static controller.userController.PAGE_NUMBER;
+import controller.user.userController;
+
+import dao.request.requestDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,8 +20,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Request;
-import dao.requestDAO;
-
 /**
  *
  * @author D E L L
