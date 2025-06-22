@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <!-- Set current page path -->
 <c:set var="currentPage" value="${pageContext.request.servletPath}" />
 
@@ -18,30 +19,77 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="index.html" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    <!-- Quản lý người dùng -->
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Elements</a>
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Quản lý người dùng</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="button.html" class="dropdown-item">Buttons</a>
-                            <a href="typography.html" class="dropdown-item">Typography</a>
-                            <a href="element.html" class="dropdown-item">Other Elements</a>
+                            <a href="${pageContext.request.contextPath}/userList" class="dropdown-item">Danh sách người dùng</a>
+                            <a href="${pageContext.request.contextPath}/createUser" class="dropdown-item">Thêm người dùng</a>
+                            <a href="#" class="dropdown-item">Sửa/Xoá người dùng</a>
+                            <a href="#" class="dropdown-item">Phân quyền người dùng</a>
+                            <a href="#" class="dropdown-item">Thông tin cá nhân</a>
                         </div>
                     </div>
-                    <a href="widget.html" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-th me-2"></i>Widgets</a>
-                    <a href="form.html" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-keyboard me-2"></i>Forms</a>
-                    <a href="${pageContext.request.contextPath}/materialController" class="nav-item nav-link"><i class="fa fa-box me-2"></i>List Material</a>
-                    <a href="userList" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-table me-2"></i>List User</a>
-                    <a href="requestList" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-table me-2"></i>Request</a>
-                    <a href="chart.html" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-chart-bar me-2"></i>Charts</a>
+<!-- Quản lý vật tư -->
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Quản lý vật tư</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="signin.html" class="dropdown-item">Sign In</a>
-                            <a href="signup.html" class="dropdown-item">Sign Up</a>
-                            <a href="404.html" class="dropdown-item">404 Error</a>
-                            <a href="blank.html" class="dropdown-item">Blank Page</a>
+                            <h6 class="dropdown-header">Danh mục vật tư</h6>
+                            <a href="#" class="dropdown-item">Thêm danh mục</a>
+                            <a href="#" class="dropdown-item">Xem danh mục</a>
+                            <div class="dropdown-divider"></div>
+                            <h6 class="dropdown-header">Danh sách vật tư</h6>
+                            <a href="${pageContext.request.contextPath}/materialController?action=add" class="dropdown-item">Thêm mới vật tư</a>
+                            <a href="${pageContext.request.contextPath}/materialController?action=list" class="dropdown-item"> Sửa vật tư</a>
+                            <a href="${pageContext.request.contextPath}/materialController?action=list" class="dropdown-item">Xoá vật tư</a>
+                            <div class="dropdown-divider"></div>
+                            <h6 class="dropdown-header">Thống kê vật tư</h6>
+                            <a href="#" class="dropdown-item">Theo loại</a>
+                            <a href="#" class="dropdown-item">Theo tình trạng</a>
+                            <a href="#" class="dropdown-item">Theo phòng ban sử dụng</a>
                         </div>
                     </div>
+
+                    <!-- Kho vật tư -->
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Kho vật tư</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="#" class="dropdown-item">Nhập kho</a>
+                            <a href="#" class="dropdown-item">Xuất kho</a>
+                            <a href="#" class="dropdown-item">Thống kê Xuất – Nhập – Tồn</a>
+                        </div>
+                    </div>
+
+                    <!-- Yêu cầu vật tư -->
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Yêu cầu vật tư</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="#" class="dropdown-item">Yêu cầu xuất kho</a>
+                            <a href="#" class="dropdown-item">Đề nghị mua vật tư</a>
+                            <a href="#" class="dropdown-item">Đề nghị sửa chữa vật tư</a>
+                            <a href="#" class="dropdown-item">Phê duyệt yêu cầu</a>
+                            <a href="#" class="dropdown-item">Danh sách yêu cầu</a>
+                        </div>
+                    </div>
+                    <!-- Thống kê chi phí -->
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Thống kê chi phí</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="#" class="dropdown-item">Theo kỳ</a>
+                            <a href="#" class="dropdown-item">Theo loại chi phí</a>
+                        </div>
+                    </div>
+
+                    <!-- Hệ thống -->
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hệ thống</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="#" class="dropdown-item">Quyền và vai trò</a>
+                            <a href="#" class="dropdown-item">Gán quyền cho vai trò</a>
+                            <a href="${pageContext.request.contextPath}/unitList" class="dropdown-item">️Đơn vị tính</a>
+                            <a href="#" class="dropdown-item">Nhà cung cấp</a>
+                        </div>
+                </div>
                 </div>
             </nav>
         </div>
