@@ -71,7 +71,7 @@ public class requestListController extends HttpServlet {
         }
         request.setAttribute("endP", endPage);
 
-        request.getRequestDispatcher("requestList.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/request/requestList.jsp").forward(request, response);
     } 
 
     @Override

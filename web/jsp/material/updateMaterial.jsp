@@ -8,17 +8,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Update Material</title>
-    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 </head>
 <body>
-<%@include file="../spinner.jsp" %>
+<%@include file="../template/spinner.jsp" %>
 <div class="container-xxl position-relative bg-white d-flex p-0">
-    <%@include file="../sidebar.jsp" %>
+    <%@include file="../template/sidebar.jsp" %>
     <div class="content d-flex flex-column min-vh-100">
-        <%@include file="../navbar.jsp" %>
+        <%@include file="../template/navbar.jsp" %>
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="bg-light rounded p-4">
@@ -61,7 +61,7 @@
     </div>
         </div>
 
-        <%@include file="../footer.jsp" %>
+        <%@include file="../template/footer.jsp" %>
     </div>
 </div>
 
@@ -83,6 +83,6 @@
 <!-- JS -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="${pageContext.request.contextPath}/js/main.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 </body>
 </html>

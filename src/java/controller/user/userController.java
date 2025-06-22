@@ -101,7 +101,7 @@ public class userController extends HttpServlet {
         request.setAttribute("endP", endPage);
         request.setAttribute("tag", index);
 
-        request.getRequestDispatcher("Admin/userList.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/user/userList.jsp").forward(request, response);
     }
 
     @Override

@@ -11,8 +11,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Material</title>
-    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -86,6 +86,6 @@
 <!-- JS -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="${pageContext.request.contextPath}assets/js/main.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 </body>
  </html>

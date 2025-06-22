@@ -71,7 +71,7 @@ public class requestDetailController extends HttpServlet {
         request.setAttribute("requestId", requestId);
         
 
-        request.getRequestDispatcher("requestDetail.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/request/requestDetail.jsp").forward(request, response);
     }
 
     @Override

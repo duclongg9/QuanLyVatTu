@@ -58,7 +58,7 @@ public class updateUser extends HttpServlet {
         int uid = Integer.parseInt(request.getParameter("uid"));
         u = udao.getUserById(uid);
         request.setAttribute("user", u);
-        request.getRequestDispatcher("Admin/updateUser.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/user/updateUser.jsp").forward(request, response);
     }
 
     @Override
@@ -78,12 +78,12 @@ public class updateUser extends HttpServlet {
                 response.sendRedirect("userList");
             } else {
                 request.setAttribute("error", "Cập nhật user thất bại");
-                request.getRequestDispatcher("Admin/updateUser.jsp").forward(request, response);
+                request.getRequestDispatcher("/jsp/user/updateUser.jsp").forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Lỗi xử lý: " + e.getMessage());
-            request.getRequestDispatcher("Admin/updateUser.jsp").forward(request, response);
+            request.getRequestDispatcher("/jsp/user/updateUser.jsp").forward(request, response);
         }
     }
 

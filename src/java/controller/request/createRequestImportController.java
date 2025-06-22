@@ -77,7 +77,7 @@ public class createRequestImportController extends HttpServlet {
         }
         request.setAttribute("endP", endPage);
 
-        request.getRequestDispatcher("createImportRequest.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/request/createImportRequest.jsp").forward(request, response);
     }
 
     @Override

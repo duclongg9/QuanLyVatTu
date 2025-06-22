@@ -63,7 +63,7 @@ public class createUser extends HttpServlet {
         List<Role> lr = rdao.getAllRole();
         request.setAttribute("listRole", lr);
 
-        request.getRequestDispatcher("Admin/createUser.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/user/createUser.jsp").forward(request, response);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class createUser extends HttpServlet {
             if (!errorMessage.isEmpty()) {
                 request.setAttribute("error", errorMessage);
                 request.setAttribute("listRole", lr);
-                request.getRequestDispatcher("/Admin/createUser.jsp").forward(request, response);
+                request.getRequestDispatcher("/jsp/user/createUser.jsp").forward(request, response);
                 return;
             }
 
@@ -147,12 +147,12 @@ public class createUser extends HttpServlet {
             } else {
                 request.setAttribute("error", "Tạo user thất bại" + updated);
                 request.setAttribute("listRole", lr);
-                request.getRequestDispatcher("Admin/createUser.jsp").forward(request, response);
+                request.getRequestDispatcher("/jsp/user/createUser.jsp").forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Lỗi xử lý: " + e.getMessage());
-            request.getRequestDispatcher("Admin/createUser.jsp").forward(request, response);
+            request.getRequestDispatcher("/jsp/user/createUser.jsp").forward(request, response);
         }
     }
 

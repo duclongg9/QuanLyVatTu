@@ -82,14 +82,14 @@ public static final int PAGE_NUMBER = 7;
                 if (request.getParameter("success") != null) {
                     request.setAttribute("success", "Thêm vật tư thành công");
                 }
-                request.getRequestDispatcher("/front_end/createMaterial.jsp").forward(request, response);
+                request.getRequestDispatcher("/jsp/material/createMaterial.jsp").forward(request, response);
                 break;
             case "edit":
                 int id = Integer.parseInt(request.getParameter("id"));
                 request.setAttribute("units", muDao.getAllUnit());
                 request.setAttribute("categories", cmDao.getAllCategory());
                 request.setAttribute("material", mDao.getMaterialsById(id));
-                request.getRequestDispatcher("/front_end/updateMaterial.jsp").forward(request, response);
+                request.getRequestDispatcher("/jsp/material/updateMaterial.jsp").forward(request, response);
                 break;
             case "delete":
                 int deleteId = Integer.parseInt(request.getParameter("id"));
@@ -100,7 +100,7 @@ public static final int PAGE_NUMBER = 7;
                 int idToConfirm = Integer.parseInt(request.getParameter("id"));
                 Materials mcf = mDao.getMaterialsById(idToConfirm);
                 request.setAttribute("material", mcf);
-                request.getRequestDispatcher("materialConfirmDelete.jsp").forward(request, response);
+                request.getRequestDispatcher("/jsp/material/materialConfirmDelete.jsp").forward(request, response);
                 break;
             case "deleted":
                  String idxPage = request.getParameter("index");
@@ -121,7 +121,7 @@ public static final int PAGE_NUMBER = 7;
                 } catch (SQLException e) {
                     throw new ServletException(e);
                 }
-                request.getRequestDispatcher("DeletedMaterials.jsp").forward(request, response);
+                request.getRequestDispatcher("/jsp/material/DeletedMaterials.jsp").forward(request, response);
                 break;
             case "activate":
                int idRestore = Integer.parseInt(request.getParameter("id"));
@@ -158,7 +158,7 @@ public static final int PAGE_NUMBER = 7;
                 request.setAttribute("endP", endP);
                 request.setAttribute("tag", index);
                 
-                request.getRequestDispatcher("/front_end/listMaterials.jsp").forward(request, response);
+                request.getRequestDispatcher("/jsp/material/listMaterials.jsp").forward(request, response);
         }
     }
 
