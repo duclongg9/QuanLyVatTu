@@ -8,7 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Materials;
@@ -321,7 +323,22 @@ public int getTotalDeletedMaterials() {
 //        System.out.println(udao.updateUser(7, false, 2));
 
     }
-
+public Map<String, Integer> getMaterialCountByCategory() {
+        Map<String, Integer> stats = new HashMap<>();
+        String sql = "SELECT cm.category, COUNT(m.id) AS count " +
+                     "FROM Materials m " +
+                     "JOIN CategoryMaterial cm ON m.categoryId = cm.id " +
+                     "GROUP BY cm.category";
+        try (Connection conn = DBConnect.getConnection();PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                stats.put(rs.getString("category"), rs.getInt("count"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return stats;
+    }
     
 
     
