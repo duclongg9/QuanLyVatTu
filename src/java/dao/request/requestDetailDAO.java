@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import model.RequestDetail;
 import dao.material.MaterialsDAO;
 import dao.user.UserDAO;
+import dao.Supplier.SupplierDAO;
 
 /**
  *
@@ -26,12 +27,15 @@ public class requestDetailDAO {
 
     requestDAO rdao = new requestDAO();
     MaterialsDAO mdao = new MaterialsDAO();
+    SupplierDAO sdao = new SupplierDAO();
+    
 
     private static final int PAGE_SIZE = 5;
 
     private static final String COL_ID = "id";
     private static final String COL_REQUEST = "requestId";
     private static final String COL_MATERIAL = "materialId";
+    private static final String COL_SUPPLIERID = "supplierId";
     private static final String COL_QUANTITY = "quantity";
     private static final String COL_NOTE = "note";
 
@@ -84,6 +88,7 @@ public class requestDetailDAO {
                     r.setId(rs.getInt(COL_ID));
                     r.setMaterialId(mdao.getMaterialsById(rs.getInt(COL_MATERIAL)));
                     r.setRequestId(rdao.getRequestById(rs.getInt(COL_REQUEST)));
+                    r.setSupplierId(sdao.getSupplierById(rs.getInt(COL_SUPPLIERID)));
                     r.setQuantity(rs.getInt(COL_QUANTITY));
                     r.setNote(rs.getString(COL_NOTE));
                     list.add(r);
