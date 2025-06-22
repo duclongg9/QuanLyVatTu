@@ -51,9 +51,9 @@
     <div class="row g-4">
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Create New Request</h6>
+                <h6 class="mb-4">Update Request</h6>
 
-                <form action="UpdateRequestDetailController" method="post">
+                <form action="updateRequest" method="post">
                     <input type="hidden" name="requestId" value="${requestId}"/> <!-- gửi kèm requestId -->
 
                     <div class="table-responsive">

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <%@page contentType="text/html; charset=UTF-8" %>
+<%@page contentType="text/html; charset=UTF-8" %>
     <title>Request Detail</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
@@ -35,15 +35,15 @@
 
 <body>
     <div class="container-flrid position-relative bg-white d-flex p-0">
-        <%@include file="../template/spinner.jsp" %>
+<%@include file="../template/spinner.jsp" %>
 
 
-        <%@include file="../template/sidebar.jsp" %>
+<%@include file="../template/sidebar.jsp" %>
 
 
         <!-- Content Start -->
         <div class="content">
-            <%@include file="../template/navbar.jsp" %>
+<%@include file="../template/navbar.jsp" %>
 
 
            <!-- Table Start -->
@@ -53,7 +53,7 @@
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Create New Request</h6>
 
-              <a href="Create" class="btn btn-primary m-2">Update Request</a>
+              <a href="updateRequest?requestId=${requestId}" class="btn btn-primary m-2">Update Request</a>
                     
                     <div class="table-responsive">
                         <table id="userTable" class="table table-bordered">
@@ -68,7 +68,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach var="m" items="${listRequestDetail}">
+<c:forEach var="m" items="${listRequestDetail}">
                                     <tr>
                                         <td>${m.id}</td>
                                         <td>${m.materialId.name}</td>
@@ -77,21 +77,27 @@
                                         <td>${m.supplierId.name}</td>
                                         <td>${m.note}</td>
                                     </tr>
-                                </c:forEach>
+</c:forEach>
                             </tbody>
                         </table>
                         
                         <!-- Pagination -->
                         <div class="d-flex justify-content-center mt-3">
-                            <c:forEach begin="1" end="${endP}" var="i">
+<c:forEach begin="1" end="${endP}" var="i">
                                 <a href="requestDetail?index=${i}&requestId=${requestId}" class="btn btn-outline-primary mx-1">${i}</a>
-                            </c:forEach>
+</c:forEach>
                         </div>
+                        <div class="d-flex m-2 gap-2">
                         <!-- Pagination End -->
-                        <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill m-2">Back</a>
+                        <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill ">Back</a>
+                         <form action="ImportRequestController" method="post">
+                        <input type="hidden" name="requestId" value="${requestId}" />
+                        <button type="submit" class="btn btn-success">Import to Warehouse</button>
+                    </form>
+                        </div>
                     </div>
 
-                    
+                   
                 
 
             </div>
@@ -110,7 +116,7 @@
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
-    <%@include file="../template/script.jsp" %>
+<%@include file="../template/script.jsp" %>
     <script>
         
 
