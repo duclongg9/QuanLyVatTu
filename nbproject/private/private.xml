@@ -18,7 +18,9 @@
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/Admin_Home.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/updateMaterial.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/model/Materials.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/spinner.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/materialConfirmDelete.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/requestList.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/createUser.java</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/footer.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/Admin/userList.jsp</file>
@@ -28,10 +30,13 @@
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/navbar.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/login.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/update_detail.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/UserDAO.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/Admin/dashboardUser.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/CategoryMaterialDAO.java</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/crud-user.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/createImportRequest.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/sidebar.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/script.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/DBConnect.java</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/web/front_end/header.jsp</file>
         </group>
