@@ -53,52 +53,49 @@
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Create New Request</h6>
 
-                <form action="CreateRequestImport" method="post">
-                    <!-- Note input -->
-                    <div class="mb-3">
-                        <label for="note" class="form-label">Note:</label>
-                        <textarea name="note" id="note" class="form-control" required></textarea>
-                    </div>
+                <form action="UpdateRequestDetailController" method="post">
+                    <input type="hidden" name="requestId" value="${requestId}"/> <!-- gửi kèm requestId -->
 
                     <div class="table-responsive">
                         <table id="userTable" class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th scope="col" onclick="sortTable(0)">Material ID</th>
-                                    <th scope="col" onclick="sortTable(1)">Material Name</th>
-                                    <th scope="col" onclick="sortTable(2)">Unit</th>
-                                    <th scope="col" onclick="sortTable(2)">Supplier</th>
-                                    <th scope="col" onclick="sortTable(3)">Category</th>
-                                    <th>Input Quantity</th>
+                                    <th>Material Name</th>
+                                    <th>Supplier Name</th>
+                                    <th>Category</th>
+                                    <th>Unit</th>
+                                    <th>Quantity</th>
+                                    <th>Note</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach var="m" items="${listMaterialRequest}">
+                                <c:forEach var="detail" items="${requestDetails}">
                                     <tr>
-                                        <td>${m.materialId.id}</td>
-                                        <td>${m.materialId.name}</td>
-                                        <td>${m.supplierId.name}</td>
-                                        <td>${m.materialId.categoryId.category}</td>
+                                        <!-- ẩn id từng chi tiết để servlet biết update bản ghi nào -->
+                                        <input type="hidden" name="detailId" value="${detail.id}"/>
+
+                                        <td>${detail.materialId.name}</td>
+                                        <td>${detail.supplierId.name}</td>
+                                        <td>${detail.materialId.categoryId.category}</td>
+                                        <td>${detail.materialId.unitId.unitName}</td>
+
                                         <td>
-                                            <input type="number" min="0" name="material_${m.id}" class="form-control" placeholder="Enter quantity">
+                                            <input type="number" min="0" name="quantity" value="${detail.quantity}" class="form-control" />
                                         </td>
-                                        <td>${m.materialId.unitId.unitName}</td>
+
+                                        <td>
+                                            <input type="text" name="note" value="${detail.note}" class="form-control"/>
+                                        </td>
                                     </tr>
                                 </c:forEach>
                             </tbody>
                         </table>
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-center mt-3">
-                            <c:forEach begin="1" end="${endP}" var="i">
-                                <a href="CreateRequestImport?index=${i}" class="btn btn-outline-primary mx-1">${i}</a>
-                            </c:forEach>
-                        </div>
-                        <!-- Pagination End -->
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Create Request</button>
-                     <button type="button" class="btn btn-secondary rounded-pill m-2" onclick="history.back()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Request Details</button>
+                    <button type="button" class="btn btn-secondary rounded-pill m-2" onclick="history.back()">Cancel</button>
                 </form>
+
 
             </div>
         </div>
