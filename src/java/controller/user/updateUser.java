@@ -29,7 +29,7 @@ import model.User;
  * @author D E L L
  */
 @MultipartConfig
-@WebServlet(name = "updateUser", urlPatterns = {"/Update"})
+@WebServlet(name = "updateUser", urlPatterns = {"/updateUser"})
 public class updateUser extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

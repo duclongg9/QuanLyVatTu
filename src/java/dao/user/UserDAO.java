@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Role;
 import model.User;
 
 /**
@@ -45,6 +46,80 @@ public class UserDAO {
         conn = DBConnect.getConnection();
     }
 
+    //Cập nhật mật khẩu mới vào database
+     public boolean updatePassword(int userId, String hashedPassword) {
+        String sql = "UPDATE User SET password=? WHERE id=?";
+        try ( PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, hashedPassword);
+            ps.setInt(2, userId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+     //Cập nhật thông tin người dùng vào database
+    public boolean updateUserProfile(int id, String email, String phone, String address, boolean gender, String birthDate) {
+        String sql = "UPDATE User SET email=?, phone=?, address=?, gender=?, birthDate=? WHERE id=?";
+        try ( PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.setString(2, phone);
+            ps.setString(3, address);
+            ps.setBoolean(4, gender);
+            ps.setString(5, birthDate);
+            ps.setInt(6, id);
+            int rows = ps.executeUpdate();
+            return rows > 0; // true nếu có ít nhất 1 dòng bị ảnh hưởng
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
+     // Kiểm tra thông tin đăng nhập
+    public User checkLogin(String username, String password) {
+        String sql = """
+        SELECT *
+        FROM User  
+        WHERE username = ? AND password = ? 
+        LIMIT 1;
+    """;
+
+        try ( PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                // Lấy thông tin User
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setFullName(rs.getString("fullname"));
+                user.setGender(rs.getBoolean("gender"));
+                user.setBirthDate(rs.getString("birthDate"));
+                user.setAddress(rs.getString("address"));
+                user.setImage(rs.getString("image"));
+                user.setEmail(rs.getString("email"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                user.setPhone(rs.getString("phone"));
+                user.setStatus(rs.getBoolean("status"));
+                user.setRole(rdao.getRoleById(rs.getInt("roleId"))); // Gán role đầy đủ vào user
+                return user;
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi kiểm tra đăng nhập!");
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+   
+    
     //Kiểm tra email đã tồn tại chưa
     public boolean isEmailExists(String email) {
         String sql = "SELECT 1 FROM User WHERE email = ?";
@@ -430,6 +505,8 @@ public class UserDAO {
 
         return 0;
     }
+    
+   
 
     public static void main(String[] args) throws SQLException {
         UserDAO udao = new UserDAO();
@@ -437,8 +514,8 @@ public class UserDAO {
 //        udao.deleteStaffById(1);
         List<User> list = udao.findStaffByName(name, 1);
 
-//        int count = udao.createUser();
-        System.out.println();
+        int count = udao.getTotalStaffBySearchName(name);
+//        System.out.println(count);
         for (User staff : list) {
             System.out.println(staff);
         }

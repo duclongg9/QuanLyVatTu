@@ -13,19 +13,23 @@ public class RequestDetail {
     private int id;
     private Request requestId;
     private Materials materialId;
+    private Supplier supplierId;
     private int quantity;
     private String note;
 
     public RequestDetail() {
     }
 
-    public RequestDetail(int id, Request requestId, Materials materialId, int quantity, String note) {
+    public RequestDetail(int id, Request requestId, Materials materialId, Supplier supplierId, int quantity, String note) {
         this.id = id;
         this.requestId = requestId;
         this.materialId = materialId;
+        this.supplierId = supplierId;
         this.quantity = quantity;
         this.note = note;
     }
+
+    
 
     public int getId() {
         return id;
@@ -66,6 +70,15 @@ public class RequestDetail {
     public void setNote(String note) {
         this.note = note;
     }
+
+    public Supplier getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(Supplier supplierId) {
+        this.supplierId = supplierId;
+    }
+    
     
     
 }
