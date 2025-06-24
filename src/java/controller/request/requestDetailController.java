@@ -23,7 +23,7 @@ import model.RequestDetail;
  *
  * @author D E L L
  */
-@WebServlet(urlPatterns = {"/requestDetail"})
+@WebServlet(urlPatterns = {"/requestDetailController"})
 public class requestDetailController extends HttpServlet {
     public static final int PAGE_NUMBER = 5;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

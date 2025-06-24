@@ -5,39 +5,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Xác nhận xóa đơn vị tính</title>
-    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/Admin2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/Admin2/css/style.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
 </head>
 <body>
-    <%@ include file="spinner.jsp" %>
+    <%@ include file="Admin2/spinner.jsp" %>
 <div class="container-xxl position-relative bg-white d-flex p-0">
-    <%@ include file="sidebar.jsp" %>
+    <%@ include file="Admin2/sidebar.jsp" %>
 
     <div class="content d-flex flex-column min-vh-100">
-        <%@ include file="navbar.jsp" %>
+        <%@ include file="Admin2/navbar.jsp" %>
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="bg-light rounded p-5">
-                <h4 class="mb-4 text-danger"> Confirm Delete</h4>
+                <h4 class="mb-4 text-danger">⚠️ Xác nhận xóa</h4>
 
-                <p>Are you sure to inactive unit_Material?</p>
+                <p>Bạn có chắc chắn muốn xóa đơn vị tính:</p>
                 <ul>
                     <li><strong>ID:</strong> ${unit.id}</li>
-                    <li><strong>Name</strong> ${unit.name}</li>
+                    <li><strong>Tên:</strong> ${unit.name}</li>
                 </ul>
 
                 <form action="unit" method="get">
                     <input type="hidden" name="action" value="delete" />
                     <input type="hidden" name="id" value="${unit.id}" />
 
-                    <button type="submit" class="btn btn-danger">Done</button>
-                    <a href="unit" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+                    <a href="unit" class="btn btn-secondary">Hủy</a>
                 </form>
             </div>
         </div>
 
-        <%@ include file="footer.jsp" %>
+        <%@ include file="Admin2/footer.jsp" %>
     </div>
 </div>
 <script>
@@ -57,8 +59,11 @@
 
 
 <!-- JS -->
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery-3.4.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/bootstrap.bundle.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/main.js"></script>
+<script src="${pageContext.request.contextPath}/lib/waypoints/waypoints.min.js"></script>
+<script src="${pageContext.request.contextPath}/lib/tempusdominus/js/moment.min.js"></script>
+<script src="${pageContext.request.contextPath}/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 </body>
 </html>
