@@ -23,8 +23,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/assets/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/assets/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet">
@@ -67,6 +67,7 @@
                                     <th scope="col" onclick="sortTable(0)">Material ID</th>
                                     <th scope="col" onclick="sortTable(1)">Material Name</th>
                                     <th scope="col" onclick="sortTable(2)">Unit</th>
+                                    <th scope="col" onclick="sortTable(2)">Supplier</th>
                                     <th scope="col" onclick="sortTable(3)">Category</th>
                                     <th>Input Quantity</th>
                                 </tr>
@@ -74,13 +75,14 @@
                             <tbody>
                                 <c:forEach var="m" items="${listMaterialRequest}">
                                     <tr>
-                                        <td>${m.id}</td>
-                                        <td>${m.name}</td>
-                                        <td>${m.unitId.unitName}</td>
-                                        <td>${m.categoryId.category}</td>
+                                        <td>${m.materialId.id}</td>
+                                        <td>${m.materialId.name}</td>
+                                        <td>${m.supplierId.name}</td>
+                                        <td>${m.materialId.categoryId.category}</td>
                                         <td>
                                             <input type="number" min="0" name="material_${m.id}" class="form-control" placeholder="Enter quantity">
                                         </td>
+                                        <td>${m.materialId.unitId.unitName}</td>
                                     </tr>
                                 </c:forEach>
                             </tbody>
@@ -105,7 +107,7 @@
 <!-- Table End -->
 
 
-            <%@include file="../template/footer.jsp" %>
+<%@include file="../template/footer.jsp" %>
         </div>
         <!-- Content End -->
 
@@ -114,19 +116,7 @@
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/chart/chart.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/easing/easing.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/waypoints/waypoints.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+   <%@include file="../template/script.jsp" %>
     <script>
         
 

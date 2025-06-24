@@ -19,11 +19,13 @@
 </head>
 
 <body>
-<%@ include file="Admin2/spinner.jsp" %>
+
+    <%@ include file="../template/spinner.jsp" %>
 <div class="container-xxl position-relative bg-white d-flex p-0">
-    <%@ include file="Admin2/sidebar.jsp" %>
+    <%@ include file="../template/sidebar.jsp" %>
     <div class="content d-flex flex-column min-vh-100">
-        <%@ include file="Admin2/navbar.jsp" %>
+        <%@ include file="../template/navbar.jsp" %>
+
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="bg-light rounded p-4">
@@ -81,7 +83,9 @@
             </div>
         </div>
 
-        <%@ include file="Admin2/footer.jsp" %>
+
+        <%@ include file="../template/footer.jsp" %>
+
     </div>
 </div>
 

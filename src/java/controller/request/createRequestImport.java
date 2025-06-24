@@ -1,56 +1,84 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 package controller.request;
 
+import dao.connect.DBConnect;
+import dao.request.InputDetailDAO;
+import dao.request.InputWarehourseDAO;
+import dao.request.requestDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.RequestDetail;
+import model.User;
 
-/**
- *
- * @author D E L L
- */
-@WebServlet(name="createRequestImport", urlPatterns={"/createRequestImport"})
+@WebServlet(name = "createRequestImport", urlPatterns = {"/createRequestImport"})
 public class createRequestImport extends HttpServlet {
-   
-   
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            
-        }
-    } 
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-   
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
-    } 
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        
+            throws ServletException, IOException {
+        requestDAO requestDao = new requestDAO();
+        InputWarehourseDAO inputWarehouseDao = new InputWarehourseDAO();
+        InputDetailDAO inputDetailDao = new InputDetailDAO();
+
+        int requestId = Integer.parseInt(request.getParameter("requestId"));
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("account");
+        int userId = user.getId(); // Người thực hiện nhập kho
+
+        Connection conn = null;
+        try {
+            conn = DBConnect.getConnection();
+            conn.setAutoCommit(false);
+
+            // 1. Tạo InputWarehouse mới
+            int inputWarehouseId = inputWarehouseDao.insertInputWarehouse(userId);
+
+            // 2. Lấy danh sách RequestDetail của Request này
+            List<RequestDetail> requestDetails = requestDao.getRequestDetailByRequestId(requestId);
+
+            // 3. Duyệt từng chi tiết để insert vào InputDetail + update tồn kho
+            for (RequestDetail detail : requestDetails) {
+                int materialId = detail.getMaterialId().getId();
+                int supplierId = detail.getSupplierId().getId();
+                int quantity = detail.getQuantity();
+
+                // Lấy giá nhập từ MaterialItem
+                double inputPrice = requestDao.getPriceForMaterialItem(materialId, supplierId);
+
+                // Insert vào InputDetail
+                inputDetailDao.insertInputDetail(inputWarehouseId, detail.getId(), materialId, supplierId, quantity, inputPrice);
+
+                // Update stock quantity trong MaterialItem
+                requestDao.updateStockQuantity(materialId, supplierId, quantity);
+            }
+
+            conn.commit();
+            response.sendRedirect("inputWarehouseList"); // về trang danh sách nhập kho
+
+        } catch (Exception e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        } finally {
+            if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
     }
 
-    /** 
-     * Returns a short description of the servlet.
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Create Import Warehouse from Request";
+    }
 }
