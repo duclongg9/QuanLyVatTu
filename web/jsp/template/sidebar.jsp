@@ -30,7 +30,7 @@
                             <a href="#" class="dropdown-item">Thông tin cá nhân</a>
                         </div>
                     </div>
-<!-- Quản lý vật tư -->
+                    <!-- Quản lý vật tư -->
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Quản lý vật tư</a>
                         <div class="dropdown-menu bg-transparent border-0">
@@ -41,7 +41,7 @@
                             <h6 class="dropdown-header">Danh sách vật tư</h6>
                             <a href="${pageContext.request.contextPath}/materialController?action=add" class="dropdown-item">Thêm mới vật tư</a>
                             <a href="${pageContext.request.contextPath}/materialController?action=list" class="dropdown-item"> Sửa vật tư</a>
-                            <a href="${pageContext.request.contextPath}/materialController?action=list" class="dropdown-item">Xoá vật tư</a>
+                            <a href="${pageContext.request.contextPath}/materialController?action=deleted" class="dropdown-item">Xoá vật tư</a>
                             <div class="dropdown-divider"></div>
                             <h6 class="dropdown-header">Thống kê vật tư</h6>
                             <a href="#" class="dropdown-item">Theo loại</a>
