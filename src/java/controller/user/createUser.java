@@ -33,7 +33,7 @@ import units.Encoding;
  * @author D E L L
  */
 @MultipartConfig
-@WebServlet(name = "creatUser", urlPatterns = {"/Create"})
+@WebServlet(name = "creatUser", urlPatterns = {"/createUser"})
 public class createUser extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
