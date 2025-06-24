@@ -2,6 +2,13 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/request/createRequestImport.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/request/createRequestImportController.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/user/userController.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/user/createUser.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/user/UserDAO.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/user/createUser.jsp</file>
+        </group>
     </open-files>
 </project-private>
