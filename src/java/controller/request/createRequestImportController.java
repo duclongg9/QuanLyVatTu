@@ -7,6 +7,7 @@ package controller.request;
 import static controller.material.MaterialController.PAGE_NUMBER;
 import java.sql.Connection;
 import controller.user.userController;
+import dao.Supplier.SupplierDAO;
 import dao.connect.DBConnect;
 import dao.material.MaterialsDAO;
 import dao.request.requestDAO;
@@ -19,12 +20,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Materials;
+import dao.material.MaterialSupplierDAO;
+import model.MaterialSupplier;
+import model.User;
+
 /**
  *
  * @author D E L L
@@ -42,7 +44,10 @@ public class createRequestImportController extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    MaterialSupplierDAO msdao = new MaterialSupplierDAO();
     MaterialsDAO mdao = new MaterialsDAO();
+    SupplierDAO sdao = new SupplierDAO();
+    requestDAO rdao = new requestDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -55,9 +60,9 @@ public class createRequestImportController extends HttpServlet {
         }
         int index = Integer.parseInt(indexPage);
         //hiển thị list requesterialst
-        List<Materials> lm = null;
+        List<MaterialSupplier> lm = null;
         try {
-            lm = mdao.pagingMaterials(index);
+            lm = msdao.pagingMaterialWithSupplier(index);
         } catch (SQLException ex) {
             Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -68,8 +73,7 @@ public class createRequestImportController extends HttpServlet {
         //Lấy vị trí trang in đậm
         request.setAttribute("tag", index);
 
-        //Lấy tổng số staff trong database
-        int count = mdao.getTotalMaterials();
+        int count = msdao.getTotalMaterialWithSupplier();
         int endPage = count / PAGE_NUMBER;
         //để nếu chia dư thì 1 trang sẽ có phần tử ít hơn
         if (count % PAGE_NUMBER != 0) {
@@ -84,38 +88,38 @@ public class createRequestImportController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String note = request.getParameter("note");
-        HttpSession session = request.getSession();
-//        int userId = (Integer) session.getAttribute("userId");
-        int userId = 1;
-        Integer approverId = null; // có thể lấy từ session hoặc để null
+        HttpSession session = request.getSession(false); // lấy session hiện tại
 
-        List<Materials> listMaterial = (List<Materials>) session.getAttribute("listMaterialRequest");
-        Map<Integer, Integer> materialQuantityMap = new HashMap<>();
-
-        // Lấy dữ liệu quantity từ request gửi về
-        for (Materials m : listMaterial) {
-            String param = request.getParameter("material_" + m.getId());
-            if (param != null && !param.isEmpty()) {
-                int quantity = Integer.parseInt(param);
-                if (quantity > 0) {
-                    materialQuantityMap.put(m.getId(), quantity);
-                }
-            }
-        }
+        User user = (User) session.getAttribute("account"); // lấy user từ session
+        int userId = user.getId(); // dùng ID thật thay vì giả lập
+        Integer approverId = null; // chưa duyệt
 
         Connection conn = null;
         try {
+            // Lấy mảng các tham số từ form
+            String[] materialIds = request.getParameterValues("materialId");
+            String[] supplierIds = request.getParameterValues("supplierId");
+            String[] quantities = request.getParameterValues("quantity");
+
             conn = DBConnect.getConnection();
-            conn.setAutoCommit(false); // bắt đầu transaction
+            conn.setAutoCommit(false); // transaction
 
             requestDAO requestDAO = new requestDAO();
             int requestId = requestDAO.insertRequest(conn, userId, note, approverId);
 
-            if (requestId > 0) {
-                requestDAO.insertRequestDetails(conn, requestId, materialQuantityMap);
+            if (requestId > 0 && materialIds != null && supplierIds != null && quantities != null) {
+                for (int i = 0; i < materialIds.length; i++) {
+                    int materialId = Integer.parseInt(materialIds[i]);
+                    int supplierId = Integer.parseInt(supplierIds[i]);
+                    int quantity = Integer.parseInt(quantities[i]);
+
+                    if (quantity > 0) {
+                        requestDAO.insertRequestDetail(conn, requestId, materialId, supplierId, quantity, null);
+                    }
+                }
             }
 
-            conn.commit(); // OK hết thì commit
+            conn.commit(); // OK thì commit
             response.sendRedirect("requestList");
 
         } catch (Exception e) {
@@ -127,7 +131,7 @@ public class createRequestImportController extends HttpServlet {
                 }
             }
             e.printStackTrace();
-            response.sendRedirect("error.jsp");
+            response.sendRedirect("requestList");
         } finally {
             if (conn != null) try {
                 conn.close();

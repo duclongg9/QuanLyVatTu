@@ -10,19 +10,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Thêm/Cập nhật đơn vị tính</title>
-    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/Admin2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/Admin2/css/style.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
 </head>
-<%@ include file="spinner.jsp" %>
+<%@ include file="Admin2/spinner.jsp" %>
 <body>
     
 <div class="container-xxl position-relative bg-white d-flex p-0">
 
-    <%@ include file="sidebar.jsp" %>
+    <%@ include file="Admin2/sidebar.jsp" %>
 
     <div class="content d-flex flex-column min-vh-100">
-        <%@ include file="navbar.jsp" %>
+        <%@ include file="Admin2/navbar.jsp" %>
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="bg-light rounded p-4">
@@ -54,7 +56,7 @@
             </div>
         </div>
 
-        <%@ include file="footer.jsp" %>
+        <%@ include file="Admin2/footer.jsp" %>
     </div>
 </div>
 
@@ -75,8 +77,11 @@
 
 
 <!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery-3.4.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/bootstrap.bundle.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/main.js"></script>
+<script src="${pageContext.request.contextPath}/lib/waypoints/waypoints.min.js"></script>
+<script src="${pageContext.request.contextPath}/lib/tempusdominus/js/moment.min.js"></script>
+<script src="${pageContext.request.contextPath}/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 </body>
 </html>
