@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-<%@page contentType="text/html; charset=UTF-8" %>
+    <%@page contentType="text/html; charset=UTF-8" %>
     <title>Request Detail</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
@@ -35,15 +35,15 @@
 
 <body>
     <div class="container-flrid position-relative bg-white d-flex p-0">
-<%@include file="../template/spinner.jsp" %>
+        <%@include file="../template/spinner.jsp" %>
 
 
-<%@include file="../template/sidebar.jsp" %>
+        <%@include file="../template/sidebar.jsp" %>
 
 
         <!-- Content Start -->
         <div class="content">
-<%@include file="../template/navbar.jsp" %>
+            <%@include file="../template/navbar.jsp" %>
 
 
            <!-- Table Start -->
@@ -51,54 +51,51 @@
     <div class="row g-4">
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Create New Request</h6>
+                <h6 class="mb-4">Update Request</h6>
 
-              <a href="updateRequest?requestId=${requestId}" class="btn btn-primary m-2">Update Request</a>
-                    
+                <form action="updateRequest" method="post">
+                    <input type="hidden" name="requestId" value="${requestId}"/> <!-- gửi kèm requestId -->
+
                     <div class="table-responsive">
                         <table id="userTable" class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th scope="col" onclick="sortTable(0)">ID</th>
-                                    <th scope="col" onclick="sortTable(1)">Material</th>
-                                    <th scope="col" onclick="sortTable(2)">Quantity</th>
-                                    <th scope="col" onclick="sortTable(1)">Unit</th>
-                                    <th scope="col" onclick="sortTable(1)">Supplier</th>
-                                    <th scope="col" onclick="sortTable(3)">Note</th>
+                                    <th>Material Name</th>
+                                    <th>Supplier Name</th>
+                                    <th>Category</th>
+                                    <th>Unit</th>
+                                    <th>Quantity</th>
+                                    <th>Note</th>
                                 </tr>
                             </thead>
                             <tbody>
-<c:forEach var="m" items="${listRequestDetail}">
+                                <c:forEach var="detail" items="${requestDetails}">
                                     <tr>
-                                        <td>${m.id}</td>
-                                        <td>${m.materialId.name}</td>
-                                        <td>${m.quantity}</td>
-                                        <td>${m.materialId.unitId.unitName}</td>
-                                        <td>${m.supplierId.name}</td>
-                                        <td>${m.note}</td>
+                                        <!-- ẩn id từng chi tiết để servlet biết update bản ghi nào -->
+                                        <input type="hidden" name="detailId" value="${detail.id}"/>
+
+                                        <td>${detail.materialId.name}</td>
+                                        <td>${detail.supplierId.name}</td>
+                                        <td>${detail.materialId.categoryId.category}</td>
+                                        <td>${detail.materialId.unitId.unitName}</td>
+
+                                        <td>
+                                            <input type="number" min="0" name="quantity" value="${detail.quantity}" class="form-control" />
+                                        </td>
+
+                                        <td>
+                                            <input type="text" name="note" value="${detail.note}" class="form-control"/>
+                                        </td>
                                     </tr>
-</c:forEach>
+                                </c:forEach>
                             </tbody>
                         </table>
-                        
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-center mt-3">
-<c:forEach begin="1" end="${endP}" var="i">
-                                <a href="requestDetail?index=${i}&requestId=${requestId}" class="btn btn-outline-primary mx-1">${i}</a>
-</c:forEach>
-                        </div>
-                        <div class="d-flex m-2 gap-2">
-                        <!-- Pagination End -->
-                        <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill ">Back</a>
-                         <form action="createImport" method="post">
-                        <input type="hidden" name="requestId" value="${requestId}" />
-                        <button type="submit" class="btn btn-success">Import to Warehouse</button>
-                    </form>
-                        </div>
                     </div>
 
-                   
-                
+                    <button type="submit" class="btn btn-primary">Update Request Details</button>
+                    <button type="button" class="btn btn-secondary rounded-pill m-2" onclick="history.back()">Cancel</button>
+                </form>
+
 
             </div>
         </div>
@@ -116,7 +113,7 @@
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
-<%@include file="../template/script.jsp" %>
+   <%@include file="../template/script.jsp" %>
     <script>
         
 

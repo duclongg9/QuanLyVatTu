@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 package controller;
+=======
+package controller.profile;
+>>>>>>> origin/duc_long
 
 import dao.user.UserDAO;
 import model.User;

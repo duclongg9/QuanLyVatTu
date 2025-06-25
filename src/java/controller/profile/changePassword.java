@@ -1,4 +1,4 @@
-package controller;
+package controller.profile;
 
 import dao.user.UserDAO;
 import model.User;

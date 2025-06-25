@@ -71,6 +71,7 @@
                                 <h6 class="mb-4 text-start">Update Profile</h6>
 
                                 <form action="${pageContext.request.contextPath}/updateprofile" method="post" enctype="multipart/form-data">
+                                    
                                     <input type="hidden" name="id" value="${user.id}">
 
                                     <div class="mb-3">
