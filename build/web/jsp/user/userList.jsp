@@ -53,7 +53,7 @@
                     <div class="col-12">
                         <div class="bg-light rounded h-100 p-4">
                             <h6 class="mb-4">User</h6>
-                           <a href="Create" class="btn btn-primary m-2">Add User</a>
+                           <a href="createUser" class="btn btn-primary m-2">Add User</a>
                             <form action="userList" method="get" class="d-flex align-items-center gap-2">
                                 <select name="roleFilter" class="form-select" style="width: 200px;" onchange="this.form.submit()">
                                     <option value="">-- All Roles --</option>

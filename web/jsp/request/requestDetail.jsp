@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <%@page contentType="text/html; charset=UTF-8" %>
+<%@page contentType="text/html; charset=UTF-8" %>
     <title>Request Detail</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
@@ -23,8 +23,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="/assets/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="/assets/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/assets/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/assets/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet">
@@ -35,15 +35,15 @@
 
 <body>
     <div class="container-flrid position-relative bg-white d-flex p-0">
-        <%@include file="../template/spinner.jsp" %>
+<%@include file="../template/spinner.jsp" %>
 
 
-        <%@include file="../template/sidebar.jsp" %>
+<%@include file="../template/sidebar.jsp" %>
 
 
         <!-- Content Start -->
         <div class="content">
-            <%@include file="../template/navbar.jsp" %>
+<%@include file="../template/navbar.jsp" %>
 
 
            <!-- Table Start -->
@@ -53,7 +53,7 @@
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Create New Request</h6>
 
-              <a href="Create" class="btn btn-primary m-2">Update Request</a>
+              <a href="updateRequest?requestId=${requestId}" class="btn btn-primary m-2">Update Request</a>
                     
                     <div class="table-responsive">
                         <table id="userTable" class="table table-bordered">
@@ -62,32 +62,42 @@
                                     <th scope="col" onclick="sortTable(0)">ID</th>
                                     <th scope="col" onclick="sortTable(1)">Material</th>
                                     <th scope="col" onclick="sortTable(2)">Quantity</th>
+                                    <th scope="col" onclick="sortTable(1)">Unit</th>
+                                    <th scope="col" onclick="sortTable(1)">Supplier</th>
                                     <th scope="col" onclick="sortTable(3)">Note</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach var="m" items="${listRequestDetail}">
+<c:forEach var="m" items="${listRequestDetail}">
                                     <tr>
                                         <td>${m.id}</td>
                                         <td>${m.materialId.name}</td>
                                         <td>${m.quantity}</td>
+                                        <td>${m.materialId.unitId.unitName}</td>
+                                        <td>${m.supplierId.name}</td>
                                         <td>${m.note}</td>
                                     </tr>
-                                </c:forEach>
+</c:forEach>
                             </tbody>
                         </table>
                         
                         <!-- Pagination -->
                         <div class="d-flex justify-content-center mt-3">
-                            <c:forEach begin="1" end="${endP}" var="i">
+<c:forEach begin="1" end="${endP}" var="i">
                                 <a href="requestDetail?index=${i}&requestId=${requestId}" class="btn btn-outline-primary mx-1">${i}</a>
-                            </c:forEach>
+</c:forEach>
                         </div>
+                        <div class="d-flex m-2 gap-2">
                         <!-- Pagination End -->
-                        <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill m-2">Back</a>
+                        <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill ">Back</a>
+                         <form action="createImport" method="post">
+                        <input type="hidden" name="requestId" value="${requestId}" />
+                        <button type="submit" class="btn btn-success">Import to Warehouse</button>
+                    </form>
+                        </div>
                     </div>
 
-                    
+                   
                 
 
             </div>
@@ -97,7 +107,7 @@
 <!-- Table End -->
 
 
-            <%@include file="../template/footer.jsp" %>
+<%@include file="../template/footer.jsp" %>
         </div>
         <!-- Content End -->
 
@@ -106,19 +116,7 @@
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/chart/chart.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/easing/easing.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/waypoints/waypoints.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+<%@include file="../template/script.jsp" %>
     <script>
         
 
