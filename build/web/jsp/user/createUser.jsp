@@ -46,7 +46,7 @@
         <div class="content">
             <%@include file="../template/navbar.jsp" %>
 
-            <form method="post" enctype="multipart/form-data" action="${pageContext.request.contextPath}/createUser">
+            <form method="post" enctype="multipart/form-data" action="${pageContext.request.contextPath}/Create">
         <div class="row">
             <div class="col-sm-12">
                 <div class="col-sm-12 text-center mb-3">

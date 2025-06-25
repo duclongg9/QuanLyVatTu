@@ -45,7 +45,7 @@
         <div class="content">
             <%@include file="../template/navbar.jsp" %>
 
-            <form method="post"  action="${pageContext.request.contextPath}/updateUser">
+            <form method="post"  action="${pageContext.request.contextPath}/Update">
                 <input type="hidden" name="id" value="${user.id}">
         <div class="row">
             <div class="col-sm-6">

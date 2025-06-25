@@ -1,11 +1,10 @@
-              <%@ page contentType="text/html; charset=UTF-8" %> 
 <!-- Set current page path -->
 <c:set var="currentPage" value="${pageContext.request.servletPath}" />
 
 <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
-                <a href="index.jsp" class="navbar-brand mx-4 mb-3">
+                <a href="index.html" class="navbar-brand mx-4 mb-3">
                     <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>MMS</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
@@ -19,76 +18,26 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <!-- Quản lý người dùng -->
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <i class="fa fa-box me-2"></i>Users</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="createUser" class="dropdown-item">Thêm người dùng</a>
-                            <a href="userList" class="dropdown-item">Danh sách người dùng</a>
-                            <a href="#" class="dropdown-item">Phân quyền người dùng</a>
-                        </div>
-                    </div>
-                    <!-- Quản lý vật tư -->
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-item nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>Materials </a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <h6 class="dropdown-header">Danh mục đơn vị</h6>
-                            <a href="${pageContext.request.contextPath}/unitList" class="dropdown-item">️Đơn vị tính</a>
-                            <h6 class="dropdown-header">Danh mục vật tư</h6>
-                            <a href="#" class="dropdown-item">Thêm danh mục</a>
-                            <a href="#" class="dropdown-item">Xem danh mục</a>
-                            <div class="dropdown-divider"></div>
-                            <h6 class="dropdown-header">Danh sách vật tư</h6>
-                            <a href="${pageContext.request.contextPath}/materialController?action=add" class="dropdown-item">Thêm mới vật tư</a>
-                            <a href="${pageContext.request.contextPath}/materialController?action=list" class="dropdown-item">Danh sách vật tư</a>
-                            <div class="dropdown-divider"></div>
-                            <h6 class="dropdown-header">Thống kê vật tư</h6>
-                            <a href="#" class="dropdown-item">Theo loại</a>
-                            <a href="#" class="dropdown-item">Theo tình trạng</a>
-                        </div>
-                    </div>
+                    <a href="index.html" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                   
 
-                    <!-- Kho vật tư -->
+                    <a href="${pageContext.request.contextPath}/materialController" class="nav-item nav-link"><i class="fa fa-box me-2"></i>List Material</a>
+                    <a href="userList" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-table me-2"></i>Manage User</a>
+                    <a href="requestList" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-table me-2"></i>Request</a>
+                    <a href="TaskImport" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-table me-2"></i>Import Materials</a>
+                    <a href="ListImport" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-table me-2"></i>List Import</a>
+                    <a href="chart.html" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-chart-bar me-2"></i>Supplier</a>
+                     <a href="chart.html" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-chart-bar me-2"></i>Unit</a>
+                      <a href="chart.html" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-chart-bar me-2"></i>History Changed</a>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>Storages</a>
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <h6 class="dropdown-header">Nhập kho</h6>
-                            <a href="CreateRequestImport" class="dropdown-item">Tạo đơn nhập kho</a>
-                            <a href="ListImport" class="dropdown-item">Lịch sử nhập kho</a>
-                            <h6 class="dropdown-header">Xuất kho</h6>
-                            <a href="#" class="dropdown-item">Tạo đơn xuất kho</a>
-                            <a href="#" class="dropdown-item">Lịch sử xuất kho</a>
-                            <h6 class="dropdown-header">Thống kê</h6>
-                            <a href="#" class="dropdown-item">Xuất – Nhập – Tồn</a>
+                            <a href="signin.html" class="dropdown-item">Sign In</a>
+                            <a href="signup.html" class="dropdown-item">Sign Up</a>
+                            <a href="404.html" class="dropdown-item">404 Error</a>
+                            <a href="blank.html" class="dropdown-item">Blank Page</a>
                         </div>
                     </div>
-
-                    <!-- Yêu cầu vật tư -->
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>List Request</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="#" class="dropdown-item">Đề nghị mua vật tư</a>
-                            <a href="#" class="dropdown-item">Đề nghị sửa chữa vật tư</a>
-                            <a href="#" class="dropdown-item">Phê duyệt yêu cầu</a>
-                            <a href="requestList" class="dropdown-item">Danh sách yêu cầu</a>
-                        </div>
-                    </div>
-                    <!-- Thống kê chi phí -->
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>Fee Statistic</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="#" class="dropdown-item">Theo kỳ</a>
-                            <a href="#" class="dropdown-item">Theo loại chi phí</a>
-                        </div>
-                    </div>
-
-                    <!-- Hệ thống -->
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>Systems</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="#" class="dropdown-item">Nhà cung cấp</a>
-                        </div>
-                </div>
                 </div>
             </nav>
         </div>

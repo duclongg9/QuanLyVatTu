@@ -1,16 +1,16 @@
-
+<%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8">
-    <title>DASHMIN - Bootstrap Admin Template</title>
+    <title>Quản Lý Vật Tư</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="${pageContext.request.contextPath}/assets/img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,27 +34,33 @@
 
 <body>
     <div class="container-fluid position-relative bg-white d-flex p-0">
-        <%@include file="/jsp/template/spinner.jsp" %>
-
-
-        <!-- Sidebar Start -->
-        <%@include file="/jsp/template/sidebar.jsp" %>
-
-        <!-- Sidebar End -->
-
+        <%@ include file="jsp/template/spinner.jsp" %>
+        <%@ include file="jsp/template/sidebar.jsp" %>
 
         <!-- Content Start -->
         <div class="content">
-            <!-- Navbar Start -->
-            <%@include file="../jsp/template/navbar.jsp" %>
-            <!-- Navbar End -->
+            <%@ include file="jsp/template/navbar.jsp" %>
 
-            <!-- Dashboard Start-->
-            <%@include file="/jsp/dashboard.jsp" %>
-            <!-- Dashboard End-->
-            <!-- Footer Start -->
-            <%@include file="/jsp/template/footer.jsp" %>
-            <!-- Footer End -->
+
+<%
+    String pageParam = request.getParameter("page");
+    String pagePath;
+    if(pageParam == null || pageParam.isEmpty()) {
+        pagePath = "jsp/dashboard.jsp";
+    } else if("materials".equals(pageParam)) {
+        pagePath = "jsp/material/listMaterials.jsp";
+    } else if("users".equals(pageParam)) {
+        pagePath = "jsp/user/listUser.jsp";
+    } else if("units".equals(pageParam)) {
+        pagePath = "jsp/unit/unitList.jsp";
+    } else if("requests".equals(pageParam)) {
+        pagePath = "jsp/request/requestList.jsp";
+    } else {
+        pagePath = "jsp/dashboard.jsp";
+    }
+%>
+<jsp:include page="<%= pagePath %>" />
+
         </div>
         <!-- Content End -->
 
@@ -63,19 +69,4 @@
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/chart/chart.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/easing/easing.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/waypoints/waypoints.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-</body>
-
-</html>
+    <%@ include file="jsp/template/script.jsp" %>

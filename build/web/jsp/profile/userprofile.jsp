@@ -101,7 +101,7 @@
                                         </tr>
                                         <tr>
                                             <th scope="row">Role</th>
-                                            <td>${user.role.roleName}</td>
+                                            <td>${sessionScope.roleName}</td>
                                         </tr>
                                     </tbody>
                                 </table>

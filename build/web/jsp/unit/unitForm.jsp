@@ -14,15 +14,15 @@
     <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
-<%@ include file="../template/spinner.jsp" %>
+<%@ include file="spinner.jsp" %>
 <body>
     
 <div class="container-xxl position-relative bg-white d-flex p-0">
 
-    <%@ include file="../template/sidebar.jsp" %>
+    <%@ include file="sidebar.jsp" %>
 
     <div class="content d-flex flex-column min-vh-100">
-        <%@ include file="../template/navbar.jsp" %>
+        <%@ include file="navbar.jsp" %>
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="bg-light rounded p-4">
@@ -54,7 +54,7 @@
             </div>
         </div>
 
-                                   <%@ include file="../template/footer.jsp" %>
+        <%@ include file="footer.jsp" %>
     </div>
 </div>
 
