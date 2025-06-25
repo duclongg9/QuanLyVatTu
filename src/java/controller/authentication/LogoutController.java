@@ -3,11 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.request;
+package controller.authentication;
 
-import controller.user.UserListController;
-
-import dao.request.requestDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,63 +12,36 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import model.Request;
+import jakarta.servlet.http.HttpSession;
+
 /**
  *
  * @author D E L L
  */
-@WebServlet(name="requestListController", urlPatterns={"/requestList"})
-public class RequestListController extends HttpServlet {
-   public static final int PAGE_NUMBER = 5;
+@WebServlet(name="LogoutController", urlPatterns={"/logoutController"})
+public class LogoutController extends HttpServlet {
+   
    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            
+          
         }
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
    
-    requestDAO rdao = new requestDAO();
-    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        //Lấy giá trị trang
-        String indexPage = request.getParameter("index");
-        if (indexPage == null) {
-            indexPage = "1";// load dữ liệu lần đầu tiên cho trang
+        HttpSession session = request.getSession(false);
+        
+        if(session != null){
+            session.invalidate();
         }
-        int index = Integer.parseInt(indexPage);
-       //hiển thị list request
-        List<Request> lr = null;
-        try {
-            lr = rdao.pagingStaff(index);
-        } catch (SQLException ex) {
-            Logger.getLogger(UserListController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        request.setAttribute("listRequest", lr);
-
-        //Lấy vị trí trang in đậm
-        request.setAttribute("tag", index);
-
-        //Lấy tổng số staff trong database
-        int count = rdao.getTotalRequest();
-        int endPage = count / PAGE_NUMBER;
-        //để nếu chia dư thì 1 trang sẽ có phần tử ít hơn
-        if (count % PAGE_NUMBER != 0) {
-            endPage++;
-        }
-        request.setAttribute("endP", endPage);
-
-        request.getRequestDispatcher("/jsp/request/requestList.jsp").forward(request, response);
+        request.getRequestDispatcher("login.jsp").forward(request, response);
     } 
 
     @Override
