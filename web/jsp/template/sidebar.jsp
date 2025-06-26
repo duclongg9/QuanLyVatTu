@@ -1,4 +1,4 @@
-              <%@ page contentType="text/html; charset=UTF-8" %> 
+<!--              <%@ page contentType="text/html; charset=UTF-8" %> -->
 <!-- Set current page path -->
 <c:set var="currentPage" value="${pageContext.request.servletPath}" />
 
@@ -48,14 +48,7 @@
                         </div>
                     </div>
 
-                    <a href="${pageContext.request.contextPath}/materialController" class="nav-item nav-link"><i class="fa fa-box me-2"></i>List Material</a>
-                    <a href="userList" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-table me-2"></i>Manage User</a>
-                    <a href="requestList" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-table me-2"></i>Request</a>
-                    <a href="TaskImport" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-table me-2"></i>Import Materials</a>
-                    <a href="ListImport" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-table me-2"></i>List Import</a>
-                    <a href="chart.html" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-chart-bar me-2"></i>Supplier</a>
-                     <a href="chart.html" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-chart-bar me-2"></i>Unit</a>
-                      <a href="chart.html" class="nav-item nav-link ${currentPage == '/userList' ? 'active' : ''}"><i class="fa fa-chart-bar me-2"></i>History Changed</a>
+                    <!-- Kho vật tư -->
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>Storages</a>
                         <div class="dropdown-menu bg-transparent border-0">
@@ -95,6 +88,7 @@
                         <div class="dropdown-menu bg-transparent border-0">
                             <a href="#" class="dropdown-item">Nhà cung cấp</a>
                         </div>
+                </div>
                 </div>
             </nav>
         </div>

@@ -114,11 +114,11 @@
                     <div class="form-floating mb-3">
                         <button type="submit" class="btn btn-success rounded-pill m-2">Submit</button>
                      <button type="button" class="btn btn-secondary rounded-pill m-2" onclick="history.back()">Cancel</button>
-                        <div style="color: red">
-                            <c:if test="${not empty error}">
+                       <c:if test="${not empty error}">
+                            <div class="alert alert-danger">
                                 ${error}
-                            </c:if>
-                        </div>
+                            </div>
+                        </c:if>
                   </div>
                 </div>
             </div>

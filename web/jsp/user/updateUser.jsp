@@ -126,7 +126,8 @@
                     </div>
                     <div class="form-floating mb-3">
                         <button type="submit" class="btn btn-success rounded-pill m-2">Submit</button>
-                     <button type="button" class="btn btn-secondary rounded-pill m-2" onclick="history.back()">Cancel</button>
+                        <button type="button" class="btn btn-secondary rounded-pill m-2" onclick="history.back()">Cancel</button>
+                        <button  class="btn btn-primary rounded-pill m-2" onclick="submitResetForm()">Reset Password</button>
                         <div style="color: red">
                             <c:if test="${not empty error}">
                                 ${error}
@@ -141,6 +142,11 @@
 
         
 </form>
+                                        
+                                        <!-- FORM ẨN GỬI TỚI resetPassword -->
+<form id="resetPasswordForm" method="post" action="${pageContext.request.contextPath}/resetPassword">
+    <input type="hidden" name="id" value="${user.id}" />
+</form>
             <%@include file="../template/footer.jsp" %>
         </div>
         <!-- Content End -->
@@ -149,6 +155,14 @@
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+<!--JavaScrip thực hiện submit form reset password-->
+        <script>
+    function submitResetForm() {
+        if (confirm('Bạn có chắc chắn muốn đặt lại mật khẩu?')) {
+            document.getElementById('resetPasswordForm').submit();
+        }
+    }
+</script> 
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

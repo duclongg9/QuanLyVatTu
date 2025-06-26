@@ -4,7 +4,6 @@
  */
 package controller.user;
 
-
 import dao.role.RoleDAO;
 import dao.user.UserDAO;
 import java.io.IOException;
@@ -15,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.InputStream;
@@ -58,6 +58,15 @@ public class CreateUserController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        // Kiểm tra đăng nhập
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+
+        if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
 
         //Lấy list role
         List<Role> lr = rdao.getAllRole();
@@ -88,26 +97,33 @@ public class CreateUserController extends HttpServlet {
             //lấy lại list vai trò 
             List<Role> lr = rdao.getAllRole();
 
-            String errorMessage = "";
 
             boolean emailExists = udao.isEmailExists(email);
             boolean phoneExists = udao.isPhoneExits(phone);
+            boolean usernameExists = udao.isUserName(username);
+
+            StringBuilder errorMessage = new StringBuilder();
 
             if (request.getParameter("roleId") == null || request.getParameter("roleId").isEmpty()) {
-                errorMessage = "Vui lòng chọn role!";
+                errorMessage.append("Vui lòng chọn role!");
             }
 
             if (emailExists && phoneExists) {
-                errorMessage = "Email và số điện thoại đã tồn tại!";
+                errorMessage.append("Email và số điện thoại đã tồn tại!");
             } else if (emailExists) {
-                errorMessage = "Email đã tồn tại";
+
+                errorMessage.append("Email đã tồn tại.");
             } else if (phoneExists) {
-                errorMessage = "Số điện thoại đã tồn tại";
+
+                errorMessage.append("Số điện thoại đã tồn tại.");
+            } else if (usernameExists) {
+
+                errorMessage.append("Tên tài khoản này đã được sử dụng.");
             }
             if (!Validator.isValidPhone(phone)) {
-                errorMessage += " Số điện thoại không hợp lệ (phải bắt đầu bằng 0 và đủ 10 chữ số)";
+                errorMessage.append("Số điện thoại không hợp lệ (phải bắt đầu bằng 0 và đủ 10 chữ số)");
             }
-            
+
             if (!errorMessage.isEmpty()) {
                 request.setAttribute("error", errorMessage);
                 request.setAttribute("listRole", lr);
@@ -125,6 +141,19 @@ public class CreateUserController extends HttpServlet {
                     uploadDir.mkdirs();
                 }
                 imagePart.write(uploadPath + File.separator + imageName);
+            }
+            
+             
+            
+            // Đảm bảo hệ thống chỉ có 1 role duy nhất
+            if (roleId == 4 && udao.isCEOExit()) {
+                
+                request.setAttribute("error", "Hệ thống chỉ cho phép một CEO. Không thể gán vai trò CEO cho người này.");
+
+                // Truyền lại dữ liệu user và danh sách role
+                request.setAttribute("listRole", rdao.getAllRole());
+                request.getRequestDispatcher("/jsp/user/updateUser.jsp").forward(request, response);
+                return; 
             }
 
             int updated = udao.createUser(username, fullname, phone, encodingPassword, email, address, gender, birthDate, imageName, status, roleId);

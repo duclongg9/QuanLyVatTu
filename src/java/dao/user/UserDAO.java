@@ -134,11 +134,25 @@ public class UserDAO {
         return false;
     }
 
+    //kiểm tra xem đã có username này hay chưa
+    public boolean isUserName(String username){
+        String sql="SELECT 1 FROM User WHERE username = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, username);
+            try(ResultSet rs = ps.executeQuery()){
+                return rs.next();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
     //kiểm tra xem đã có CEO hay chưa
     public boolean isCEOExit() {
         String sql = "SELECT 1 FROM User WHERE roleId = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, 3);
+            ps.setInt(1, 4);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next(); // tồn tại nếu có kết quả
             }
