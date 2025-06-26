@@ -61,12 +61,13 @@ public class RoleDAO {
     //lấy tất cả role
     public List<Role> getAllRole() {
         List<Role> lr = new ArrayList<>();
+        
         String sql = "SELECT * FROM ql_vat_tu.role";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-
+            
             try (ResultSet rs = ps.executeQuery()) {
-
+                
                 while (rs.next()) {
                     Role r = new Role();
                     if (rs.getInt(COL_ID) != 1) { //trừ ADMIN ra 

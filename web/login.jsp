@@ -49,6 +49,7 @@
                             <h3>Sign In</h3>
                         </div>
                         <form action="login" method="post">
+                            <div class="form-floating mb-3"><a class="bg-success">${error}</a></div>
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
                                 <label for="username">Username</label>

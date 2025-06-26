@@ -2,38 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/template/leftSideBar.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/request/ListImport.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/request/createRequestImportController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/dao/connect/DBConnect.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/user/createUser.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/template/script.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/dao/user/UserDAO.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/dao/Supplier/SupplierDAO.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/profile/userProfile.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/template/navbar.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/template/header.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/profile/changePassword.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/material/MaterialController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/request/requestDetailController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/user/userList.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/request/updateRequest.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/dashboard.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/template/sidebar.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/login.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/user/updateUser.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/request/createRequestImport.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/request/requestListController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/user/crud-user.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/user/updateUser.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/template/Admin_Home.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/template/login.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/user/createUser.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/index.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/web/jsp/user/dashboardUser.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/user/userController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/QuanLyVatTu-kiet_18/QuanLyVatTu-kiet_18/src/java/controller/profile/updateProfile.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
