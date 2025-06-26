@@ -67,10 +67,10 @@ public class ChangePasswordController extends HttpServlet {
         boolean updated = dao.updatePassword(loggedInUser.getId(), hashedNew);
 
         if (updated) {
-            // Cập nhật lại session
-            loggedInUser.setPassword(hashedNew);
-            session.setAttribute("account", loggedInUser);
-            request.setAttribute("success", "Đổi mật khẩu thành công.");
+            session.setAttribute("msg", "Đổi mật khẩu thành công. Vui lòng đăng nhập lại bằng mật khẩu mới.");
+            session.removeAttribute("account");
+            response.sendRedirect("login.jsp");
+            return;
         } else {
             request.setAttribute("error", "Đổi mật khẩu thất bại.");
         }
