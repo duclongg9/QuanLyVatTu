@@ -1,4 +1,4 @@
-              <%@ page contentType="text/html; charset=UTF-8" %> 
+<!--              <%@ page contentType="text/html; charset=UTF-8" %> -->
 <!-- Set current page path -->
 <c:set var="currentPage" value="${pageContext.request.servletPath}" />
 

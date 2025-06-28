@@ -3,7 +3,8 @@
     Created on : Jun 18, 2025, 4:22:43 PM
     Author     : KIET
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="java.util.List, model.UnitConversion, model.Unit, model.Materials" %>
 <%
     UnitConversion uc = (UnitConversion) request.getAttribute("unitConversion");
@@ -16,15 +17,16 @@
 <head>
     <meta charset="UTF-8">
     <title><%= isEdit ? "Chỉnh sửa" : "Thêm mới" %> Quy đổi đơn vị</title>
-    <link href="Admin2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="Admin2/css/style.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <%@ include file="../template/spinner.jsp" %>
 <div class="container-fluid position-relative d-flex p-0">
-    <%@ include file="Admin2/sidebar.jsp" %>
+    <%@ include file="../template/sidebar.jsp" %>
     <div class="content">
-        <%@ include file="Admin2/navbar.jsp" %>
+        <%@ include file="../template/navbar.jsp" %>
 
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light rounded p-4">
@@ -85,26 +87,26 @@
             </div>
         </div>
 
-        <%@ include file="Admin2/footer.jsp" %>
+        <%@ include file="../template/footer.jsp" %>
     </div>
 </div>
 
 
-<!-- jQuery -->
+
 <script src="js/jquery-3.4.1.min.js"></script>
 
-<!-- Waypoints -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
 
-<!-- Owl Carousel -->
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
-<!-- Bootstrap Bundle -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="Admin2/js/main.js"></script>
 <script>
-    // Toggle sidebar mở/ẩn
+    
     document.querySelector('.sidebar-toggler')?.addEventListener('click', function (e) {
         e.preventDefault();
         document.querySelector('.sidebar')?.classList.toggle('open');
