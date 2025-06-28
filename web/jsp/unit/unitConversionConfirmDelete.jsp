@@ -4,7 +4,8 @@
     Author     : KIET
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="model.UnitConversion, model.Materials, model.Unit" %>
 <%
     UnitConversion uc = (UnitConversion) request.getAttribute("uc");
@@ -17,23 +18,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Xác nhận xóa quy đổi đơn vị</title>
-    <link href="Admin2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="Admin2/css/style.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-<!-- Spinner Start -->
+<%@ include file="../template/spinner.jsp" %>
 <div id="spinner" class="show bg-white position-fixed w-100 vh-100 d-flex align-items-center justify-content-center">
     <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
 </div>
-<!-- Spinner End -->
+
 
 <div class="container-fluid position-relative d-flex p-0">
-    <%@ include file="Admin2/sidebar.jsp" %>
+    <%@ include file="../template/sidebar.jsp" %>
 
-    <!-- Content Start -->
+    
     <div class="content">
-        <%@ include file="Admin2/navbar.jsp" %>
+        <%@ include file="../template/navbar.jsp" %>
 
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light rounded p-4">
@@ -57,21 +58,19 @@
             </div>
         </div>
 
-        <%@ include file="Admin2/footer.jsp" %>
+        <%@ include file="../template/footer.jsp" %>
     </div>
-    <!-- Content End -->
+    
 </div>
 
-<!-- jQuery nếu dùng main.js -->
+
 <script src="js/jquery-3.4.1.min.js"></script>
 
-<!-- Bootstrap Bundle -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Main.js (nếu bạn có) -->
 <script src="${pageContext.request.contextPath}/js/main.js"></script>
 
-<!-- Sidebar toggle -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const toggleBtn = document.querySelector(".sidebar-toggler");
