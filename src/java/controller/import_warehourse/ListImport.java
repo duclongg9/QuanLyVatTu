@@ -54,9 +54,9 @@ public class ListImport extends HttpServlet {
         try {
             List<InputWarehourse> list = dao.getAllInputWarehouses();
             request.setAttribute("inputWarehouses", list);
-            request.getRequestDispatcher("/jsp/request/Import.jsp").forward(request, response);
+            request.getRequestDispatcher("/jsp/importWarehouse/Import.jsp").forward(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(createRequestImport.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CreateImportRequestController.class.getName()).log(Level.SEVERE, null, ex);
             response.sendRedirect("error.jsp");
         }
     }

@@ -52,7 +52,17 @@
                    
                     <div class="col-12">
                         <div class="bg-light rounded h-100 p-4">
-                            <h6 class="mb-4">User</h6>
+                            <h4 class="mb-4">User</h4>
+                            <c:if test="${not empty msg}">
+                                <div class="alert alert-success" role="alert">
+                                    ${msg}
+                                </div>
+                            </c:if>
+                             <c:if test="${not empty error}">
+                                <div class="alert alert-warning" role="alert">
+                                    ${error}
+                                </div>
+                            </c:if>
                            <a href="createUser" class="btn btn-primary m-2">Add User</a>
                             <form action="userList" method="get" class="d-flex align-items-center gap-2">
                                 <select name="roleFilter" class="form-select" style="width: 200px;" onchange="this.form.submit()">

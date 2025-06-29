@@ -4,9 +4,8 @@
  */
 package dao.request;
 
-import dao.Supplier.SupplierDAO;
 import dao.connect.DBConnect;
-import dao.material.MaterialsDAO;
+import dao.material.MaterialItemDAO;
 import dao.user.UserDAO;
 import java.sql.Statement;
 import java.sql.Connection;
@@ -15,7 +14,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.Types;
@@ -51,22 +49,34 @@ public class requestDAO {
         this(DBConnect.getConnection());
     }
 
-    
-    public double getPriceForMaterialItem(int materialId, int supplierId) throws SQLException {
-    String sql = "SELECT price FROM MaterialItem WHERE materialId = ? AND supplierId = ?";
-    try (Connection conn = DBConnect.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, materialId);
-        ps.setInt(2, supplierId);
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return rs.getDouble("price");
-            }
+    public boolean updateStatusRequest(int requestId, int statusId,int userId) {
+        String sql = "UPDATE Request SET statusId = ?,approvedBy = ? WHERE id = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, statusId);
+            ps.setInt(2, requestId);
+            ps.setInt(3, userId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
-    return 0.0; // mặc định nếu không tìm thấy
-}
-    
+
+    public double getPriceForMaterialItem(int materialId, int supplierId) throws SQLException {
+        String sql = "SELECT price FROM MaterialItem WHERE materialId = ? AND supplierId = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, materialId);
+            ps.setInt(2, supplierId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("price");
+                }
+            }
+        }
+        return 0.0; // mặc định nếu không tìm thấy
+    }
+
     public void updateStockQuantity(int materialId, int supplierId, int addedQuantity) throws SQLException {
         String sql = "UPDATE MaterialItem SET stockQuantity = stockQuantity + ? WHERE materialId = ? AND supplierId = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -91,12 +101,9 @@ public class requestDAO {
                     detail.setQuantity(rs.getInt("quantity"));
                     detail.setNote(rs.getString("note"));
 
-                    // Load Material và Supplier từ id (nếu cần đầy đủ object):
-                    MaterialsDAO mdao = new MaterialsDAO();
-                    SupplierDAO sdao = new SupplierDAO();
+                    MaterialItemDAO midao = new MaterialItemDAO();
 
-                    detail.setMaterialId(mdao.getMaterialsById(rs.getInt("materialId")));
-                    detail.setSupplierId(sdao.getSupplierById(rs.getInt("supplierId")));
+                    detail.setMaterialItem(midao.getMaterialItemById(requestId));
 
                     // Gán requestId nếu model có:
                     // requestDAO rdao = new requestDAO();
@@ -153,15 +160,14 @@ public class requestDAO {
     }
 
     // Thêm chi tiết các vật tư cho Request vào bảng RequestDetail
-    public void insertRequestDetail(Connection conn, int requestId, int materialId, int supplierId, int quantity, String note) throws SQLException {
-        String sql = "INSERT INTO RequestDetail (requestId, materialId, supplierId, quantity, note) VALUES (?, ?, ?, ?, ?)";
+    public void insertRequestDetail(Connection conn, int requestId, int materialItemId, int quantity, String note) throws SQLException {
+        String sql = "INSERT INTO RequestDetail (requestId, materialItemId, quantity, note) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, requestId);
-            ps.setInt(2, materialId);
-            ps.setInt(3, supplierId);
-            ps.setInt(4, quantity);
-            ps.setString(5, note);
-            ps.executeUpdate(); // Insert 1 bản ghi
+            ps.setInt(2, materialItemId); // chỉ cần id dòng MaterialItem
+            ps.setInt(3, quantity);
+            ps.setString(4, note);
+            ps.executeUpdate();
         }
     }
 
