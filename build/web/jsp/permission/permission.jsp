@@ -1,7 +1,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page contentType="text/html; charset=UTF-8" %> 
-<%@ page import="java.util.List" %>
 
+ <%@ page contentType="text/html; charset=UTF-8" %> 
+
+<%@ page import="java.util.List" %>
+<%@ page import="model.Supplier" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,49 +56,55 @@
                 <!-- Navbar End -->
 
                 <!-- Supplier List Start -->
-                
- <!-- Change Password Start -->
-        <div class="container-fluid pt-4 px-4">
+                <div class="container-fluid pt-4 px-4">
             <div class="bg-light rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h3 class="mb-0">Đổi Mật Khẩu</h3>
-                </div>
 
-                
+                <h3 class="text-center text-primary mb-4">Phân quyền người dùng</h3>
 
-                <!-- Form Đổi Mật Khẩu -->
-                <form action="${pageContext.request.contextPath}/changepassword" method="post">
-                    <div class="mb-3">
-                        <label class="form-label">Mật khẩu hiện tại</label>
-                        <input type="password" name="currentPassword" class="form-control" required />
+                <!-- Thông báo -->
+                <c:if test="${not empty message}">
+                    <div class="alert ${message.contains('th?t b?i') ? 'alert-danger' : 'alert-success'} text-center">
+                        ${message}
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Mật khẩu mới</label>
-                        <input type="password" name="newPassword" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Xác nhận mật khẩu mới</label>
-                        <input type="password" name="confirmPassword" class="form-control" required />
-                    </div>
-                    
-                    <!-- Hiển thị thông báo lỗi/thành công -->
-                <c:if test="${not empty error}">
-                    <div class="alert alert-danger">${error}</div>
                 </c:if>
-                <c:if test="${not empty success}">
-                    <div class="alert alert-success">${success}</div>
-                </c:if>
-                    <div class="d-flex justify-content-end">
-                        <a href="${pageContext.request.contextPath}/userprofile" class="btn btn-secondary me-2">Quay lại</a>
-                        <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+
+                <form method="post" action="permission">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Chức năng</th>
+                                    
+                                    <c:forEach var="role" items="${roles}">
+                                        <th>${role.roleName}</th>
+                                    </c:forEach>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="function" items="${functions}">
+                                    <tr>
+                                        <td>${function}</td>
+                                        
+                                        <c:forEach var="role" items="${roles}">
+                                            <td>
+                                                <input type="checkbox"
+                                                       name="perm"
+                                                       value="${function}|${role.id}"
+                                                       <c:if test="${permissionMap[function][role.id] == true}">checked</c:if> />
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary px-4">Update</button>
                     </div>
                 </form>
+
             </div>
-                        
         </div>
-        <!-- Change Password End -->
-        
-                        
                 <!-- Supplier List End -->
 
                 <!-- Footer Start -->

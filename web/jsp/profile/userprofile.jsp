@@ -113,6 +113,9 @@
                                     <a href="${pageContext.request.contextPath}/changepassword?uid=${user.id}" class="btn btn-warning">
                                         <i class="bi bi-lock-fill me-1"></i> Change Password
                                     </a>
+                                    <a  href="${pageContext.request.contextPath}/index.jsp" class="btn btn-dark ms-3">
+                                         Cancel
+                                    </a>
                                 </div>
                             </div>
                         </div>
