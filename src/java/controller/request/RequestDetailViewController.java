@@ -88,12 +88,13 @@ public class RequestDetailViewController extends HttpServlet {
         
         HttpSession session = request.getSession();
         User loggedInUser = (User) session.getAttribute("account");
-        int userId = loggedInUser.getId();
+        
         
          if (loggedInUser == null) {
             response.sendRedirect("login.jsp");
             return;
         }
+         int userId = loggedInUser.getId();
         
         String requestIdParam = request.getParameter("requestId");
         if (requestIdParam == null || requestIdParam.isEmpty()) {

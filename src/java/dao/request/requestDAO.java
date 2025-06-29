@@ -48,13 +48,24 @@ public class requestDAO {
     public requestDAO() {
         this(DBConnect.getConnection());
     }
-
+    public boolean updateSuccessStatusRequest(int requestId) {
+        String sql = "UPDATE Request SET statusId = 5 WHERE id = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, requestId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
     public boolean updateStatusRequest(int requestId, int statusId,int userId) {
         String sql = "UPDATE Request SET statusId = ?,approvedBy = ? WHERE id = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, statusId);
-            ps.setInt(2, requestId);
-            ps.setInt(3, userId);
+            ps.setInt(3, requestId);
+            ps.setInt(2, userId);
             int rows = ps.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
