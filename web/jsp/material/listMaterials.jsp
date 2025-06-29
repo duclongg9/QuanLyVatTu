@@ -34,7 +34,7 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Unit</th>
-                            <th>Category</th>
+                            <th>Sub Category</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -45,7 +45,7 @@
                                 <td>${m.id}</td>
                                 <td>${m.name}</td>
                                 <td>${m.unitId.unitName}</td>
-                                <td>${m.categoryId.category}</td>
+                                <td>${m.subCategoryId.subCategoryName}</td>
                                 <td>
                                     <span class="badge bg-${m.status ? 'success' : 'secondary'}">
                                         ${m.status ? 'Active' : 'Hidden'}

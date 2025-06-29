@@ -2,7 +2,7 @@
 package controller.material;
 
 
-import dao.material.CategoryMaterialDAO;
+import dao.subcategory.SubCategoryDAO;
 import dao.material.MaterialUnitDAO;
 import dao.material.MaterialsDAO;
 import java.io.IOException;
@@ -38,7 +38,7 @@ public static final int PAGE_NUMBER = 7;
      */
     
     MaterialUnitDAO muDao = new MaterialUnitDAO();
-    CategoryMaterialDAO cmDao = new CategoryMaterialDAO();
+    SubCategoryDAO scDao = new SubCategoryDAO();
     MaterialsDAO mDao = new MaterialsDAO();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -78,7 +78,7 @@ public static final int PAGE_NUMBER = 7;
         switch (action) {
             case "add":
                 request.setAttribute("units", muDao.getAllUnit());
-                request.setAttribute("categories", cmDao.getAllCategory());
+                request.setAttribute("categories", scDao.getAllSubCategory());
                 if (request.getParameter("success") != null) {
                     request.setAttribute("success", "Thêm vật tư thành công");
                 }
@@ -87,7 +87,7 @@ public static final int PAGE_NUMBER = 7;
             case "edit":
                 int id = Integer.parseInt(request.getParameter("id"));
                 request.setAttribute("units", muDao.getAllUnit());
-                request.setAttribute("categories", cmDao.getAllCategory());
+                request.setAttribute("categories", scDao.getAllSubCategory());
                 request.setAttribute("material", mDao.getMaterialsById(id));
                 request.getRequestDispatcher("/jsp/material/updateMaterial.jsp").forward(request, response);
                 break;
@@ -176,7 +176,7 @@ public static final int PAGE_NUMBER = 7;
         String idParam = request.getParameter("id");
         String name = request.getParameter("name");
         int unitId = Integer.parseInt(request.getParameter("unitId"));
-        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+        int subCategoryId = Integer.parseInt(request.getParameter("subCategoryId"));
 
         Part imagePart = request.getPart("image");
         String imageName = null;
@@ -193,9 +193,9 @@ public static final int PAGE_NUMBER = 7;
         int result;
         if (idParam != null && !idParam.isEmpty()) {
             int id = Integer.parseInt(idParam);
-            result = mDao.updateMaterial(id, name, unitId, imageName, categoryId);
+            result = mDao.updateMaterial(id, name, unitId, imageName, subCategoryId);
         } else {
-            result = mDao.createMaterial(name, unitId, imageName, categoryId);
+            result = mDao.createMaterial(name, unitId, imageName, subCategoryId);
         }
         if (result > 0) {
                         response.sendRedirect("materialController?action=list");

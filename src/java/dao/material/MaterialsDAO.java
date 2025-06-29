@@ -23,13 +23,16 @@ public class MaterialsDAO {
 //    private Connection conn;
     
     MaterialUnitDAO mudao = new MaterialUnitDAO();
-    CategoryMaterialDAO cmdao = new CategoryMaterialDAO();
+    dao.subcategory.SubCategoryDAO scdao = new dao.subcategory.SubCategoryDAO();
 
     private static final String COL_ID = "id";
     private static final String COL_NAME = "name";
     private static final String COL_UNIT = "unitId";
     private static final String COL_IMAGE = "image";
-    private static final String COL_CATEGORY = "categoryId";
+    private static final String COL_SUBCATEGORY = "subCategoryId";
+    private static final String COL_CREATED = "createdAt";
+    private static final String COL_UPDATED = "updatedAt";
+    private static final String COL_REPLACEMENT = "replacementMaterialId";
     private static final String COL_STATUS = "status";
     private static final int PAGE_SIZE = 7;
      
@@ -54,9 +57,15 @@ public class MaterialsDAO {
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_SUBCATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
+                    m.setCreatedAt(rs.getTimestamp(COL_CREATED));
+                    m.setUpdatedAt(rs.getTimestamp(COL_UPDATED));
+                    int rep = rs.getInt(COL_REPLACEMENT);
+                    if(rep > 0) {
+                        m.setReplacementMaterialId(getMaterialsById(rep));
+                    }
                     list.add(m);
                 }
                 return list;
@@ -102,9 +111,15 @@ public class MaterialsDAO {
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_SUBCATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
+                    m.setCreatedAt(rs.getTimestamp(COL_CREATED));
+                    m.setUpdatedAt(rs.getTimestamp(COL_UPDATED));
+                    int repDel = rs.getInt(COL_REPLACEMENT);
+                    if(repDel > 0) {
+                        m.setReplacementMaterialId(getMaterialsById(repDel));
+                    }
                     list.add(m);
                 }
             } catch (Exception e) {
@@ -130,9 +145,15 @@ public class MaterialsDAO {
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_SUBCATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
+                    m.setCreatedAt(rs.getTimestamp(COL_CREATED));
+                    m.setUpdatedAt(rs.getTimestamp(COL_UPDATED));
+                    int repDel2 = rs.getInt(COL_REPLACEMENT);
+                    if(repDel2 > 0) {
+                        m.setReplacementMaterialId(getMaterialsById(repDel2));
+                    }
                     list.add(m);
                 }
             }
@@ -140,7 +161,7 @@ public class MaterialsDAO {
         return list;
     }
 
-    // Count materials when searching by name
+//     Count materials when searching by name
     public int getTotalMaterialsByName(String name) {
         String sql = "SELECT COUNT(*) FROM Materials WHERE status = true AND name LIKE ?";
         try (Connection conn = DBConnect.getConnection();
@@ -172,9 +193,15 @@ public class MaterialsDAO {
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_SUBCATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
+                     m.setCreatedAt(rs.getTimestamp(COL_CREATED));
+                    m.setUpdatedAt(rs.getTimestamp(COL_UPDATED));
+                    int rep2 = rs.getInt(COL_REPLACEMENT);
+                    if(rep2 > 0) {
+                        m.setReplacementMaterialId(getMaterialsById(rep2));
+                    }
                     return m;
                 }
             }
@@ -186,14 +213,14 @@ public class MaterialsDAO {
     }
     
     //create materials
-    public int createMaterial(String name, int unitId, String image, int categoryId) {
-    String sql = "INSERT INTO Materials(name, unitId, image, categoryId, status) VALUES(?,?,?,?, true)";
+    public int createMaterial(String name, int unitId, String image, int subCategoryId) {
+    String sql = "INSERT INTO Materials(name, unitId, image, subCategoryId, status) VALUES(?,?,?,?, true)";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
             ps.setInt(2, unitId);
             ps.setString(3, image);
-            ps.setInt(4, categoryId);
+            ps.setInt(4, subCategoryId);
             return ps.executeUpdate(); // >0 nếu thành công
         } catch (SQLException e) {
             Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -204,8 +231,8 @@ public class MaterialsDAO {
     
     
     //update materials
-    public int updateMaterial(int id, String name, int unitId, String imageName, int categoryId) {
-StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, categoryId=?");
+    public int updateMaterial(int id, String name, int unitId, String imageName, int subCategoryId) {
+StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, subCategoryId=?");
         if (imageName != null) {
             sql.append(", image=?");
         }
@@ -215,7 +242,7 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, ca
             int idx = 1;
             ps.setString(idx++, name);
             ps.setInt(idx++, unitId);
-            ps.setInt(idx++, categoryId);
+            ps.setInt(idx++, subCategoryId);
             if (imageName != null) {
                 ps.setString(idx++, imageName);
             }
@@ -238,7 +265,7 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, ca
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_SUBCATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(m);
@@ -276,7 +303,7 @@ public int getTotalDeletedMaterials() {
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_SUBCATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(m);
