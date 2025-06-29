@@ -108,7 +108,7 @@
                     <td>
                         <input type="hidden" name="materialItemIds" value="${m.id}" />
                         <input type="number" name="quantities[${m.id}]" class="form-control"
-                               min="0" max="${m.quantity}" value="${m.selectedQuantity != null ? m.selectedQuantity : 0}" />
+                               min="0"  value="${m.selectedQuantity != null ? m.selectedQuantity : 0}" />
                     </td>
                 </tr>
             </c:forEach>

@@ -35,6 +35,50 @@ public class MaterialItemDAO {
     MaterialStatusDAO msdao = new MaterialStatusDAO();
     MaterialSupplierDAO msldao = new MaterialSupplierDAO();
 
+    public boolean increaseQuantityByMaterialItemId(int materialItemId, int addedQuantity) {
+    String sql = "UPDATE MaterialItem SET quantity = quantity + ? WHERE id = ?";
+
+    try (Connection conn = DBConnect.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, addedQuantity);
+        ps.setInt(2, materialItemId);
+
+        int rowsAffected = ps.executeUpdate();
+        return rowsAffected > 0;
+
+    } catch (Exception e) {
+        Logger.getLogger(MaterialItem.class.getName()).log(Level.SEVERE, null, e);
+    }
+
+    return false;
+}
+    
+    public double getPriceByMaterialItemId(int materialItemId) {
+    String sql = """
+                SELECT ms.price
+                FROM MaterialItem mi
+                JOIN materials_Supplier ms ON mi.materials_SupplierId = ms.id
+                WHERE mi.id = ?
+                """;
+
+    try (Connection conn = DBConnect.getConnection();  
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, materialItemId);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getDouble("price"); 
+            }
+        }
+    } catch (Exception e) {
+        Logger.getLogger(MaterialItem.class.getName()).log(Level.SEVERE, null, e);
+    }
+
+    return 0; 
+}
+
+    
     public MaterialItem getMaterialItemById(int materialItemId) {
         String sql = "SELECT * FROM MaterialItem Where id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

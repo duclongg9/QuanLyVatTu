@@ -4,8 +4,10 @@
  */
 package controller.import_warehourse;
 
+import dao.material.MaterialItemDAO;
 import dao.request.InputDetailDAO;
 import dao.request.InputWarehourseDAO;
+import dao.request.requestDAO;
 import dao.request.requestDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,7 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.MaterialItem;
+import model.Request;
 import model.RequestDetail;
 import model.User;
 
@@ -33,6 +35,8 @@ public class CreateImportController extends HttpServlet {
     requestDetailDAO rddao = new requestDetailDAO();
     InputWarehourseDAO iwdao = new InputWarehourseDAO();
     InputDetailDAO iddao = new InputDetailDAO();
+    MaterialItemDAO midao = new MaterialItemDAO();
+    requestDAO rdao = new requestDAO();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -79,12 +83,14 @@ public class CreateImportController extends HttpServlet {
             List<RequestDetail> materialList = rddao.getAllMaterialsInRequest(requestId);
             for (RequestDetail requestDetail : materialList) {
                 try {
-                    iddao.insertInputDetail(importId, requestDetail.getId(), requestDetail.getMaterialItem().getId(),requestDetail.getQuantity(), requestDetail.getMaterialItem().getMaterialSupplier().getPrice());
+                    iddao.insertInputDetail(importId, requestDetail.getId(), requestDetail.getMaterialItem().getId(), requestDetail.getQuantity(), midao.getPriceByMaterialItemId(requestDetail.getMaterialItem().getId()));
+                    midao.increaseQuantityByMaterialItemId(requestDetail.getMaterialItem().getId(), requestDetail.getQuantity());
                 } catch (SQLException ex) {
                     Logger.getLogger(CreateImportController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            response.sendRedirect("ListImport"); // hoặc trang hiển thị chi tiết phiếu nhập
+            rdao.updateSuccessStatusRequest(requestId);
+            response.sendRedirect("ListImport"); 
             return;
         } else {
             response.sendRedirect("errorPage.jsp");
