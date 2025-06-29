@@ -104,10 +104,7 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <a href="${pageContext.request.contextPath}/detailsupplier?sid=${s.id}" 
-                                                   class="btn btn-sm btn-success rounded-circle me-1">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
+                                                
                                                    
                                                    <a href="${pageContext.request.contextPath}/updatesupplier?sid=${s.id}" 
                                                    class="btn btn-sm btn-success rounded-circle me-1">

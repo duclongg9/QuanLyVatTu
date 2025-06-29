@@ -61,6 +61,13 @@ public class ChangePasswordController extends HttpServlet {
             request.getRequestDispatcher("jsp/profile/changePassword.jsp").forward(request, response);
             return;
         }
+        
+         
+    if (newPassword.length() < 6 || newPassword.length() > 20) {
+        request.setAttribute("error", "Mật khẩu phải có độ dài từ 6 đến 20 ký tự.");
+        request.getRequestDispatcher("jsp/profile/changePassword.jsp").forward(request, response);
+        return;
+    }
 
         String hashedNew = Encoding.toSHA1(newPassword);
         UserDAO dao = new UserDAO();
