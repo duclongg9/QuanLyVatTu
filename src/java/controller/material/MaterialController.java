@@ -2,7 +2,7 @@
 package controller.material;
 
 
-import dao.material.CategoryMaterialDAO;
+import dao.Category.CategoryMaterialDAO;
 import dao.material.MaterialUnitDAO;
 import dao.material.MaterialsDAO;
 import java.io.IOException;

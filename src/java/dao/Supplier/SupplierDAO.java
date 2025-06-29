@@ -30,9 +30,7 @@ public class SupplierDAO {
 
     RoleDAO rdao = new RoleDAO();
 
-    public SupplierDAO() {
-        conn = DBConnect.getConnection();
-    }
+  
 
     public Supplier getSupplierById(int id) {
 

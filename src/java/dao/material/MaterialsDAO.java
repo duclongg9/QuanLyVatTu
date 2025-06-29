@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao.material;
+import dao.Category.CategoryMaterialDAO;
+import dao.Category.SubCategoryDAO;
 import dao.connect.DBConnect;
 import dao.request.requestDAO;
 import dao.user.UserDAO;
@@ -23,13 +25,13 @@ public class MaterialsDAO {
 //    private Connection conn;
     
     MaterialUnitDAO mudao = new MaterialUnitDAO();
-    CategoryMaterialDAO cmdao = new CategoryMaterialDAO();
+    SubCategoryDAO scdao = new SubCategoryDAO();
 
     private static final String COL_ID = "id";
     private static final String COL_NAME = "name";
     private static final String COL_UNIT = "unitId";
     private static final String COL_IMAGE = "image";
-    private static final String COL_CATEGORY = "categoryId";
+    private static final String COL_CATEGORY = "subCategoryId";
     private static final String COL_STATUS = "status";
     private static final int PAGE_SIZE = 7;
      
@@ -54,7 +56,7 @@ public class MaterialsDAO {
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_CATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(m);
@@ -102,7 +104,7 @@ public class MaterialsDAO {
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_CATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(m);
@@ -130,7 +132,7 @@ public class MaterialsDAO {
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_CATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(m);
@@ -172,7 +174,7 @@ public class MaterialsDAO {
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_CATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
                     return m;
@@ -238,7 +240,7 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, ca
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_CATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(m);
@@ -276,7 +278,7 @@ public int getTotalDeletedMaterials() {
                     m.setId(rs.getInt(COL_ID));
                     m.setName(rs.getString(COL_NAME));
                     m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
-                    m.setCategoryId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_CATEGORY)));
                     m.setImage(rs.getString(COL_IMAGE));
                     m.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(m);

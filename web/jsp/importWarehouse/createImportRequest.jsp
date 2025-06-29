@@ -52,88 +52,55 @@
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Create New Request</h6>
-<!-- Form lọc vật tư (GET) -->
-<form method="get" action="CreateRequestImport" class="row g-3 mb-4">
-    <div class="col-md-4">
-        <label for="categoryMaterialId" class="form-label">Category</label>
-        <select name="categoryMaterialId" id="categoryMaterialId" class="form-select" onchange="this.form.submit()">
-            <option value="0">-- ALL --</option>
-            <c:forEach var="cat" items="${categoryList}">
-                <option value="${cat.id}" ${param.categoryMaterialId == cat.id ? 'selected' : ''}>${cat.category}</option>
-            </c:forEach>
-        </select>
-    </div>
 
-    <div class="col-md-4">
-        <label for="subCategoryId" class="form-label">Sub Category</label>
-        <select name="subCategoryId" id="subCategoryId" class="form-select" onchange="this.form.submit()">
-            <option value="0">-- ALL --</option>
-            <c:forEach var="sub" items="${subCategoryList}">
-                <option value="${sub.id}" ${param.subCategoryId == sub.id ? 'selected' : ''}>${sub.subCategoryName}</option>
-            </c:forEach>
-        </select>
-    </div>
+                <form action="CreateRequestImport" method="post">
+                    <!-- Note input -->
+                    <div class="mb-3">
+                        <label for="note" class="form-label">Note:</label>
+                        <textarea name="note" id="note" class="form-control" required></textarea>
+                    </div>
 
-    <div class="col-md-4">
-        <label for="keyword" class="form-label">Search Name</label>
-        <input type="text" name="keyword" id="keyword" class="form-control"
-               value="${param.keyword}" placeholder="Nhập tên vật tư...">
-    </div>
-</form>
+                    <div class="table-responsive">
+                        <table id="userTable" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col" onclick="sortTable(0)">Material ID</th>
+                                    <th scope="col" onclick="sortTable(1)">Material Name</th>
+                                    <th scope="col" onclick="sortTable(2)">Unit</th>
+                                    <th scope="col" onclick="sortTable(2)">Supplier</th>
+                                    <th scope="col" onclick="sortTable(3)">Category</th>
+                                    <th>Input Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="m" items="${listMaterialRequest}">
+                                    <tr>
+                                        <td>${m.materialId.id}</td>
+                                        <td>${m.materialId.name}</td>
+                                        <td>${m.supplierId.name}</td>
+                                        <td>${m.materialId.categoryId.category}</td>
+                                        <td>
+                                            <input type="hidden" name="materialId" value="${m.materialId.id}"/>
+                                            <input type="hidden" name="supplierId" value="${m.supplierId.id}"/>
+                                            <input type="number" name="quantity" min="0" value="0" />
+                                        </td>
+                                        <td>${m.materialId.unitId.unitName}</td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-center mt-3">
+                            <c:forEach begin="1" end="${endP}" var="i">
+                                <a href="CreateRequestImport?index=${i}" class="btn btn-outline-primary mx-1">${i}</a>
+                            </c:forEach>
+                        </div>
+                        <!-- Pagination End -->
+                    </div>
 
-<!-- Form thêm số lượng vật tư vào session (POST) -->
-<form method="post" action="CreateRequestImport">
-    <input type="hidden" name="action" value="add" />
-
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead class="table-light">
-            <tr>
-                <th>Material Name</th>
-                <th>Unit</th>
-                <th>Supplier</th>
-                <th>Sub Category</th>
-                <th>In Stock</th>
-                <th>Quantity</th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:forEach var="m" items="${materialItemList}">
-                <tr>
-                    <td>${m.materialSupplier.materialId.name}</td>
-                    <td>${m.materialSupplier.materialId.unitId.unitName}</td>
-                    <td>${m.materialSupplier.supplierId.name}</td>
-                    <td>${m.materialSupplier.materialId.subCategoryId.subCategoryName}</td>
-                    <td>${m.quantity}</td>
-                    <td>
-                        <input type="hidden" name="materialItemIds" value="${m.id}" />
-                        <input type="number" name="quantities[${m.id}]" class="form-control"
-                               min="0" max="${m.quantity}" value="${m.selectedQuantity != null ? m.selectedQuantity : 0}" />
-                    </td>
-                </tr>
-            </c:forEach>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Nút Add -->
-    <button type="submit" class="btn btn-warning mt-2">Add Selected Items</button>
-</form>
-
-<!-- Form tạo yêu cầu nhập kho (tách biệt) -->
-<form method="post" action="CreateRequestImport" class="mt-4">
-    <input type="hidden" name="action" value="create" />
-
-    <div class="mb-3">
-        <label for="note" class="form-label">Note</label>
-        <textarea name="note" id="note" class="form-control" rows="3" required></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create Request</button>
-    <a href="requestList" class="btn btn-secondary">Cancel</a>
-</form>
-
-
+                    <button type="submit" class="btn btn-primary">Create Request</button>
+                     <button type="button" class="btn btn-secondary rounded-pill m-2" onclick="history.back()">Cancel</button>
+                </form>
 
             </div>
         </div>
