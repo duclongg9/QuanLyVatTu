@@ -212,6 +212,36 @@ public class MaterialsDAO {
         return null;
     }
     
+    // Get new material that replaces the given material id
+    public Materials getNewVersionOf(int oldId) {
+        String sql = "SELECT * FROM Materials WHERE replacementMaterialId = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, oldId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Materials m = new Materials();
+                    m.setId(rs.getInt(COL_ID));
+                    m.setName(rs.getString(COL_NAME));
+                    m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_SUBCATEGORY)));
+                    m.setImage(rs.getString(COL_IMAGE));
+                    m.setStatus(rs.getBoolean(COL_STATUS));
+                    m.setCreatedAt(rs.getTimestamp(COL_CREATED));
+                    m.setUpdatedAt(rs.getTimestamp(COL_UPDATED));
+                    int rep = rs.getInt(COL_REPLACEMENT);
+                    if (rep > 0) {
+                        m.setReplacementMaterialId(getMaterialsById(rep));
+                    }
+                    return m;
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return null;
+    }
+    
     //create materials
     public int createMaterial(String name, int unitId, String image, int subCategoryId) {
     String sql = "INSERT INTO Materials(name, unitId, image, subCategoryId, status) VALUES(?,?,?,?, true)";

@@ -64,4 +64,28 @@ private Connection conn;
         }
         return null;
     }
+    public int createSubCategory(String name, int categoryId) {
+        String sql = "INSERT INTO SubCategory(subCategoryName, categoryMaterialId) VALUES(?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setInt(2, categoryId);
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            Logger.getLogger(SubCategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
+    }
+
+    public int updateSubCategory(int id, String name, int categoryId) {
+        String sql = "UPDATE SubCategory SET subCategoryName=?, categoryMaterialId=? WHERE id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setInt(2, categoryId);
+            ps.setInt(3, id);
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            Logger.getLogger(SubCategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
+    }
 }

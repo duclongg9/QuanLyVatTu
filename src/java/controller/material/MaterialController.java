@@ -18,6 +18,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import model.Materials;
+import java.util.Map;
+import java.util.HashMap;
 import java.sql.SQLException;
 /**
  *
@@ -154,7 +156,15 @@ public static final int PAGE_NUMBER = 7;
                 if (count % PAGE_NUMBER != 0) {
                     endP++;
                 }
+                Map<Integer, Materials> updatedMap = new HashMap<>();
+                for (Materials m : list) {
+                    Materials newVer = mDao.getNewVersionOf(m.getId());
+                    if (newVer != null) {
+                        updatedMap.put(m.getId(), newVer);
+                    }
+                }
                 request.setAttribute("materials", list);
+                request.setAttribute("updatedMap", updatedMap);
                 request.setAttribute("endP", endP);
                 request.setAttribute("tag", index);
                 

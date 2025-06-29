@@ -35,6 +35,8 @@
                             <th>Name</th>
                             <th>Unit</th>
                             <th>Sub Category</th>
+                            <th>Replaces</th>
+                            <th>Updated By</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -46,6 +48,15 @@
                                 <td>${m.name}</td>
                                 <td>${m.unitId.unitName}</td>
                                 <td>${m.subCategoryId.subCategoryName}</td>
+                                <td>${m.replacementMaterialId != null ? m.replacementMaterialId.name : '-'}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${updatedMap[m.id] != null}">
+                                            ${updatedMap[m.id].name}
+                                        </c:when>
+                                        <c:otherwise>-</c:otherwise>
+                                    </c:choose>
+                                </td>
                                 <td>
                                     <span class="badge bg-${m.status ? 'success' : 'secondary'}">
                                         ${m.status ? 'Active' : 'Hidden'}
