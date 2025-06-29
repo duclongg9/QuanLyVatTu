@@ -93,7 +93,7 @@
     </c:if>
                                             </td>
                                             <td>${lu.email}</td>
-                                            <td><a href="Update?uid=${lu.id}" class="delete-btn">Update</a> <a a
+                                            <td><a href="updateUser?uid=${lu.id}" class="delete-btn">Update</a> <a a
                                                     href="userList?id=${lu.id}&action=delete"
                                                     onclick="return confirm('Bạn có chắc muốn đổi trạng thái tài khoản không')"
                                                     class="delete-btn">Change Status</a> </td>

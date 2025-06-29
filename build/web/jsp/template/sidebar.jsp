@@ -1,4 +1,4 @@
-              <%@ page contentType="text/html; charset=UTF-8" %> 
+<!--              <%@ page contentType="text/html; charset=UTF-8" %> -->
 <!-- Set current page path -->
 <c:set var="currentPage" value="${pageContext.request.servletPath}" />
 
@@ -86,7 +86,7 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>Systems</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="#" class="dropdown-item">Nhà cung cấp</a>
+                            <a href="suppliercontroller" class="dropdown-item">Nhà cung cấp</a>
                         </div>
                 </div>
                 </div>
