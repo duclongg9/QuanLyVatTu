@@ -4,7 +4,6 @@
  */
 package dao.role;
 
-import dao.connect.DBConnect;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Role;
 import model.User;
+import dao.connect.DBConnect;
 
 /**
  *

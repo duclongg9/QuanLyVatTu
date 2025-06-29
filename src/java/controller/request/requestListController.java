@@ -5,7 +5,7 @@
 
 package controller.request;
 
-import controller.user.userController;
+import controller.user.UserListController;
 
 import dao.request.requestDAO;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import model.Request;
  * @author D E L L
  */
 @WebServlet(name="requestListController", urlPatterns={"/requestList"})
-public class requestListController extends HttpServlet {
+public class RequestListController extends HttpServlet {
    public static final int PAGE_NUMBER = 5;
    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -55,7 +55,7 @@ public class requestListController extends HttpServlet {
         try {
             lr = rdao.pagingStaff(index);
         } catch (SQLException ex) {
-            Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserListController.class.getName()).log(Level.SEVERE, null, ex);
         }
         request.setAttribute("listRequest", lr);
 
