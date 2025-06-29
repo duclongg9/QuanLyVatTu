@@ -58,7 +58,7 @@
                 <div class="container-fluid pt-4 px-4">                       
 
                     <div class="bg-light rounded h-100 p-4">
-                        <!-- Avatar + Tï¿½n + Vai trï¿½ -->
+                        <!-- Avatar + Tên + Vai trò -->
                         <div class="testimonial-item text-center">
                             <img class="img-fluid rounded-circle mx-auto mb-4"
                                  src="${pageContext.request.contextPath}/images/${user.image}"
@@ -68,7 +68,7 @@
                             
                         </div>
 
-                        <!-- B?ng thï¿½ng tin ng??i dï¿½ng -->
+                        <!-- B?ng thông tin ng??i dùng -->
                         <div class="form-floating mb-3">
                             <div class="bg-light rounded h-100 p-4">
                                 <h6 class="mb-4 text-start">Profile</h6>
@@ -105,7 +105,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <!-- Nï¿½t ch?nh s?a & ??i m?t kh?u -->
+                                <!-- Nút ch?nh s?a & ??i m?t kh?u -->
                                 <div class="d-flex justify-content-center mt-4" >
                                     <a href="${pageContext.request.contextPath}/updateprofile?uid=${user.id}" class="btn btn-primary me-3">
                                         <i class="bi bi-pencil-square me-1"></i> Update Profile
