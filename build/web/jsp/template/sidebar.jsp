@@ -25,7 +25,7 @@
                         <div class="dropdown-menu bg-transparent border-0">
                             <a href="createUser" class="dropdown-item">Thêm người dùng</a>
                             <a href="userList" class="dropdown-item">Danh sách người dùng</a>
-                            <a href="#" class="dropdown-item">Phân quyền người dùng</a>
+                            <a href="permission" class="dropdown-item">Phân quyền người dùng</a>
                         </div>
                     </div>
                     <!-- Quản lý vật tư -->

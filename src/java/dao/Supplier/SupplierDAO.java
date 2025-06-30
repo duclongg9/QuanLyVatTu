@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Materials;
 import model.Supplier;
+import model.Materials;
 
 /**
  *
@@ -320,6 +321,25 @@ public class SupplierDAO extends DBConnect {
             e.printStackTrace();
         }
         return count;
+    }
+    
+    public List<Materials> getMaterialsBySupplierId(int supplierId) {
+        List<Materials> list = new ArrayList<>();
+        String sql = "SELECT m.id, m.name " +
+                     "FROM materials m " +
+                     "JOIN materials_supplier ms ON m.id = ms.materialId " +
+                     "WHERE ms.supplierId = ?";
+        try {
+            PreparedStatement st = getConnection().prepareStatement(sql);
+            st.setInt(1, supplierId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                list.add(new Materials(rs.getInt("id"), rs.getString("name")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
    

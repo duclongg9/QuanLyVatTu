@@ -37,6 +37,11 @@ public class Materials {
         this.replacementMaterialId = replacementMaterialId;
     }
 
+    public Materials(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
