@@ -34,6 +34,10 @@
                 <div class="col-12">
                     <div class="bg-light rounded h-100 p-4">
                         <h6 class="mb-4">Export Warehouse List</h6>
+                        <form action="ListExport" method="get" class="mb-3 d-flex justify-content-end">
+                            <input type="text" name="keyword" class="form-control w-25 me-2" placeholder="Search..." value="${keyword}" />
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </form>
                         <div class="table-responsive">
                             <table class="table" id="exportTable">
                                 <thead>
@@ -57,7 +61,7 @@
                             </table>
                             <div class="d-flex justify-content-center mt-3">
                                 <c:forEach begin="1" end="${endP}" var="i">
-                                    <a href="ListExport?index=${i}" class="btn btn-outline-primary mx-1">${i}</a>
+                                    <a href="ListExport?index=${i}&keyword=${keyword}" class="btn btn-outline-primary mx-1">${i}</a>
                                 </c:forEach>
                             </div>
                         </div>

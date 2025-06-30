@@ -30,6 +30,14 @@ public class CreateExportController extends HttpServlet {
     OutputDetailDAO oddao = new OutputDetailDAO();
     MaterialItemDAO midao = new MaterialItemDAO();
     requestDAO rdao = new requestDAO();
+    
+   @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/jsp/exportWarehouse/createExport.jsp").forward(request, response);
+    }
+
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
