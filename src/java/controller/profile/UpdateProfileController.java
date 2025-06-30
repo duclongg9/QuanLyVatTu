@@ -81,7 +81,7 @@ public class UpdateProfileController extends HttpServlet {
             request.setAttribute("msg", "Vui lòng điền đầy đủ thông tin.");
             request.setAttribute("user", user);
             request.setAttribute("user", currentUser);
-            request.getRequestDispatcher("updateprofile.jsp").forward(request, response);
+            request.getRequestDispatcher("jsp/profile/updateprofile.jsp").forward(request, response);
             return;
         }
 
@@ -89,7 +89,7 @@ public class UpdateProfileController extends HttpServlet {
             request.setAttribute("msg", "Email không hợp lệ.");
             request.setAttribute("user", user);
             request.setAttribute("user", currentUser);
-            request.getRequestDispatcher("updateprofile.jsp").forward(request, response);
+            request.getRequestDispatcher("jsp/profile/updateprofile.jsp").forward(request, response);
             return;
         }
 
@@ -97,7 +97,7 @@ public class UpdateProfileController extends HttpServlet {
             request.setAttribute("msg", "Số điện thoại không hợp lệ! Phải có 10 chữ số và bắt đầu bằng 0.");
             request.setAttribute("user", user);
             request.setAttribute("user", currentUser);
-            request.getRequestDispatcher("updateprofile.jsp").forward(request, response);
+            request.getRequestDispatcher("jsp/profile/updateprofile.jsp").forward(request, response);
             return;
         }
 
@@ -105,7 +105,7 @@ public class UpdateProfileController extends HttpServlet {
             request.setAttribute("msg", "Địa chỉ không hợp lệ! Không được chứa ký tự đặc biệt.");
             request.setAttribute("user", user);
             request.setAttribute("user", currentUser);
-            request.getRequestDispatcher("updateprofile.jsp").forward(request, response);
+            request.getRequestDispatcher("jsp/profile/updateprofile.jsp").forward(request, response);
             return;
         }
 
@@ -123,7 +123,7 @@ public class UpdateProfileController extends HttpServlet {
             request.setAttribute("msg", "Cập nhật thất bại. Vui lòng thử lại.");
             request.setAttribute("user", user);
             request.setAttribute("user", currentUser);
-            request.getRequestDispatcher("updateprofile.jsp").forward(request, response);
+            request.getRequestDispatcher("jsp/profile/updateprofile.jsp").forward(request, response);
         }
     }
 

@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
+
 import model.CategoryMaterial;
 import model.MaterialUnit;
 
@@ -11,22 +12,23 @@ import model.MaterialUnit;
  * @author D E L L
  */
 public class Materials {
-    
+
     private int id;
     private String name;
     private MaterialUnit unitId;
     private String image;
-    private CategoryMaterial categoryId;
+    private SubCategory subCategoryId;
     private boolean status;
+
     public Materials() {
     }
 
-    public Materials(int id, String name, MaterialUnit unitId, String image, CategoryMaterial categoryId, boolean status) {
+    public Materials(int id, String name, MaterialUnit unitId, String image, SubCategory subCategoryId, boolean status) {
         this.id = id;
         this.name = name;
         this.unitId = unitId;
         this.image = image;
-        this.categoryId = categoryId;
+        this.subCategoryId = subCategoryId;
         this.status = status;
     }
 
@@ -62,21 +64,21 @@ public class Materials {
         this.image = image;
     }
 
-    public CategoryMaterial getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(CategoryMaterial categoryId) {
-        this.categoryId = categoryId;
-    }
-public boolean isStatus() {
+    public boolean isStatus() {
         return status;
     }
 
     public void setStatus(boolean status) {
         this.status = status;
     }
+
+    public SubCategory getSubCategoryId() {
+        return subCategoryId;
+    }
+
+    public void setSubCategoryId(SubCategory subCategoryId) {
+        this.subCategoryId = subCategoryId;
+    }
     
-    
-    
+
 }

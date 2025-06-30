@@ -6,24 +6,28 @@ package model;
 
 /**
  *
- * @author D E L L
+ * @author admin
  */
 public class Supplier {
     private int id;
     private String name;
     private String phone;
     private String address;
+    private boolean status;
 
+    // Constructors
     public Supplier() {
     }
 
-    public Supplier(int id, String name, String phone, String address) {
+    public Supplier(int id, String name, String phone, String address, boolean status) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.address = address;
+        this.status = status;
     }
 
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -55,6 +59,24 @@ public class Supplier {
     public void setAddress(String address) {
         this.address = address;
     }
-    
-    
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    // toString (optional for debugging or logging)
+    @Override
+    public String toString() {
+        return "Supplier{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }
