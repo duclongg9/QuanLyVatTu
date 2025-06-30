@@ -5,6 +5,7 @@
 package controller.material;
 
 import dao.material.CategoryMaterialDAO;
+import dao.subcategory.SubCategoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,6 +20,7 @@ import java.io.IOException;
 public class CategoryController extends HttpServlet {
 
     CategoryMaterialDAO dao = new CategoryMaterialDAO();
+    SubCategoryDAO subDao = new SubCategoryDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -40,6 +42,7 @@ public class CategoryController extends HttpServlet {
             case "delete":
                 int delId = Integer.parseInt(request.getParameter("id"));
                 dao.deleteCategory(delId);
+                subDao.deactivateByCategoryId(delId);
                 response.sendRedirect("categoryController");
                 break;
             default:
