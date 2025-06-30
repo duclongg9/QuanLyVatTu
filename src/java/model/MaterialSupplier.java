@@ -67,6 +67,6 @@ public class MaterialSupplier {
     public void setNote(String note) {
         this.note = note;
     }
-    
+
     
 }

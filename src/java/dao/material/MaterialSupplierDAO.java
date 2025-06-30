@@ -30,6 +30,7 @@ public class MaterialSupplierDAO {
     private static final String COL_MATERIALID = "materialId";
     private static final String COL_SUPPLIERID = "supplierId";
     private static final String COL_NOTE = "note";
+    private static final String COL_PRICE = "price";
 
     private static final int PAGE_SIZE = 5;
 
@@ -89,6 +90,7 @@ public class MaterialSupplierDAO {
                     p.setMaterialId(mdao.getMaterialsById(rs.getInt(COL_MATERIALID)));
                     p.setSupplierId(sdao.getSupplierById(rs.getInt(COL_SUPPLIERID)));
                     p.setNote(rs.getString(COL_NOTE));
+                    p.setPrice(rs.getDouble(COL_PRICE));
                     list.add(p);
                 }
             } catch (Exception e) {
@@ -114,5 +116,26 @@ public class MaterialSupplierDAO {
         }
 
         return 0;
+    }
+    
+    public MaterialSupplier getById(int id) {
+        String sql = "SELECT * FROM materials_supplier WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    MaterialSupplier p = new MaterialSupplier();
+                    p.setId(rs.getInt(COL_ID));
+                    p.setMaterialId(mdao.getMaterialsById(rs.getInt(COL_MATERIALID)));
+                    p.setSupplierId(sdao.getSupplierById(rs.getInt(COL_SUPPLIERID)));
+                    p.setNote(rs.getString(COL_NOTE));
+                    p.setPrice(rs.getDouble(COL_PRICE));
+                    return p;
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialSupplierDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return null;
     }
 }

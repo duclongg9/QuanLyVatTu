@@ -49,7 +49,8 @@ public class StatisticDAO {
             JOIN OutputWarehouse ow ON od.outputWarehouseId = ow.id
             JOIN RequestDetail rd ON od.requestDetailId = rd.id
             JOIN Materials m ON rd.materialId = m.id
-            JOIN CategoryMaterial cm ON m.categoryId = cm.id
+            JOIN SubCategory sc ON m.subCategoryId = sc.id
+            JOIN CategoryMaterial cm ON sc.categoryMaterialId = cm.id
             JOIN Request r ON rd.requestId = r.id
             JOIN User u ON r.userId = u.id
             LEFT JOIN UnitConversion uc ON uc.materialId = m.id AND uc.fromUnitId = m.unitId
@@ -134,7 +135,8 @@ public class StatisticDAO {
         FROM InputDetail id
         JOIN RequestDetail rd ON id.requestDetailId = rd.id
         JOIN Materials m ON rd.materialId = m.id
-        JOIN CategoryMaterial cm ON m.categoryId = cm.id
+        JOIN SubCategory sc ON m.subCategoryId = sc.id
+        JOIN CategoryMaterial cm ON sc.categoryMaterialId = cm.id
         JOIN InputWarehouse iw ON id.inputWarehouseId = iw.id
         WHERE iw.dateInput BETWEEN ? AND ?
         GROUP BY cm.category
@@ -298,8 +300,10 @@ public class StatisticDAO {
         List<Map<String, Object>> result = new ArrayList<>();
         String sql = "SELECT c.category AS category, ms.status AS status, SUM(mi.quantity) AS total " +
                  "FROM MaterialItem mi " +
-                 "JOIN Materials m ON mi.materialId = m.id " +
-                 "JOIN CategoryMaterial c ON m.categoryId = c.id " +
+                 "JOIN materials_Supplier msup ON mi.materials_SupplierId = msup.id " +
+                 "JOIN Materials m ON msup.materialId = m.id " +
+                 "JOIN SubCategory sc ON m.subCategoryId = sc.id " +
+                 "JOIN CategoryMaterial c ON sc.categoryMaterialId = c.id " +
                  "JOIN MaterialStatus ms ON mi.statusId = ms.id " +
                  "GROUP BY c.category, ms.status " +
                  "ORDER BY c.category, ms.status";

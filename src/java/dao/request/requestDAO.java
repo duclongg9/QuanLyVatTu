@@ -114,7 +114,7 @@ public class requestDAO {
 
                     MaterialItemDAO midao = new MaterialItemDAO();
 
-                    detail.setMaterialItem(midao.getMaterialItemById(requestId));
+                    detail.setMaterialItem(midao.getMaterialItemById(rs.getInt("materialItemId")));
 
                     // Gán requestId nếu model có:
                     // requestDAO rdao = new requestDAO();
