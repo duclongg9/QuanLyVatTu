@@ -4,6 +4,11 @@
     Author     : Dell-PC
 --%>
 
+<%-- 
+    Document   : createCategory
+    Created on : 30 Jun 2025, 06:29:41
+    Author     : Dell-PC
+--%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -25,15 +30,16 @@
             <div class="bg-light rounded p-4">
                 <h4 class="mb-4">Create Sub Category</h4>
                 <form action="${pageContext.request.contextPath}/subCategoryController" method="post" class="w-50">
+                    <input type="hidden" name="id" value="${sub.id}" />
                     <div class="mb-3">
-                        <label for="subCategoryName" class="form-label">Sub Category Name</label>
-                        <input type="text" id="subCategoryName" name="subCategoryName" class="form-control" required>
+                        <label for="name" class="form-label">Sub Category Name</label>
+                        <input type="text" id="name" name="name" class="form-control" value="${sub.subCategoryName}" required>
                     </div>
                     <div class="mb-3">
-                        <label for="categoryMaterialId" class="form-label">Category</label>
-                        <select id="categoryMaterialId" name="categoryMaterialId" class="form-select" required>
+                        <label for="categoryId" class="form-label">Category</label>
+                        <select id="categoryId" name="categoryId" class="form-select" required>
                             <c:forEach var="c" items="${categories}">
-                                <option value="${c.id}">${c.category}</option>
+                                <option value="${c.id}" ${sub.categoryMaterialId.id == c.id ? 'selected' : ''}>${c.category}</option>
                             </c:forEach>
                         </select>
                     </div>

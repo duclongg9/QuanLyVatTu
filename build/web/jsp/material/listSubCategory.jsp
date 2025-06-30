@@ -1,6 +1,6 @@
 <%-- 
-    Document   : listSubCategory
-    Created on : 30 Jun 2025, 06:41:09
+    Document   : listCategory
+    Created on : 30 Jun 2025, 06:30:42
     Author     : Dell-PC
 --%>
 
@@ -25,6 +25,17 @@
             <div class="bg-light rounded p-4">
                 <h4 class="mb-4">Sub Category List</h4>
                 <a href="${pageContext.request.contextPath}/subCategoryController?action=add" class="btn btn-primary mb-3">Add New</a>
+                <form action="subCategoryController" method="get" class="d-flex align-items-center gap-2 mb-3">
+                    <input type="hidden" name="action" value="list"/>
+                    <select name="categoryId" class="form-select w-auto">
+                        <option value="">All Category</option>
+                        <c:forEach var="c" items="${categoryFilter}">
+                            <option value="${c.id}" ${selectedCategory == c.id ? 'selected' : ''}>${c.category}</option>
+                        </c:forEach>
+                    </select>
+                    <input class="form-control border-0" type="search" placeholder="Search" name="search" value="${param.search}" />
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
@@ -35,16 +46,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="s" items="${subcategories}">
+                        <c:forEach var="c" items="${subCategories}">
                             <tr>
-                                <td>${s.id}</td>
-                                <td>${s.subCategoryName}</td>
-                                <td>${s.categoryMaterialId.category}</td>
-                                <td><a href="subCategoryController?action=edit&id=${s.id}" class="btn btn-sm btn-warning">Edit</a></td>
+                                <td>${c.id}</td>
+                                <td>${c.subCategoryName}</td>
+                                <td>${c.categoryMaterialId.category}</td>
+                                <td>
+                                    <a href="subCategoryController?action=edit&id=${c.id}" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="subCategoryController?action=delete&id=${c.id}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this sub category?');">Delete</a>
+                                </td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <c:forEach begin="1" end="${endP}" var="i">
+                            <li class="page-item ${tag == i ? 'active' : ''}">
+                                <a class="page-link" href="subCategoryController?index=${i}&search=${param.search}&categoryId=${selectedCategory}">${i}</a>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </nav>
             </div>
         </div>
         <%@include file="../template/footer.jsp" %>

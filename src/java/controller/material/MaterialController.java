@@ -5,6 +5,7 @@ package controller.material;
 import dao.subcategory.SubCategoryDAO;
 import dao.material.MaterialUnitDAO;
 import dao.material.MaterialsDAO;
+import dao.material.CategoryMaterialDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -42,6 +43,7 @@ public static final int PAGE_NUMBER = 7;
     MaterialUnitDAO muDao = new MaterialUnitDAO();
     SubCategoryDAO scDao = new SubCategoryDAO();
     MaterialsDAO mDao = new MaterialsDAO();
+    CategoryMaterialDAO cDao = new CategoryMaterialDAO();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -137,10 +139,16 @@ public static final int PAGE_NUMBER = 7;
                 }
                 int index = Integer.parseInt(indexPage);
                 String search = request.getParameter("search");
+                String categoryIdParam = request.getParameter("categoryId");
                 List<Materials> list;
                 int count;
                 try {
-                    if (search != null && !search.trim().isEmpty()) {
+                    if (categoryIdParam != null && !categoryIdParam.isEmpty()) {
+                        int cId = Integer.parseInt(categoryIdParam);
+                        list = mDao.searchMaterialsByCategory(cId, index);
+                        count = mDao.getTotalMaterialsByCategory(cId);
+                        request.setAttribute("selectedCategory", cId);
+                    } else if (search != null && !search.trim().isEmpty()) {
                         list = mDao.searchMaterialsByName(search, index);
                         count = mDao.getTotalMaterialsByName(search);
                         request.setAttribute("searchValue", search);
@@ -164,6 +172,7 @@ public static final int PAGE_NUMBER = 7;
                     }
                 }
                 request.setAttribute("materials", list);
+                request.setAttribute("categoryFilter", cDao.getAllCategory());
                 request.setAttribute("updatedMap", updatedMap);
                 request.setAttribute("endP", endP);
                 request.setAttribute("tag", index);

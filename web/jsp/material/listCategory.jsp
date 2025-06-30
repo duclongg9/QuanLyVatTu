@@ -25,6 +25,11 @@
             <div class="bg-light rounded p-4">
                 <h4 class="mb-4">Category List</h4>
                 <a href="${pageContext.request.contextPath}/categoryController?action=add" class="btn btn-primary mb-3">Add New</a>
+                <form action="categoryController" method="get" class="d-flex align-items-center gap-2 mb-3">
+                    <input type="hidden" name="action" value="list"/>
+                    <input class="form-control border-0" type="search" placeholder="Search" name="search" value="${param.search}" />
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
@@ -40,11 +45,21 @@
                                 <td>${c.category}</td>
                                 <td>
                                     <a href="categoryController?action=edit&id=${c.id}" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="categoryController?action=delete&id=${c.id}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this category?');">Delete</a>
                                 </td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
+                    <nav>
+                    <ul class="pagination justify-content-center">
+                        <c:forEach begin="1" end="${endP}" var="i">
+                            <li class="page-item ${tag == i ? 'active' : ''}">
+                                <a class="page-link" href="categoryController?index=${i}&search=${param.search}">${i}</a>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </nav>
             </div>
         </div>
         <%@include file="../template/footer.jsp" %>

@@ -178,7 +178,56 @@ public class MaterialsDAO {
         return 0;
     }
 
+// Get materials by category with pagination
+    public List<Materials> searchMaterialsByCategory(int categoryId, int index) throws SQLException {
+        List<Materials> list = new ArrayList<>();
+        String sql = "SELECT m.* FROM Materials m JOIN SubCategory sc ON m.subCategoryId = sc.id WHERE m.status = true AND sc.categoryMaterialId = ? LIMIT ? OFFSET ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, categoryId);
+            ps.setInt(2, PAGE_SIZE);
+            ps.setInt(3, (index - 1) * PAGE_SIZE);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Materials m = new Materials();
+                    m.setId(rs.getInt(COL_ID));
+                    m.setName(rs.getString(COL_NAME));
+                    m.setUnitId(mudao.getUnitById(rs.getInt(COL_UNIT)));
+                    m.setSubCategoryId(scdao.getSubCategoryById(rs.getInt(COL_SUBCATEGORY)));
+                    m.setImage(rs.getString(COL_IMAGE));
+                    m.setStatus(rs.getBoolean(COL_STATUS));
+                    m.setCreatedAt(rs.getTimestamp(COL_CREATED));
+                    m.setUpdatedAt(rs.getTimestamp(COL_UPDATED));
+                    int rep = rs.getInt(COL_REPLACEMENT);
+                    if (rep > 0) {
+                        m.setReplacementMaterialId(getMaterialsById(rep));
+                    }
+                    list.add(m);
+                }
+            }
+        }
+        return list;
+    }
 
+    // Count materials by category
+    public int getTotalMaterialsByCategory(int categoryId) {
+        String sql = "SELECT COUNT(*) FROM Materials m JOIN SubCategory sc ON m.subCategoryId = sc.id WHERE m.status = true AND sc.categoryMaterialId = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, categoryId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
+    }
+
+
+    
     public Materials getMaterialsById(int id) {
 
         String sql = "SELECT * FROM Materials WHERE id = ?";

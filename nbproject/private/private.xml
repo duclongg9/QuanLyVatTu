@@ -3,19 +3,39 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/material/MaterialController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/login.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/model/Materials.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/model/CategoryMaterial.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/statistic/StatisticDAO.java</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/user/UserDAO.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/request/RequestListController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/template/sidebar.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/material/MaterialSupplierDAO.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/model/MaterialSupplier.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/material/MaterialStatusDAO.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/material/listSubCategory.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/user/crud-user.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/units/RandomCode.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/material/DeletedMaterials.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/material/listCategory.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/user/createUser.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/material/CategoryMaterialDAO.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/material/MaterialController.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/material/createMaterial.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/login.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/material/updateSubCategory.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/model/CategoryMaterial.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/material/SubCategoryController.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/material/listMaterials.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/material/createSubCategory.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/material/CategoryController.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/materialitem/MaterialItemDAO.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/model/SubCategory.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/material/updateMaterial.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/controller/request/RequestListController.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/material/createCategory.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/template/sidebar.jsp</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/material/MaterialsDAO.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/units/RandomCode.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/web/jsp/material/DeletedMaterials.jsp</file>
             <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/units/Encoding.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/dao/subcategory/SubCategoryDAO.java</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/nbproject/private/private.xml</file>
+            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/SWP_MaterialManagement/SWP_MaterialManagement/src/java/model/MaterialItem.java</file>
         </group>
     </open-files>
 </project-private>

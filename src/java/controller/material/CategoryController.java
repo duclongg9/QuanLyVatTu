@@ -37,8 +37,33 @@ public class CategoryController extends HttpServlet {
                 request.setAttribute("category", dao.getCategoryById(id));
                 request.getRequestDispatcher("/jsp/material/createCategory.jsp").forward(request, response);
                 break;
+            case "delete":
+                int delId = Integer.parseInt(request.getParameter("id"));
+                dao.deleteCategory(delId);
+                response.sendRedirect("categoryController");
+                break;
             default:
-                request.setAttribute("categories", dao.getAllCategory());
+                 String indexPage = request.getParameter("index");
+                if (indexPage == null) {
+                    indexPage = "1";
+                }
+                int index = Integer.parseInt(indexPage);
+                String search = request.getParameter("search");
+                int total;
+                if (search != null && !search.trim().isEmpty()) {
+                    request.setAttribute("categories", dao.searchCategoriesByName(search, index));
+                    total = dao.getTotalCategoriesByName(search);
+                    request.setAttribute("searchValue", search);
+                } else {
+                    request.setAttribute("categories", dao.pagingCategories(index));
+                    total = dao.getTotalCategories();
+                }
+                int endP = total / CategoryMaterialDAO.PAGE_SIZE;
+                if (total % CategoryMaterialDAO.PAGE_SIZE != 0) {
+                    endP++;
+                }
+                request.setAttribute("endP", endP);
+                request.setAttribute("tag", index);
                 request.getRequestDispatcher("/jsp/material/listCategory.jsp").forward(request, response);
         }
     }
