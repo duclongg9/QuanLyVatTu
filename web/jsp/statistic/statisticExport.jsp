@@ -4,10 +4,10 @@
     Author     : KIET
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page import="java.util.*"%>
-<%@page import="model.ExportStatistic"%>
+<%@page import="model.Statistic"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,22 +15,35 @@
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Thống kê Xuất kho</title>
+            <link href="assets/img/favicon.ico" rel="icon">
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-        
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <!-- Libraries Stylesheet -->
+    <link href="assets/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="assets/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet">
 
-    <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
+    <!-- Template Stylesheet -->
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet">
 
     </head>
     <body>
-                <%@ include file="../template/spinner.jsp" %>
-
+                
+<%@ include file="../template/spinner.jsp" %>
+        
+            
         <div class="container-fluid position-relative d-flex p-0">
-        <div class="container-fluid position-relative d-flex p-0">
-
+<div class="container-fluid position-relative d-flex p-0">
             
             <%@ include file="../template/sidebar.jsp" %>
 
@@ -45,7 +58,7 @@
                         <h4 class="mb-4">Thống kê Xuất kho</h4>
 
                         
-                        <form method="post" action="statistic" class="row g-3">
+                        <form method="post" action="${pageContext.request.contextPath}/statistic" class="row g-3">
                             <input type="hidden" name="action" value="export">
 
                             <div class="col-md-3">
@@ -122,35 +135,27 @@
 
                     </div>
                 </div>
-                <nav>
-                    <ul class="pagination justify-content-center">
-                        <c:forEach begin="1" end="${totalPage}" var="i">
-                            <li class="page-item ${page == i ? 'active' : ''}">
-                                <a class="page-link" href="statistic?page=${i}">${i}</a>
-                            </li>
-                        </c:forEach>
-                    </ul>
-                </nav>
+
                 
                 <%@ include file="../template/footer.jsp" %>
             </div>
         </div>
         </div>
         
-        <script src="js/jquery-3.4.1.min.js"></script>
+        
 
-        
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/chart/chart.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/easing/easing.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/waypoints/waypoints.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-        
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-
-        
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="lib/chart/chart.min.js"></script>
-        
-        <script src="js/main.js"></script>
+    <!-- Template Javascript -->
+    <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 
 
         
@@ -198,7 +203,18 @@
             </script>
         </c:if>
 
-
+    <script>
+    // Spinner
+    var spinner = function () {
+        setTimeout(function () {
+            const spinner = document.getElementById('spinner');
+            if (spinner) {
+                spinner.classList.remove('show');
+            }
+        }, 1); // thời gian nhỏ để đợi DOM load
+    };
+    spinner();
+</script>
 
     </body>
 

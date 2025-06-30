@@ -22,6 +22,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  *
@@ -71,6 +72,8 @@ public class StatisticServlet extends HttpServlet {
         String action = request.getParameter("action");
         if ("import".equals(action)) {
             handleImportStatistic(request, response);
+        } else if ("remain".equals(action)) {
+            handleRemainStatistic(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy chức năng.");
         }
@@ -97,7 +100,11 @@ public class StatisticServlet extends HttpServlet {
             request.setAttribute("importByCategory", importByCategory);
             request.setAttribute("importByDate", importByDate);
 
+
             request.getRequestDispatcher("jsp/statistic/statisticImport.jsp").forward(request, response);
+
+            request.getRequestDispatcher("/jsp/statistic/statisticImport.jsp").forward(request, response);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,6 +120,20 @@ public class StatisticServlet extends HttpServlet {
 
         }
 
+    }
+
+    private void handleRemainStatistic(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try (Connection conn = new DBConnect().getConnection()) {
+            StatisticDAO dao = new StatisticDAO(conn);
+            List<Map<String, Object>> remainStats = dao.getRemainByCategoryAndStatus();
+
+            request.setAttribute("remainStats", remainStats);
+            request.getRequestDispatcher("/jsp/statistic/statisticRemain.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi thống kê tồn kho.");
+        }
     }
 
     /**

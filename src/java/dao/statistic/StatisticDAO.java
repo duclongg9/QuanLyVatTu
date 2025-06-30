@@ -53,6 +53,7 @@ public class StatisticDAO {
             JOIN CategoryMaterial cm ON sc.categoryMaterialId = cm.id
             JOIN Request r ON rd.requestId = r.id
             JOIN User u ON r.userId = u.id
+            JOIN Unit u2 ON m.unitId = u2.id
             LEFT JOIN UnitConversion uc ON uc.materialId = m.id AND uc.fromUnitId = m.unitId
             WHERE ow.date BETWEEN ? AND ?
         """

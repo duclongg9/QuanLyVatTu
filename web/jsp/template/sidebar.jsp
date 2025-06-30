@@ -33,7 +33,7 @@
                         <a href="#" class="nav-item nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>Materials </a>
                         <div class="dropdown-menu bg-transparent border-0">
                             <h6 class="dropdown-header">Danh mục đơn vị</h6>
-                            <a href="${pageContext.request.contextPath}/unitList" class="dropdown-item">️Đơn vị tính</a>
+                            <a href="${pageContext.request.contextPath}/unit" class="dropdown-item">️Đơn vị tính</a>
                             <h6 class="dropdown-header">Danh mục vật tư</h6>
                             <a href="${pageContext.request.contextPath}/categoryController?action=add" class="dropdown-item">Thêm danh mục</a>
                             <a href="${pageContext.request.contextPath}/subCategoryController?action=add" class="dropdown-item">Thêm mục con</a>
@@ -76,13 +76,18 @@
                         </div>
                     </div>
                     <!-- Thống kê chi phí -->
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>Fee Statistic</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="#" class="dropdown-item">Theo kỳ</a>
-                            <a href="#" class="dropdown-item">Theo loại chi phí</a>
-                        </div>
-                    </div>
+                  <div class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="statisticDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa fa-chart-bar me-2"></i> Statistics
+    </a>
+    <div class="dropdown-menu bg-transparent border-0" aria-labelledby="statisticDropdown">
+        <a class="dropdown-item" href="${pageContext.request.contextPath}/jsp/statistic/statisticsDashboard.jsp">Statistics Dashboard</a>
+        <a class="dropdown-item" href="${pageContext.request.contextPath}/jsp/statistic/statisticImport.jsp">Import Statistics</a>
+        <a class="dropdown-item" href="${pageContext.request.contextPath}/jsp/statistic/statisticExport.jsp">Export Statistics</a>
+        <a class="dropdown-item" href="${pageContext.request.contextPath}/jsp/statistic/statisticRemain.jsp">Inventory Statistics</a>
+        <a class="dropdown-item" href="${pageContext.request.contextPath}/jsp/statistic/statisticStatus.jsp">Status Statistics</a>
+    </div>
+</div>
 
                     <!-- Hệ thống -->
                     <div class="nav-item dropdown">

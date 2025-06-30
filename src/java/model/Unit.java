@@ -8,18 +8,17 @@ package model;
  *
  * @author KIET
  */
+
 public class Unit {
     private int id;
-    private String name;
-    private boolean status;
+    private String unit;
 
     public Unit() {
     }
 
-    public Unit(int id, String name, boolean status) {
+    public Unit(int id, String unit) {
         this.id = id;
-        this.name = name;
-        this.status = status;
+        this.unit = unit;
     }
 
     public int getId() {
@@ -30,21 +29,11 @@ public class Unit {
         this.id = id;
     }
 
-    public boolean isStatus() {
-        return status;
+    public String getUnit() {
+        return unit;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    
 }
