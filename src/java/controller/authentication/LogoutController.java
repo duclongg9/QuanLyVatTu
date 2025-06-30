@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpSession;
  *
  * @author D E L L
  */
-@WebServlet(name="LogoutController", urlPatterns={"/logoutController"})
+@WebServlet(name="LogoutController", urlPatterns={"/logout"})
 public class LogoutController extends HttpServlet {
    
    
@@ -41,14 +41,10 @@ public class LogoutController extends HttpServlet {
         if(session != null){
             session.invalidate();
         }
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        response.sendRedirect("login.jsp");
     } 
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
-    }
+ 
 
     /** 
      * Returns a short description of the servlet.

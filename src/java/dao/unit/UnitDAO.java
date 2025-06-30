@@ -32,7 +32,6 @@ public class UnitDAO {
     } catch (Exception e) {
         e.printStackTrace();
     }
-    System.out.println("Tổng số đơn vị tìm được: " + list.size());
     return list;
     
 }
@@ -63,18 +62,15 @@ public class UnitDAO {
             int id = rs.getInt("id");
 
             if (!isActive) {
-                // Tồn tại nhưng bị ẩn → khôi phục lại
                 String restoreSql = "UPDATE Unit SET status = true WHERE id = ?";
                 try (PreparedStatement psRestore = conn.prepareStatement(restoreSql)) {
                     psRestore.setInt(1, id);
                     psRestore.executeUpdate();
                 }
             } else {
-                // Tồn tại và đang hoạt động → báo lỗi
                 throw new Exception("Tên đơn vị đã tồn tại!");
             }
         } else {
-            // Thêm mới
             String insertSql = "INSERT INTO Unit(name, status) VALUES (?, true)";
             try (PreparedStatement psInsert = conn.prepareStatement(insertSql)) {
                 psInsert.setString(1, name);
@@ -82,7 +78,7 @@ public class UnitDAO {
             }
         }
     } catch (Exception e) {
-        throw new RuntimeException(e.getMessage()); // Trả lỗi cho Servlet
+        throw new RuntimeException(e.getMessage());
     }
     }
 
@@ -99,20 +95,19 @@ public class UnitDAO {
     }
    
     
-    // NV1: Kiểm tra tên đơn vị đã tồn tại chưa
+
     public boolean isDuplicateName(String name) {
     String sql = "SELECT 1 FROM Unit WHERE name = ? AND status = true";
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, name);
         ResultSet rs = ps.executeQuery();
-        return rs.next(); // Có tồn tại
+        return rs.next();
     } catch (Exception e) {
         e.printStackTrace();
     }
     return false;
 }
     
-    // NV2: Kiểm tra xem đơn vị có đang được sử dụng trong bảng Materials không
 public boolean isUsedInMaterials(int unitId) {
     String sql = "SELECT COUNT(*) FROM Materials WHERE unitId = ?";
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -124,10 +119,10 @@ public boolean isUsedInMaterials(int unitId) {
     } catch (Exception e) {
         e.printStackTrace();
     }
-    return true; // nếu lỗi, mặc định không cho xóa
+    return true;
 }
 
-    // NV3: Tìm kiếm đơn vị theo tên (có status = true)
+
 public List<Unit> searchByName(String keyword) {
     List<Unit> list = new ArrayList<>();
     String sql = "SELECT * FROM Unit WHERE name LIKE ? AND status = true";
@@ -143,7 +138,7 @@ public List<Unit> searchByName(String keyword) {
     return list;
 }
 
-// NV4: Lấy danh sách phân trang
+
 public List<Unit> getUnitsByPage(int page, int pageSize) {
     List<Unit> list = new ArrayList<>();
     String sql = "SELECT * FROM Unit WHERE status = true LIMIT ? OFFSET ?";
@@ -160,7 +155,7 @@ public List<Unit> getUnitsByPage(int page, int pageSize) {
     return list;
 }
 
-// NV5: Cập nhật trạng thái về false (ẩn đơn vị)
+
 public void deactivateUnit(int id) {
     String sql = "UPDATE Unit SET status = false WHERE id = ?";
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -171,7 +166,7 @@ public void deactivateUnit(int id) {
     }
 }
 
-// Phụ trợ: Đếm tổng số đơn vị đang hoạt động
+//so don vi hoat dong
 public int countUnits() {
     String sql = "SELECT COUNT(*) FROM Unit WHERE status = true";
     try (PreparedStatement ps = conn.prepareStatement(sql)) {

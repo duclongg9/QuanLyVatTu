@@ -18,6 +18,9 @@ import model.RequestDetail;
 import dao.material.MaterialsDAO;
 import dao.user.UserDAO;
 import dao.Supplier.SupplierDAO;
+import dao.material.MaterialItemDAO;
+import model.InputWarehourse;
+import model.Request;
 
 /**
  *
@@ -26,16 +29,14 @@ import dao.Supplier.SupplierDAO;
 public class requestDetailDAO {
 
     requestDAO rdao = new requestDAO();
-    MaterialsDAO mdao = new MaterialsDAO();
-    SupplierDAO sdao = new SupplierDAO();
+    MaterialItemDAO midao = new MaterialItemDAO();
     
 
     private static final int PAGE_SIZE = 5;
 
     private static final String COL_ID = "id";
     private static final String COL_REQUEST = "requestId";
-    private static final String COL_MATERIAL = "materialId";
-    private static final String COL_SUPPLIERID = "supplierId";
+    private static final String COL_MATERIALITEMID = "materialItemId";
     private static final String COL_QUANTITY = "quantity";
     private static final String COL_NOTE = "note";
 
@@ -44,7 +45,29 @@ public class requestDetailDAO {
     public requestDetailDAO() {
         conn = DBConnect.getConnection();
     }
+    public RequestDetail getRequestDetailById(int requestDetailId){
+         String sql = "SELECT * FROM requestdetail WHERE id = ?";
+         try (PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
 
+            ps.setInt(1, requestDetailId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    RequestDetail r = new RequestDetail();
+                    r.setId(rs.getInt(COL_ID));
+                    r.setMaterialItem(midao.getMaterialItemById(rs.getInt(COL_MATERIALITEMID)));
+                    r.setRequestId(rdao.getRequestById(rs.getInt(COL_REQUEST)));
+                    r.setQuantity(rs.getInt(COL_QUANTITY));
+                    r.setNote(rs.getString(COL_NOTE));
+                    return r;
+                }
+            }
+
+        } catch (Exception e) {
+            Logger.getLogger(Request.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return null;
+    }
+    
     public List<RequestDetail> getAllMaterialsInRequest(int id) {
         List<RequestDetail> list = new ArrayList<>();
         String sql = " SELECT *\n"
@@ -57,7 +80,7 @@ public class requestDetailDAO {
                 while (rs.next()) {
                     RequestDetail r = new RequestDetail();
                     r.setId(rs.getInt(COL_ID));
-                    r.setMaterialId(mdao.getMaterialsById(rs.getInt(COL_MATERIAL)));
+                    r.setMaterialItem(midao.getMaterialItemById(rs.getInt(COL_MATERIALITEMID)));
                     r.setRequestId(rdao.getRequestById(rs.getInt(COL_REQUEST)));
                     r.setQuantity(rs.getInt(COL_QUANTITY));
                     r.setNote(rs.getString(COL_NOTE));
@@ -86,9 +109,8 @@ public class requestDetailDAO {
                 while (rs.next()) {
                     RequestDetail r = new RequestDetail();
                     r.setId(rs.getInt(COL_ID));
-                    r.setMaterialId(mdao.getMaterialsById(rs.getInt(COL_MATERIAL)));
                     r.setRequestId(rdao.getRequestById(rs.getInt(COL_REQUEST)));
-                    r.setSupplierId(sdao.getSupplierById(rs.getInt(COL_SUPPLIERID)));
+                    r.setMaterialItem(midao.getMaterialItemById(rs.getInt(COL_MATERIALITEMID)));
                     r.setQuantity(rs.getInt(COL_QUANTITY));
                     r.setNote(rs.getString(COL_NOTE));
                     list.add(r);

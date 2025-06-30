@@ -127,7 +127,7 @@
                     <div class="form-floating mb-3">
                         <button type="submit" class="btn btn-success rounded-pill m-2">Submit</button>
                         <button type="button" class="btn btn-secondary rounded-pill m-2" onclick="history.back()">Cancel</button>
-                        <button  class="btn btn-primary rounded-pill m-2" onclick="submitResetForm()">Reset Password</button>
+                        <button type="button" class="btn btn-primary rounded-pill m-2" onclick="submitResetForm()">Reset Password</button>
                         <div style="color: red">
                             <c:if test="${not empty error}">
                                 ${error}
@@ -144,8 +144,8 @@
 </form>
                                         
                                         <!-- FORM ẨN GỬI TỚI resetPassword -->
-<form id="resetPasswordForm" method="post" action="${pageContext.request.contextPath}/resetPassword">
-    <input type="hidden" name="id" value="${user.id}" />
+<form id="resetPasswordForm" method="post" action="resetPassword">
+    <input type="hidden" name="userId" value="${user.id}" />
 </form>
             <%@include file="../template/footer.jsp" %>
         </div>

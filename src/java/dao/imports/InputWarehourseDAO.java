@@ -13,7 +13,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.InputWarehourse;
+import model.Request;
+import model.RequestType;
 import model.User;
 
 /**
@@ -21,8 +25,34 @@ import model.User;
  * @author D E L L
  */
 public class InputWarehourseDAO {
+    private static final String COL_ID = "id";
+    private static final String COL_DATEINPUT = "dateInput";
+    private static final String COL_USERID = "userId";
+    
+    private Connection conn;
     
     UserDAO udao = new UserDAO();
+    
+    public InputWarehourse getInputWarehourseById(int inputWarehourseId){
+        String sql = "SELECT * FROM inputwarehouse WHERE id = ?";
+         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
+
+            ps.setInt(1, inputWarehourseId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    InputWarehourse iw = new InputWarehourse();
+                    iw.setId(rs.getInt(COL_ID));
+                    iw.setDateInput(rs.getString(COL_DATEINPUT));
+                    iw.setUserId(udao.getUserById(rs.getInt(COL_USERID)));
+                    return iw;
+                }
+            }
+
+        } catch (Exception e) {
+            Logger.getLogger(Request.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return null;
+    }
     
     public List<InputWarehourse> getAllInputWarehouses() throws SQLException {
     List<InputWarehourse> list = new ArrayList<>();
@@ -36,9 +66,9 @@ public class InputWarehourseDAO {
             InputWarehourse warehouse = new InputWarehourse();
             warehouse.setId(rs.getInt("id"));
             warehouse.setDateInput(rs.getString("dateInput"));
-            // Lấy User nếu cần
+
             int userId = rs.getInt("userId");
-            User user = new User(); // hoặc dùng UserDAO.getUserById(userId) nếu cần
+            User user = new User();
             user.setId(userId);
             warehouse.setUserId(udao.getUserById(userId));
 
@@ -66,5 +96,10 @@ public class InputWarehourseDAO {
             }
         }
         return -1;
+    }
+    public static void main(String[] args) {
+        InputWarehourseDAO i = new InputWarehourseDAO();
+        InputWarehourse imports = i.getInputWarehourseById(1);
+        System.out.println(imports);
     }
 }

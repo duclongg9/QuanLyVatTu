@@ -11,7 +11,7 @@ import model.MaterialUnit;
  * @author D E L L
  */
 public class Materials {
-    
+
     private int id;
     private String name;
     private MaterialUnit unitId;
@@ -21,6 +21,7 @@ public class Materials {
     private java.sql.Timestamp updatedAt;
     private Materials replacementMaterialId;
     private boolean status;
+
     public Materials() {
     }
 
@@ -81,6 +82,14 @@ public boolean isStatus() {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public SubCategory getSubCategoryId() {
+        return subCategoryId;
+    }
+
+    public void setSubCategoryId(SubCategory subCategoryId) {
+        this.subCategoryId = subCategoryId;
     }
     
      public java.sql.Timestamp getCreatedAt() {

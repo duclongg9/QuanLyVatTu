@@ -6,24 +6,45 @@ package model;
 
 /**
  *
- * @author Dell-PC
+ * @author D E L L
  */
 public class MaterialItem {
     private int id;
     private MaterialStatus statusId;
     private int quantity;
-    private MaterialSupplier materialsSupplierId;
-
+    private MaterialSupplier materialSupplier;
+    
+    private int selectedQuantity = 0;// Đây là một trường ảo, Áp dụng kỹ thuật làm giàu dữ liệu(mục đích ghi nhớ lại số lượng người dùng đã chọn(mà chưa submit) để đẩy tiếp lại lên session hỗ trợ người dùng)
+    
     public MaterialItem() {
     }
 
-    public MaterialItem(int id, MaterialStatus statusId, int quantity, MaterialSupplier materialsSupplierId) {
+    public MaterialItem(int id, MaterialStatus statusId, int quantity, MaterialSupplier materialSupplier) {
         this.id = id;
         this.statusId = statusId;
         this.quantity = quantity;
-        this.materialsSupplierId = materialsSupplierId;
+        this.materialSupplier = materialSupplier;
     }
 
+    public MaterialStatus getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(MaterialStatus statusId) {
+        this.statusId = statusId;
+    }
+
+    public int getSelectedQuantity() {
+        return selectedQuantity;
+    }
+
+    public void setSelectedQuantity(int selectedQuantity) {
+        this.selectedQuantity = selectedQuantity;
+    }
+    
+    
+    
+    
     public int getId() {
         return id;
     }
@@ -32,11 +53,11 @@ public class MaterialItem {
         this.id = id;
     }
 
-    public MaterialStatus getStatusId() {
+    public MaterialStatus getStarusId() {
         return statusId;
     }
 
-    public void setStatusId(MaterialStatus statusId) {
+    public void setStarusId(MaterialStatus statusId) {
         this.statusId = statusId;
     }
 
@@ -48,11 +69,14 @@ public class MaterialItem {
         this.quantity = quantity;
     }
 
-    public MaterialSupplier getMaterialsSupplierId() {
-        return materialsSupplierId;
+    public MaterialSupplier getMaterialSupplier() {
+        return materialSupplier;
     }
 
-    public void setMaterialsSupplierId(MaterialSupplier materialsSupplierId) {
-        this.materialsSupplierId = materialsSupplierId;
+    public void setMaterialSupplier(MaterialSupplier materialSupplier) {
+        this.materialSupplier = materialSupplier;
     }
+    
+    
+    
 }

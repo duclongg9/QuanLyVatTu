@@ -5,6 +5,7 @@ package controller.request;
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 import controller.user.UserListController;
+import dao.request.requestDAO;
 import dao.request.requestDetailDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,19 +14,24 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Request;
 import model.RequestDetail;
+import model.User;
 
 /**
  *
  * @author D E L L
  */
-@WebServlet(urlPatterns = {"/requestDetailController"})
+@WebServlet(urlPatterns = {"/requestDetail"})
 public class RequestDetailViewController extends HttpServlet {
+
     public static final int PAGE_NUMBER = 5;
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -37,18 +43,21 @@ public class RequestDetailViewController extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     requestDetailDAO rddao = new requestDetailDAO();
+    requestDAO rdao = new requestDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int requestId = Integer.parseInt(request.getParameter("requestId"));
-       //Lấy giá trị trang
+        Request userRequest = rdao.getRequestById(requestId);
+        request.setAttribute("userRequest", userRequest);
+        //Lấy giá trị trang
         String indexPage = request.getParameter("index");
         if (indexPage == null) {
             indexPage = "1";// load dữ liệu lần đầu tiên cho trang
         }
         int index = Integer.parseInt(indexPage);
-       //hiển thị list request
+        //hiển thị list request
         List<RequestDetail> lr = null;
         try {
             lr = rddao.pagingRequestDetailByRequestId(index, requestId);
@@ -69,7 +78,6 @@ public class RequestDetailViewController extends HttpServlet {
         }
         request.setAttribute("endP", endPage);
         request.setAttribute("requestId", requestId);
-        
 
         request.getRequestDispatcher("/jsp/request/requestDetail.jsp").forward(request, response);
     }
@@ -77,7 +85,33 @@ public class RequestDetailViewController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+        
+        
+         if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+         int userId = loggedInUser.getId();
+        
+        String requestIdParam = request.getParameter("requestId");
+        if (requestIdParam == null || requestIdParam.isEmpty()) {
+            response.sendRedirect("errorPage.jsp"); 
+            return;
+        }
+        String newStatusId = request.getParameter("newStatusId");
+
+        if (newStatusId != null) {
+            int statusId = Integer.parseInt(newStatusId);
+            int requestId = Integer.parseInt(requestIdParam);
+           
+
+            rdao.updateStatusRequest(requestId, statusId,userId);
+            response.sendRedirect("requestDetail?requestId=" + requestId); 
+            return;
+        }
     }
 
     /**

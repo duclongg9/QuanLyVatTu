@@ -59,9 +59,10 @@
                                 <label for="password">Password</label>
                             </div>
 
-                            <c:if test="${not empty msg}">
-                                <p class="text-danger">${msg}</p>
+                            <c:if test="${not empty sessionScope.msg}">
+                                <div class="alert alert-success">${sessionScope.msg}</div>
                             </c:if>
+                               
 
                             <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Login</button>
                         </form>

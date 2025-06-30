@@ -44,6 +44,35 @@ public class MaterialSupplierDAO {
         conn = DBConnect.getConnection();
     }
 
+    public MaterialSupplier getMaterialSupplierById(int materialSupplierId){
+        String sql = """
+                     SELECT * 
+                     FROM materials_Supplier 
+                     WHERE id =?
+                    """;
+        
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, materialSupplierId);
+            try (ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+                     MaterialSupplier p = new MaterialSupplier();
+                    p.setId(rs.getInt(COL_ID));
+                    p.setMaterialId(mdao.getMaterialsById(rs.getInt(COL_MATERIALID)));
+                    p.setSupplierId(sdao.getSupplierById(rs.getInt(COL_SUPPLIERID)));
+                    p.setNote(rs.getString(COL_NOTE));
+                    return p;
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialSupplier.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return null;
+    }
+    
+    
     //Phân trang
     public List<MaterialSupplier> pagingMaterialWithSupplier(int index) throws SQLException {
         List<MaterialSupplier> list = new ArrayList<>();

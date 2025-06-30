@@ -3,33 +3,40 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
+
 import model.Request;
 import model.Materials;
+
 /**
  *
  * @author D E L L
  */
 public class RequestDetail {
+
     private int id;
     private Request requestId;
-    private Materials materialId;
-    private Supplier supplierId;
+    private MaterialItem materialItem;
     private int quantity;
     private String note;
 
     public RequestDetail() {
     }
 
-    public RequestDetail(int id, Request requestId, Materials materialId, Supplier supplierId, int quantity, String note) {
+    public RequestDetail(int id, Request requestId, MaterialItem materialItem, int quantity, String note) {
         this.id = id;
         this.requestId = requestId;
-        this.materialId = materialId;
-        this.supplierId = supplierId;
+        this.materialItem = materialItem;
         this.quantity = quantity;
         this.note = note;
     }
 
-    
+    public MaterialItem getMaterialItem() {
+        return materialItem;
+    }
+
+    public void setMaterialItem(MaterialItem materialItem) {
+        this.materialItem = materialItem;
+    }
 
     public int getId() {
         return id;
@@ -45,14 +52,6 @@ public class RequestDetail {
 
     public void setRequestId(Request requestId) {
         this.requestId = requestId;
-    }
-
-    public Materials getMaterialId() {
-        return materialId;
-    }
-
-    public void setMaterialId(Materials materialId) {
-        this.materialId = materialId;
     }
 
     public int getQuantity() {
@@ -71,14 +70,4 @@ public class RequestDetail {
         this.note = note;
     }
 
-    public Supplier getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(Supplier supplierId) {
-        this.supplierId = supplierId;
-    }
-    
-    
-    
 }
