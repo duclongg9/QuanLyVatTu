@@ -91,6 +91,8 @@ public class PermissionRoleDAO extends DBConnect {
     }
 
     public boolean permissionCheck(int roleId, String url) {
+        
+        if (roleId == 1) return true;
         String sql = """
         SELECT 1 FROM permission_role pr
         JOIN permission p ON pr.permissionId = p.id
