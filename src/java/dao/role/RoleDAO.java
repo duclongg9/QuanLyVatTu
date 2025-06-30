@@ -69,11 +69,11 @@ public class RoleDAO {
 
                 while (rs.next()) {
                     Role r = new Role();
-                    if (rs.getInt(COL_ID) != 1) { //trừ ADMIN ra 
+                    //trừ ADMIN ra 
                         r.setId(rs.getInt(COL_ID));
                         r.setRoleName(rs.getString(COL_ROLE));
                         lr.add(r);
-                    }
+                    
 
                 }
                 return lr;

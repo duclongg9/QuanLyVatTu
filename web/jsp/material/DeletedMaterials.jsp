@@ -36,7 +36,7 @@
                                 <td>${m.id}</td>
                                 <td>${m.name}</td>
                                 <td>${m.unitId.unitName}</td>
-                                <td>${m.categoryId.category}</td>
+                                <td>${m.subCategoryId.subCategoryName}</td>
                                 <td>
                                     <a href="materialController?action=activate&id=${m.id}" class="btn btn-sm btn-success" onclick="return confirm('Activate this material?');">Activate</a>
                                 </td>

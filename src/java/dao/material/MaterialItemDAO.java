@@ -53,6 +53,19 @@ public class MaterialItemDAO {
 
     return false;
 }
+    public boolean decreaseQuantityByMaterialItemId(int materialItemId, int deductedQuantity) {
+        String sql = "UPDATE MaterialItem SET quantity = quantity - ? WHERE id = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, deductedQuantity);
+            ps.setInt(2, materialItemId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            Logger.getLogger(MaterialItem.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return false;
+    }
     
     public double getPriceByMaterialItemId(int materialItemId) {
     String sql = """
@@ -89,7 +102,7 @@ public class MaterialItemDAO {
                 while (rs.next()) {
                     MaterialItem mi = new MaterialItem();
                     mi.setId(rs.getInt(COL_ID));
-                    mi.setStarusId(msdao.getMaterialStatusById(rs.getInt(COL_STATUSID)));
+                    mi.setStarusId(msdao.getStatusById(rs.getInt(COL_STATUSID)));
                     mi.setQuantity(rs.getInt(COL_QUANTITY));
                     mi.setMaterialSupplier(msldao.getMaterialSupplierById(rs.getInt(COL_MATERIALSUPPLIERID)));
                     return mi;
@@ -127,7 +140,7 @@ public class MaterialItemDAO {
                 while (rs.next()) {
                     MaterialItem mi = new MaterialItem();
                     mi.setId(rs.getInt(COL_ID));
-                    mi.setStarusId(msdao.getMaterialStatusById(rs.getInt(COL_STATUSID)));
+                    mi.setStarusId(msdao.getStatusById(rs.getInt(COL_STATUSID)));
                     mi.setQuantity(rs.getInt(COL_QUANTITY));
                     mi.setMaterialSupplier(msldao.getMaterialSupplierById(rs.getInt(COL_MATERIALSUPPLIERID)));
                     materialList.add(mi);

@@ -153,10 +153,18 @@
                             <div class="d-flex mt-4 gap-2">
                                 <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill">Quay lại</a>
                                  <c:if test="${userRequest.statusId.id == 2 && (sessionScope.account.role.id == 1 || sessionScope.account.role.id == 2)}">
-                                    <form action="createImport" method="post">
-                                        <input type="hidden" name="requestId" value="${requestId}" />
-                                        <button type="submit" class="btn btn-success">Import to Warehouse</button>
-                                    </form>
+                                    <c:if test="${userRequest.type == 'IMPORT'}">
+                                        <form action="createImport" method="post">
+                                            <input type="hidden" name="requestId" value="${requestId}" />
+                                            <button type="submit" class="btn btn-success">Import to Warehouse</button>
+                                        </form>
+                                    </c:if>
+                                    <c:if test="${userRequest.type == 'EXPORT'}">
+                                        <form action="createExport" method="post">
+                                            <input type="hidden" name="requestId" value="${requestId}" />
+                                            <button type="submit" class="btn btn-danger">Export from Warehouse</button>
+                                        </form>
+                                    </c:if>
                                 </c:if>
                             </div>
                         </div>

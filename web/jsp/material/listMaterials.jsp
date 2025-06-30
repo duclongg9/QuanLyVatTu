@@ -25,6 +25,12 @@
                         <a href="${pageContext.request.contextPath}/materialController?action=deleted" class="btn btn-outline-secondary mb-3 ms-2">View Deleted</a>
                         <form action="materialController" method="get" class="d-flex align-items-center gap-2 mb-3">
                             <input type="hidden" name="action" value="list"/>
+                            <select name="categoryId" class="form-select w-auto">
+                                <option value="">All Category</option>
+                                <c:forEach var="c" items="${categoryFilter}">
+                                    <option value="${c.id}" ${selectedCategory == c.id ? 'selected' : ''}>${c.category}</option>
+                                </c:forEach>
+                            </select>
                             <input class="form-control border-0" type="search" placeholder="Search" name="search" value="${param.search}" />
                             <button type="submit" class="btn btn-primary">Search</button>
                         </form>
@@ -34,7 +40,9 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Unit</th>
-                            <th>Category</th>
+                            <th>Sub Category</th>
+                            <th>Replaces</th>
+                            <th>Updated By</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -45,7 +53,16 @@
                                 <td>${m.id}</td>
                                 <td>${m.name}</td>
                                 <td>${m.unitId.unitName}</td>
-                                <td>${m.categoryId.category}</td>
+                                <td>${m.subCategoryId.subCategoryName}</td>
+                                <td>${m.replacementMaterialId != null ? m.replacementMaterialId.name : '-'}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${updatedMap[m.id] != null}">
+                                            ${updatedMap[m.id].name}
+                                        </c:when>
+                                        <c:otherwise>-</c:otherwise>
+                                    </c:choose>
+                                </td>
                                 <td>
                                     <span class="badge bg-${m.status ? 'success' : 'secondary'}">
                                         ${m.status ? 'Active' : 'Hidden'}
@@ -63,7 +80,7 @@
                     <ul class="pagination justify-content-center">
                         <c:forEach begin="1" end="${endP}" var="i">
                             <li class="page-item ${tag == i ? 'active' : ''}">
-                                <a class="page-link" href="materialController?action=list&index=${i}&search=${param.search}">${i}</a>
+                                <a class="page-link" href="materialController?action=list&index=${i}&search=${param.search}&categoryId=${selectedCategory}">${i}</a>
                             </li>
                         </c:forEach>
                     </ul>

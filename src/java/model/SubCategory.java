@@ -6,15 +6,14 @@ package model;
 
 /**
  *
- * @author D E L L
+ * @author Dell-PC
  */
 public class SubCategory {
-    private int id;
+private int id;
     private String subCategoryName;
     private CategoryMaterial categoryMaterialId;
 
     public SubCategory() {
-        
     }
 
     public SubCategory(int id, String subCategoryName, CategoryMaterial categoryMaterialId) {
@@ -46,6 +45,4 @@ public class SubCategory {
     public void setCategoryMaterialId(CategoryMaterial categoryMaterialId) {
         this.categoryMaterialId = categoryMaterialId;
     }
-    
-    
 }
