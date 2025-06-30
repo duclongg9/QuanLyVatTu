@@ -67,13 +67,6 @@ public class MaterialSupplier {
     public void setNote(String note) {
         this.note = note;
     }
-    
-    public double getPrice() {
-        return price;
-    }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
     
 }

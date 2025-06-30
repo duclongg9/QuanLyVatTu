@@ -88,14 +88,6 @@ public boolean isStatus() {
     public void setStatus(boolean status) {
         this.status = status;
     }
-
-    public SubCategory getSubCategoryId() {
-        return subCategoryId;
-    }
-
-    public void setSubCategoryId(SubCategory subCategoryId) {
-        this.subCategoryId = subCategoryId;
-    }
     
      public java.sql.Timestamp getCreatedAt() {
         return createdAt;

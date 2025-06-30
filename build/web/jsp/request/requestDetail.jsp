@@ -1,10 +1,10 @@
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-<%@page contentType="text/html; charset=UTF-8" %>
+     <meta charset="utf-8">
+    <%@page contentType="text/html; charset=UTF-8" %>
     <title>Request Detail</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
@@ -34,118 +34,170 @@
 </head>
 
 <body>
-    <div class="container-flrid position-relative bg-white d-flex p-0">
-<%@include file="../template/spinner.jsp" %>
+<div class="container-fluid bg-white d-flex p-0">
 
+    <%@include file="../template/spinner.jsp" %>
+    <%@include file="../template/sidebar.jsp" %>
 
-<%@include file="../template/sidebar.jsp" %>
+    <div class="content">
+        <%@include file="../template/navbar.jsp" %>
 
+        <!-- Table Start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <h6 class="mb-4">Request Detail</h6>
 
-        <!-- Content Start -->
-        <div class="content">
-<%@include file="../template/navbar.jsp" %>
+                        
 
+                        <div class="table-responsive">
+                            <c:if test="${userRequest.statusId.id == 1 && sessionScope.account.role.id == 1}">
+                            <div class="m-2">
+                            <form action="requestDetail" method="post" style="display:inline;">
+                                <input type="hidden" name="requestId" value="${requestId}" />
+                                <input type="hidden" name="newStatusId" value="2" /> <!-- 2 = Approve -->
+                                <button type="submit" class="btn btn-success">Approve</button>
+                            </form>
 
-           <!-- Table Start -->
-<div class="container-flrid pt-4 px-4">
-    <div class="row g-4">
-        <div class="col-12">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Create New Request</h6>
+                            <form action="requestDetail" method="post" style="display:inline;">
+                                <input type="hidden" name="requestId" value="${requestId}" />
+                                <input type="hidden" name="newStatusId" value="3" /> <!-- 3 = Reject -->
+                                <button type="submit" class="btn btn-danger">Reject</button>
+                            </form>
 
-              <a href="updateRequest?requestId=${requestId}" class="btn btn-primary m-2">Update Request</a>
-                    
-                    <div class="table-responsive">
-                        <table id="userTable" class="table table-bordered">
-                            <thead>
+                            <form action="requestDetail" method="post" style="display:inline;">
+                                <input type="hidden" name="requestId" value="${requestId}" />
+                                <input type="hidden" name="newStatusId" value="4" /> <!-- 4 = Cancel -->
+                                <button type="submit" class="btn btn-warning">Cancel</button>
+                            </form> 
+                              </div>
+                                </c:if>
+                            <table id="userTable" class="table table-bordered">
+                               <thead>
                                 <tr>
-                                    <th scope="col" onclick="sortTable(0)">ID</th>
-                                    <th scope="col" onclick="sortTable(1)">Material</th>
-                                    <th scope="col" onclick="sortTable(2)">Quantity</th>
-                                    <th scope="col" onclick="sortTable(1)">Unit</th>
-                                    <th scope="col" onclick="sortTable(1)">Supplier</th>
-                                    <th scope="col" onclick="sortTable(3)">Note</th>
+                                    <th>ID</th>
+                                    <th>Material Name</th>
+                                    <th>Current Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Supplier</th>
+                                    <th>Note</th>
+                                    <th>New Quantity</th> <!-- mới thêm -->
+                                    <th>New Note</th>   <!-- tuỳ chọn -->
                                 </tr>
                             </thead>
                             <tbody>
-<c:forEach var="m" items="${listRequestDetail}">
-                                    <tr>
-                                        <td>${m.id}</td>
-                                        <td>${m.materialId.name}</td>
-                                        <td>${m.quantity}</td>
-                                        <td>${m.materialId.unitId.unitName}</td>
-                                        <td>${m.supplierId.name}</td>
-                                        <td>${m.note}</td>
-                                    </tr>
-</c:forEach>
+                                <c:choose>
+                                    
+                                    <c:when test="${userRequest.statusId.id == 1 || userRequest.statusId.id == 3}">
+                                        <form method="post" action="updateRequest">
+                                            <input type="hidden" name="requestId" value="${requestId}" />
+                                            <c:forEach var="m" items="${listRequestDetail}">
+                                                <tr>
+                                                    <td>
+                                                        ${m.id}
+                                                        <input type="hidden" name="detailId" value="${m.id}" />
+                                                    </td>
+                                                    <td>${m.materialItem.materialSupplier.materialId.name}</td>
+                                                    <td>${m.quantity}</td>
+                                                    <td>${m.materialItem.materialSupplier.materialId.unitId.unitName}</td>
+                                                    <td>${m.materialItem.materialSupplier.supplierId.name}</td>
+                                                    <td>${m.note}</td>
+                                                    <td>
+                                                        <input type="number" name="quantity" min="1" class="form-control" value="${m.quantity}" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="note" class="form-control" value="${m.note}" />
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                            <tr>
+                                                <td colspan="8" class="text-end">
+                                                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                                </td>
+                                            </tr>
+                                        </form>
+                                    </c:when>
+
+                                   
+                                    <c:otherwise>
+                                        <c:forEach var="m" items="${listRequestDetail}">
+                                            <tr>
+                                                <td>${m.id}</td>
+                                                <td>${m.materialItem.materialSupplier.materialId.name}</td>
+                                                <td>${m.quantity}</td>
+                                                <td>${m.materialItem.materialSupplier.materialId.unitId.unitName}</td>
+                                                <td>${m.materialItem.materialSupplier.supplierId.name}</td>
+                                                <td>${m.note}</td>
+                                                <td>--</td>
+                                                <td>--</td>
+                                                
+                                            </tr>
+                                        </c:forEach>
+                                        <tr>
+                                            <td colspan="8" class="text-danger text-center fw-bold">Bạn không thể sửa đơn đã được chấp thuận</td>
+                                        </tr>
+                                    </c:otherwise>
+                                </c:choose>
                             </tbody>
-                        </table>
-                        
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-center mt-3">
-<c:forEach begin="1" end="${endP}" var="i">
-                                <a href="requestDetail?index=${i}&requestId=${requestId}" class="btn btn-outline-primary mx-1">${i}</a>
-</c:forEach>
+
+                            </table>
+
+                            <!-- Pagination -->
+                            <div class="d-flex justify-content-center mt-3">
+                                <c:forEach begin="1" end="${endP}" var="i">
+                                    <a href="requestDetail?index=${i}&requestId=${requestId}" class="btn btn-outline-primary mx-1">${i}</a>
+                                </c:forEach>
+                            </div>
+
+                            <div class="d-flex mt-4 gap-2">
+                                <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill">Quay lại</a>
+                                 <c:if test="${userRequest.statusId.id == 2 && (sessionScope.account.role.id == 1 || sessionScope.account.role.id == 2)}">
+                                    <form action="createImport" method="post">
+                                        <input type="hidden" name="requestId" value="${requestId}" />
+                                        <button type="submit" class="btn btn-success">Import to Warehouse</button>
+                                    </form>
+                                </c:if>
+                            </div>
                         </div>
-                        <div class="d-flex m-2 gap-2">
-                        <!-- Pagination End -->
-                        <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill ">Back</a>
-                         <form action="createImport" method="post">
-                        <input type="hidden" name="requestId" value="${requestId}" />
-                        <button type="submit" class="btn btn-success">Import to Warehouse</button>
-                    </form>
-                        </div>
+
                     </div>
-
-                   
-                
-
+                </div>
             </div>
         </div>
+        <!-- Table End -->
+
+        <%@include file="../template/footer.jsp" %>
     </div>
 </div>
-<!-- Table End -->
 
-
-<%@include file="../template/footer.jsp" %>
-        </div>
-        <!-- Content End -->
-
-
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-    </div>
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
 <%@include file="../template/script.jsp" %>
-    <script>
-        
 
-function sortTable(colrmn) {
-    var table = document.getElementById("userTable"); // lấy bảng theo ID
-    var rows = Array.from(table.rows).slice(1); // lấy tất cả dòng (trừ tiêu đề)
-    var isAsc = table.getAttribute("data-sort") !== "asc"; // kiểm tra tăng hay giảm
+<script>
+function sortTable(colIndex) {
+    var table = document.getElementById("userTable");
+    var rows = Array.from(table.rows).slice(1);
+    var isAsc = table.getAttribute("data-sort") !== "asc";
 
-    // Sắp xếp các dòng
     rows.sort(function(rowA, rowB) {
-        var cellA = rowA.cells[colrmn].innerText.toLowerCase();
-        var cellB = rowB.cells[colrmn].innerText.toLowerCase();
-        
-        if(!isNaN(cellA) && !isNaN(cellB)) { // Nếu là số thì so sánh số
+        var cellA = rowA.cells[colIndex].innerText.toLowerCase();
+        var cellB = rowB.cells[colIndex].innerText.toLowerCase();
+        if (!isNaN(cellA) && !isNaN(cellB)) {
             return (cellA - cellB) * (isAsc ? 1 : -1);
         }
-        return (cellA > cellB ? 1 : -1) * (isAsc ? 1 : -1); // So sánh chữ
+        return (cellA > cellB ? 1 : -1) * (isAsc ? 1 : -1);
     });
 
-    // Đưa các dòng đã sắp xếp lại vào bảng
     var tbody = table.tBodies[0];
     rows.forEach(function(row) {
         tbody.appendChild(row);
     });
 
-    // Lưu trạng thái sắp xếp cho lần click sau
     table.setAttribute("data-sort", isAsc ? "asc" : "desc");
 }
 </script>
 </body>
-
 </html>

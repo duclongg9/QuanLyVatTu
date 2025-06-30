@@ -76,6 +76,10 @@ public class MaterialItem {
     public void setMaterialSupplier(MaterialSupplier materialSupplier) {
         this.materialSupplier = materialSupplier;
     }
+
+    public void setMaterialsSupplierId(MaterialSupplier byId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
     
     

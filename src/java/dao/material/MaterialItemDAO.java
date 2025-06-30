@@ -89,7 +89,7 @@ public class MaterialItemDAO {
                 while (rs.next()) {
                     MaterialItem mi = new MaterialItem();
                     mi.setId(rs.getInt(COL_ID));
-                    mi.setStarusId(msdao.getMaterialStatusById(rs.getInt(COL_STATUSID)));
+                    mi.setStarusId(msdao.getStatusById(rs.getInt(COL_STATUSID)));
                     mi.setQuantity(rs.getInt(COL_QUANTITY));
                     mi.setMaterialSupplier(msldao.getMaterialSupplierById(rs.getInt(COL_MATERIALSUPPLIERID)));
                     return mi;
@@ -127,7 +127,7 @@ public class MaterialItemDAO {
                 while (rs.next()) {
                     MaterialItem mi = new MaterialItem();
                     mi.setId(rs.getInt(COL_ID));
-                    mi.setStarusId(msdao.getMaterialStatusById(rs.getInt(COL_STATUSID)));
+                    mi.setStarusId(msdao.getStatusById(rs.getInt(COL_STATUSID)));
                     mi.setQuantity(rs.getInt(COL_QUANTITY));
                     mi.setMaterialSupplier(msldao.getMaterialSupplierById(rs.getInt(COL_MATERIALSUPPLIERID)));
                     materialList.add(mi);
