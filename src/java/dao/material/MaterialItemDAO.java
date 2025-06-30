@@ -53,6 +53,19 @@ public class MaterialItemDAO {
 
     return false;
 }
+    public boolean decreaseQuantityByMaterialItemId(int materialItemId, int deductedQuantity) {
+        String sql = "UPDATE MaterialItem SET quantity = quantity - ? WHERE id = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, deductedQuantity);
+            ps.setInt(2, materialItemId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            Logger.getLogger(MaterialItem.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return false;
+    }
     
     public double getPriceByMaterialItemId(int materialItemId) {
     String sql = """
