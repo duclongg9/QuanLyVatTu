@@ -4,7 +4,6 @@
  */
 package dao.role;
 
-import dao.connect.DBConnect;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Role;
 import model.User;
+import dao.connect.DBConnect;
 
 /**
  *
@@ -61,13 +61,12 @@ public class RoleDAO {
     //lấy tất cả role
     public List<Role> getAllRole() {
         List<Role> lr = new ArrayList<>();
-        
         String sql = "SELECT * FROM ql_vat_tu.role";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            
+
             try (ResultSet rs = ps.executeQuery()) {
-                
+
                 while (rs.next()) {
                     Role r = new Role();
                     if (rs.getInt(COL_ID) != 1) { //trừ ADMIN ra 

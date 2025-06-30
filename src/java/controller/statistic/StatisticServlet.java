@@ -97,7 +97,7 @@ public class StatisticServlet extends HttpServlet {
             request.setAttribute("importByCategory", importByCategory);
             request.setAttribute("importByDate", importByDate);
 
-            request.getRequestDispatcher("statisticImport.jsp").forward(request, response);
+            request.getRequestDispatcher("jsp/statistic/statisticImport.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,7 +149,7 @@ public class StatisticServlet extends HttpServlet {
             List<Statistic> list = dao.getExportStatistic(from, to, categoryId, userId);
 
             request.setAttribute("exportStats", list);
-            request.getRequestDispatcher("statisticExport.jsp").forward(request, response);
+            request.getRequestDispatcher("jsp/statistic/statisticExport.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
