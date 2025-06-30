@@ -212,7 +212,16 @@ public static final int PAGE_NUMBER = 7;
         int result;
         if (idParam != null && !idParam.isEmpty()) {
             int id = Integer.parseInt(idParam);
-            result = mDao.updateMaterial(id, name, unitId, imageName, subCategoryId);
+            if (imageName == null) {
+                Materials old = mDao.getMaterialsById(id);
+                if (old != null) {
+                    imageName = old.getImage();
+                }
+            }
+            result = mDao.createMaterial(name, unitId, imageName, subCategoryId, id);
+            if (result > 0) {
+                mDao.deactivateMaterial(id);
+            }
         } else {
             result = mDao.createMaterial(name, unitId, imageName, subCategoryId);
         }

@@ -293,15 +293,25 @@ public class MaterialsDAO {
         return null;
     }
     
-    //create materials
+    //create materials without replacement id
     public int createMaterial(String name, int unitId, String image, int subCategoryId) {
-    String sql = "INSERT INTO Materials(name, unitId, image, subCategoryId, status) VALUES(?,?,?,?, true)";
+    return createMaterial(name, unitId, image, subCategoryId, null);
+    }
+
+    // create materials, optionally specifying the material it replaces
+    public int createMaterial(String name, int unitId, String image, int subCategoryId, Integer replacementId) {
+        String sql = "INSERT INTO Materials(name, unitId, image, subCategoryId, status, replacementMaterialId) VALUES(?,?,?,?, true, ?)";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
             ps.setInt(2, unitId);
             ps.setString(3, image);
             ps.setInt(4, subCategoryId);
+            if (replacementId != null) {
+                ps.setInt(5, replacementId);
+            } else {
+                ps.setNull(5, java.sql.Types.INTEGER);
+            }
             return ps.executeUpdate(); // >0 nếu thành công
         } catch (SQLException e) {
             Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
