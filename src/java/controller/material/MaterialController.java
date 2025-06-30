@@ -2,9 +2,10 @@
 package controller.material;
 
 
-import dao.material.CategoryMaterialDAO;
+import dao.subcategory.SubCategoryDAO;
 import dao.material.MaterialUnitDAO;
 import dao.material.MaterialsDAO;
+import dao.material.CategoryMaterialDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,6 +19,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import model.Materials;
+import java.util.Map;
+import java.util.HashMap;
 import java.sql.SQLException;
 /**
  *
@@ -38,8 +41,9 @@ public static final int PAGE_NUMBER = 7;
      */
     
     MaterialUnitDAO muDao = new MaterialUnitDAO();
-    CategoryMaterialDAO cmDao = new CategoryMaterialDAO();
+    SubCategoryDAO scDao = new SubCategoryDAO();
     MaterialsDAO mDao = new MaterialsDAO();
+    CategoryMaterialDAO cDao = new CategoryMaterialDAO();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -78,7 +82,7 @@ public static final int PAGE_NUMBER = 7;
         switch (action) {
             case "add":
                 request.setAttribute("units", muDao.getAllUnit());
-                request.setAttribute("categories", cmDao.getAllCategory());
+                request.setAttribute("categories", scDao.getAllSubCategory());
                 if (request.getParameter("success") != null) {
                     request.setAttribute("success", "Thêm vật tư thành công");
                 }
@@ -87,7 +91,7 @@ public static final int PAGE_NUMBER = 7;
             case "edit":
                 int id = Integer.parseInt(request.getParameter("id"));
                 request.setAttribute("units", muDao.getAllUnit());
-                request.setAttribute("categories", cmDao.getAllCategory());
+                request.setAttribute("categories", scDao.getAllSubCategory());
                 request.setAttribute("material", mDao.getMaterialsById(id));
                 request.getRequestDispatcher("/jsp/material/updateMaterial.jsp").forward(request, response);
                 break;
@@ -135,10 +139,16 @@ public static final int PAGE_NUMBER = 7;
                 }
                 int index = Integer.parseInt(indexPage);
                 String search = request.getParameter("search");
+                String categoryIdParam = request.getParameter("categoryId");
                 List<Materials> list;
                 int count;
                 try {
-                    if (search != null && !search.trim().isEmpty()) {
+                    if (categoryIdParam != null && !categoryIdParam.isEmpty()) {
+                        int cId = Integer.parseInt(categoryIdParam);
+                        list = mDao.searchMaterialsByCategory(cId, index);
+                        count = mDao.getTotalMaterialsByCategory(cId);
+                        request.setAttribute("selectedCategory", cId);
+                    } else if (search != null && !search.trim().isEmpty()) {
                         list = mDao.searchMaterialsByName(search, index);
                         count = mDao.getTotalMaterialsByName(search);
                         request.setAttribute("searchValue", search);
@@ -154,7 +164,16 @@ public static final int PAGE_NUMBER = 7;
                 if (count % PAGE_NUMBER != 0) {
                     endP++;
                 }
+                Map<Integer, Materials> updatedMap = new HashMap<>();
+                for (Materials m : list) {
+                    Materials newVer = mDao.getNewVersionOf(m.getId());
+                    if (newVer != null) {
+                        updatedMap.put(m.getId(), newVer);
+                    }
+                }
                 request.setAttribute("materials", list);
+                request.setAttribute("categoryFilter", cDao.getAllCategory());
+                request.setAttribute("updatedMap", updatedMap);
                 request.setAttribute("endP", endP);
                 request.setAttribute("tag", index);
                 
@@ -176,7 +195,7 @@ public static final int PAGE_NUMBER = 7;
         String idParam = request.getParameter("id");
         String name = request.getParameter("name");
         int unitId = Integer.parseInt(request.getParameter("unitId"));
-        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+        int subCategoryId = Integer.parseInt(request.getParameter("subCategoryId"));
 
         Part imagePart = request.getPart("image");
         String imageName = null;
@@ -193,9 +212,9 @@ public static final int PAGE_NUMBER = 7;
         int result;
         if (idParam != null && !idParam.isEmpty()) {
             int id = Integer.parseInt(idParam);
-            result = mDao.updateMaterial(id, name, unitId, imageName, categoryId);
+            result = mDao.updateMaterial(id, name, unitId, imageName, subCategoryId);
         } else {
-            result = mDao.createMaterial(name, unitId, imageName, categoryId);
+            result = mDao.createMaterial(name, unitId, imageName, subCategoryId);
         }
         if (result > 0) {
                         response.sendRedirect("materialController?action=list");

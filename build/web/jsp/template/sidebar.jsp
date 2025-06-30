@@ -35,8 +35,10 @@
                             <h6 class="dropdown-header">Danh mục đơn vị</h6>
                             <a href="${pageContext.request.contextPath}/unitList" class="dropdown-item">️Đơn vị tính</a>
                             <h6 class="dropdown-header">Danh mục vật tư</h6>
-                            <a href="#" class="dropdown-item">Thêm danh mục</a>
-                            <a href="#" class="dropdown-item">Xem danh mục</a>
+                            <a href="${pageContext.request.contextPath}/categoryController?action=add" class="dropdown-item">Thêm danh mục</a>
+                            <a href="${pageContext.request.contextPath}/subCategoryController?action=add" class="dropdown-item">Thêm mục con</a>
+                            <a href="${pageContext.request.contextPath}/categoryController" class="dropdown-item">Xem danh mục</a>
+                            <a href="${pageContext.request.contextPath}/subCategoryController" class="dropdown-item">Xem mục con</a>
                             <div class="dropdown-divider"></div>
                             <h6 class="dropdown-header">Danh sách vật tư</h6>
                             <a href="${pageContext.request.contextPath}/materialController?action=add" class="dropdown-item">Thêm mới vật tư</a>

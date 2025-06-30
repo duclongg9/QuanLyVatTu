@@ -15,15 +15,17 @@ public class MaterialSupplier {
     private Materials materialId;
     private Supplier supplierId;
     private String note;
+    private double price;
 
     public MaterialSupplier() {
     }
 
-    public MaterialSupplier(int id, Materials materialId, Supplier supplierId, String note) {
+    public MaterialSupplier(int id, Materials materialId, Supplier supplierId, String note, double price) {
         this.id = id;
         this.materialId = materialId;
         this.supplierId = supplierId;
         this.note = note;
+        this.price = price;
     }
 
     public int getId() {
@@ -58,5 +60,12 @@ public class MaterialSupplier {
         this.note = note;
     }
     
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
     
 }

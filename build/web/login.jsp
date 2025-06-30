@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Qu?n lý v?t t?</title>
+    <title>Login - Qu?n lï¿½ v?t t?</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
@@ -108,13 +108,13 @@
         <h2 class="app-title">Materials Management</h2>
         <h3 class="login-title">Sign In</h3>
 
-        <!-- Thông báo l?i n?u có -->
+        <!-- Thï¿½ng bï¿½o l?i n?u cï¿½ -->
         <div class="error-message">${msg}</div>
 
         <form action="login" method="post">
             <div class="form-group">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" placeholder="Nh?p tên ??ng nh?p" required>
+                <input type="text" id="username" name="username" placeholder="Nh?p tï¿½n ??ng nh?p" required>
             </div>
 
             <div class="form-group">
