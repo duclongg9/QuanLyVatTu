@@ -6,7 +6,7 @@
 
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@page import="java.util.*, dao.StatisticDAO"%>
+<%@page import="java.util.*, dao.statistic.StatisticDAO"%>
 
 <%
     StatisticDAO dao = new StatisticDAO();
@@ -18,9 +18,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Thống kê tồn kho</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" />
+            <link href="assets/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="assets/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="assets/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet">
+
 </head>
 <body>
     <%@ include file="../template/spinner.jsp" %>
@@ -48,17 +66,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <%
-                            for (Map<String, Object> row : remainStats) {
-                        %>
-                        <tr>
-                            <td><%= row.get("category") %></td>
-                            <td><%= row.get("status") %></td>
-                            <td><%= row.get("total") %></td>
-                        </tr>
-                        <%
-                            }
-                        %>
+                        <c:forEach var="row" items="${remainStats}">
+                                <tr>
+                                    <td>${row.category}</td>
+                                    <td>${row.status}</td>
+                                    <td>${row.total}</td>
+                                </tr>
+                            </c:forEach>
                         </tbody>
                     </table>
                 </div>
@@ -80,45 +94,48 @@
 </div>
 </div>
 
-<script src="js/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/chart/chart.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/easing/easing.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/waypoints/waypoints.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-        
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-<script src="lib/chart/chart.min.js"></script>
-<script src="js/main.js"></script>
+    <!-- Template Javascript -->
+    <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 
 
 <script>
-    const remainLabels = [];
-    const datasetsMap = {};
+    const remainStats = [
+        <c:forEach var="r" items="${remainStats}" varStatus="loop">
+            {
+                category: "${r.category}",
+                status: "${r.status}",
+                total: ${r.total}
+            }<c:if test="${!loop.last}">,</c:if>
+        </c:forEach>
+    ];
 
-    <% for (Map<String, Object> row : remainStats) {
-        String category = (String) row.get("category");
-        String status = (String) row.get("status");
-        int total = (Integer) row.get("total");
-    %>
-    if (!datasetsMap["<%= status %>"]) datasetsMap["<%= status %>"] = {};
-    if (!remainLabels.includes("<%= category %>")) remainLabels.push("<%= category %>");
-    datasetsMap["<%= status %>"]["<%= category %>"] = <%= total %>;
-    <% } %>
+    const remainLabels = [...new Set(remainStats.map(r => r.category))];
+    const statusLabels = [...new Set(remainStats.map(r => r.status))];
 
-    
-    const statusKeys = Object.keys(datasetsMap);
-    const datasets = statusKeys.map((status, idx) => {
+    const datasets = statusLabels.map((status, i) => {
         const colorPalette = ['#0d6efd', '#20c997', '#ffc107', '#dc3545', '#6610f2'];
         return {
             label: status,
-            data: remainLabels.map(cat => datasetsMap[status][cat] || 0),
-            backgroundColor: colorPalette[idx % colorPalette.length],
+            data: remainLabels.map(cat => {
+                const found = remainStats.find(r => r.status === status && r.category === cat);
+                return found ? found.total : 0;
+            }),
+            backgroundColor: colorPalette[i % colorPalette.length],
             borderRadius: 4
         };
     });
 
-    const ctx = document.getElementById('remainChart').getContext('2d');
-    new Chart(ctx, {
+    new Chart(document.getElementById("remainChart").getContext("2d"), {
         type: 'bar',
         data: {
             labels: remainLabels,
@@ -136,6 +153,15 @@
                 x: { stacked: true },
                 y: { stacked: true }
             }
+        }
+    });
+</script>
+
+<script>
+    window.addEventListener('load', function () {
+        var spinner = document.getElementById('spinner');
+        if (spinner) {
+            spinner.classList.remove('show');
         }
     });
 </script>
