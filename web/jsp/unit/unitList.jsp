@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Danh sách đơn vị tính</title>
+ <!-- Favicon -->
     <link href="assets/img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
@@ -111,7 +112,7 @@
 </script>
 
 
-     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+ <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="${pageContext.request.contextPath}/assets/lib/chart/chart.min.js"></script>
     <script src="${pageContext.request.contextPath}/assets/lib/easing/easing.min.js"></script>
@@ -124,12 +125,5 @@
     <!-- Template Javascript -->
     <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
     <script>
-    window.addEventListener('load', function () {
-        var spinner = document.getElementById('spinner');
-        if (spinner) {
-            spinner.classList.remove('show');
-        }
-    });
-</script>
 </body>
 </html>
