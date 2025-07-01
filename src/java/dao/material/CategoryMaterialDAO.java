@@ -8,6 +8,7 @@ import dao.connect.DBConnect;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,6 +26,7 @@ public class CategoryMaterialDAO {
     public static final int PAGE_SIZE = 7;
     private static final String COL_ID = "id";
     private static final String COL_CATEGORY = "category";
+    private static final String COL_STATUS = "status";
 
     public CategoryMaterialDAO() {
         conn = DBConnect.getConnection();
@@ -33,13 +35,13 @@ public class CategoryMaterialDAO {
     //lấy tất cả danh mục vật tư
     public List<CategoryMaterial> getAllCategory() {
         List<CategoryMaterial> list = new ArrayList<>();
-        String sql = "SELECT * FROM categorymaterial";
-
+        String sql = "SELECT * FROM ql_vat_tu.categorymaterial where status = true";
         try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 CategoryMaterial c = new CategoryMaterial();
                 c.setId(rs.getInt(COL_ID));
                 c.setCategory(rs.getString(COL_CATEGORY));
+                c.setStatus(rs.getBoolean(COL_STATUS));
                 list.add(c);
             }
         } catch (Exception e) {
@@ -77,6 +79,32 @@ public class CategoryMaterialDAO {
         return null;
     }
     
+     //lấy tất cả danh mục vật tư
+    public List<CategoryMaterial> getCategoryList() throws SQLException {
+        List<CategoryMaterial> cateMateList = new ArrayList<>();
+         String sql = "SELECT * FROM ql_vat_tu.categorymaterial WHERE status = true";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CategoryMaterial cm = new CategoryMaterial();
+                    cm.setId(rs.getInt(COL_ID));
+                    cm.setCategory(rs.getString(COL_CATEGORY));
+                    cm.setStatus(rs.getBoolean(COL_STATUS));
+                    cateMateList.add(cm);
+                    
+
+                }
+                return cateMateList;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+    
+
     
     // Tạo mới danh mục vật tư
     public int createCategory(String category) {
@@ -105,7 +133,7 @@ public class CategoryMaterialDAO {
     
     // Delete category by id
     public int deleteCategory(int id) {
-        String sql = "DELETE FROM CategoryMaterial WHERE id=?";
+        String sql = "UPDATE CategoryMaterial SET status = false WHERE id=?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             return ps.executeUpdate();

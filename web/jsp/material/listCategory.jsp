@@ -24,6 +24,9 @@
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="bg-light rounded p-4">
                 <h4 class="mb-4">Category List</h4>
+                <c:if test="${not empty error}">
+                    <div class="text-danger mb-3">${error}</div>
+                </c:if>
                 <a href="${pageContext.request.contextPath}/categoryController?action=add" class="btn btn-primary mb-3">Add New</a>
                 <form action="categoryController" method="get" class="d-flex align-items-center gap-2 mb-3">
                     <input type="hidden" name="action" value="list"/>

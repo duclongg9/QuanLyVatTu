@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao.material;
-import dao.Category.CategoryMaterialDAO;
+import dao.material.CategoryMaterialDAO;
 import dao.Category.SubCategoryDAO;
 import dao.connect.DBConnect;
 import dao.request.requestDAO;

@@ -44,7 +44,7 @@ public class MaterialItemDAO {
                 item.setId(rs.getInt(COL_ID));
                 item.setStatusId(msdao.getStatusById(rs.getInt(COL_STATUS_ID)));
                 item.setQuantity(rs.getInt(COL_QUANTITY));
-                item.setMaterialsSupplierId(msupplierDAO.getById(rs.getInt(COL_MATERIALSUPPLIER_ID)));
+                item.setMaterialSupplier(msupplierDAO.getById(rs.getInt(COL_MATERIALSUPPLIER_ID)));
                 list.add(item);
             }
         } catch (Exception e) {
@@ -63,7 +63,7 @@ public class MaterialItemDAO {
                     item.setId(rs.getInt(COL_ID));
                     item.setStatusId(msdao.getStatusById(rs.getInt(COL_STATUS_ID)));
                     item.setQuantity(rs.getInt(COL_QUANTITY));
-                    item.setMaterialsSupplierId(msupplierDAO.getById(rs.getInt(COL_MATERIALSUPPLIER_ID)));
+                    item.setMaterialSupplier(msupplierDAO.getById(rs.getInt(COL_MATERIALSUPPLIER_ID)));
                     return item;
                 }
             }

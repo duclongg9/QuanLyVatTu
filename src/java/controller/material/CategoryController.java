@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.CategoryMaterial;
 import java.io.IOException;
+import java.util.List;
+import model.Materials;
 /**
  *
  * @author Dell-PC
@@ -41,9 +43,36 @@ public class CategoryController extends HttpServlet {
                 break;
             case "delete":
                 int delId = Integer.parseInt(request.getParameter("id"));
-                dao.deleteCategory(delId);
-                subDao.deactivateByCategoryId(delId);
-                response.sendRedirect("categoryController");
+                if (subDao.getTotalSubCategoryByCategory(delId) > 0) {
+                    request.setAttribute("error", "Không thể xóa danh mục do còn loại vật tư phụ thuộc");
+                    String indexPage = request.getParameter("index");
+                    if (indexPage == null) indexPage = "1";
+                    int index = Integer.parseInt(indexPage);
+                    String search = request.getParameter("search");
+                    int total;
+                    if (search != null && !search.trim().isEmpty()) {
+                        request.setAttribute("categories", dao.searchCategoriesByName(search, index));
+                        total = dao.getTotalCategoriesByName(search);
+                        request.setAttribute("searchValue", search);
+                    } else {
+                        request.setAttribute("categories", dao.pagingCategories(index));
+                        total = dao.getTotalCategories();
+                    }
+                    int endP = total / CategoryMaterialDAO.PAGE_SIZE;
+                    if (total % CategoryMaterialDAO.PAGE_SIZE != 0) endP++;
+                    request.setAttribute("endP", endP);
+                    request.setAttribute("tag", index);
+                    request.getRequestDispatcher("/jsp/material/listCategory.jsp").forward(request, response);
+                } else {
+                    int result = dao.deleteCategory(delId);
+                    if (result > 0) {
+                        subDao.deactivateByCategoryId(delId);
+                        response.sendRedirect("categoryController");
+                    } else {
+                        request.setAttribute("error", "Xử lý thất bại");
+//                        doGet(request, response);
+                    }
+                }
                 break;
             default:
                  String indexPage = request.getParameter("index");
@@ -69,7 +98,9 @@ public class CategoryController extends HttpServlet {
                 request.setAttribute("tag", index);
                 request.getRequestDispatcher("/jsp/material/listCategory.jsp").forward(request, response);
         }
+       
     }
+    
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

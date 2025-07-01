@@ -1,6 +1,6 @@
 package controller.request;
 
-import dao.Category.CategoryMaterialDAO;
+import dao.material.CategoryMaterialDAO;
 import dao.Category.SubCategoryDAO;
 import dao.connect.DBConnect;
 import dao.material.MaterialItemDAO;
