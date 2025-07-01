@@ -23,9 +23,9 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <i class="fa fa-box me-2"></i>Users</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="createUser" class="dropdown-item">Thêm người dùng</a>
-                            <a href="userList" class="dropdown-item">Danh sách người dùng</a>
-                            <a href="permission" class="dropdown-item">Phân quyền người dùng</a>
+                            <a href="${pageContext.request.contextPath}/createUser" class="dropdown-item">Thêm người dùng</a>
+                            <a href="${pageContext.request.contextPath}/userList" class="dropdown-item">Danh sách người dùng</a>
+                            <a href="${pageContext.request.contextPath}/permission" class="dropdown-item">Phân quyền người dùng</a>
                         </div>
                     </div>
                     <!-- Quản lý vật tư -->

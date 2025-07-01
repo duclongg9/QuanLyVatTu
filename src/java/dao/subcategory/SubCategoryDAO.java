@@ -25,6 +25,7 @@ private Connection conn;
     private static final String COL_ID = "id";
     private static final String COL_NAME = "subCategoryName";
     private static final String COL_CATEGORY_ID = "categoryMaterialId";
+    private static final String COL_STATUS = "status";
 
     public SubCategoryDAO() {
         conn = DBConnect.getConnection();
@@ -32,7 +33,7 @@ private Connection conn;
 
     public List<SubCategory> getAllSubCategory() {
         List<SubCategory> list = new ArrayList<>();
-        String sql = "SELECT * FROM SubCategory";
+        String sql = "SELECT * FROM SubCategory WHERE status = true";
         try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 SubCategory sc = new SubCategory();
@@ -48,7 +49,7 @@ private Connection conn;
     }
 
     public SubCategory getSubCategoryById(int id) {
-        String sql = "SELECT * FROM SubCategory WHERE id=?";
+        String sql = "SELECT * FROM SubCategory WHERE id=? AND status = true";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -57,6 +58,7 @@ private Connection conn;
                     sc.setId(rs.getInt(COL_ID));
                     sc.setSubCategoryName(rs.getString(COL_NAME));
                     sc.setCategoryMaterialId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY_ID)));
+                    sc.setStatus(rs.getBoolean(COL_STATUS));
                     return sc;
                 }
             }
@@ -92,7 +94,7 @@ private Connection conn;
 
     // Delete subcategory
     public int deleteSubCategory(int id) {
-        String sql = "DELETE FROM SubCategory WHERE id=?";
+        String sql = "UPDATE SubCategory SET status = false WHERE id=?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             return ps.executeUpdate();
@@ -102,9 +104,20 @@ private Connection conn;
         return 0;
     }
 
+    // Deactivate all subcategories under a category
+    public void deactivateByCategoryId(int categoryId) {
+        String sql = "UPDATE SubCategory SET status = false WHERE categoryMaterialId=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, categoryId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            Logger.getLogger(SubCategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    
     // Count subcategories
     public int getTotalSubCategory() {
-        String sql = "SELECT COUNT(*) FROM SubCategory";
+         String sql = "SELECT COUNT(*) FROM SubCategory WHERE status = true";
         try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1);
@@ -118,7 +131,7 @@ private Connection conn;
     // Pagination for subcategories
     public List<SubCategory> pagingSubCategory(int index) {
         List<SubCategory> list = new ArrayList<>();
-        String sql = "SELECT * FROM SubCategory ORDER BY id DESC LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM SubCategory WHERE status = true ORDER BY id DESC LIMIT ? OFFSET ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, PAGE_SIZE);
             ps.setInt(2, (index - 1) * PAGE_SIZE);
@@ -128,6 +141,7 @@ private Connection conn;
                     sc.setId(rs.getInt(COL_ID));
                     sc.setSubCategoryName(rs.getString(COL_NAME));
                     sc.setCategoryMaterialId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY_ID)));
+                    sc.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(sc);
                 }
             }
@@ -140,7 +154,7 @@ private Connection conn;
     // Search subcategory by name
     public List<SubCategory> searchSubCategoryByName(String name, int index) {
         List<SubCategory> list = new ArrayList<>();
-        String sql = "SELECT * FROM SubCategory WHERE subCategoryName LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM SubCategory WHERE status = true AND subCategoryName LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + name + "%");
             ps.setInt(2, PAGE_SIZE);
@@ -151,6 +165,7 @@ private Connection conn;
                     sc.setId(rs.getInt(COL_ID));
                     sc.setSubCategoryName(rs.getString(COL_NAME));
                     sc.setCategoryMaterialId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY_ID)));
+                     sc.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(sc);
                 }
             }
@@ -161,7 +176,7 @@ private Connection conn;
     }
 
     public int getTotalSubCategoryByName(String name) {
-        String sql = "SELECT COUNT(*) FROM SubCategory WHERE subCategoryName LIKE ?";
+        String sql = "SELECT COUNT(*) FROM SubCategory WHERE status = true AND subCategoryName LIKE ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + name + "%");
             try (ResultSet rs = ps.executeQuery()) {
@@ -178,7 +193,7 @@ private Connection conn;
     // Search subcategory by category id
     public List<SubCategory> searchSubCategoryByCategory(int categoryId, int index) {
         List<SubCategory> list = new ArrayList<>();
-        String sql = "SELECT * FROM SubCategory WHERE categoryMaterialId=? ORDER BY id DESC LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM SubCategory WHERE status = true AND categoryMaterialId=? ORDER BY id DESC LIMIT ? OFFSET ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, categoryId);
             ps.setInt(2, PAGE_SIZE);
@@ -189,6 +204,7 @@ private Connection conn;
                     sc.setId(rs.getInt(COL_ID));
                     sc.setSubCategoryName(rs.getString(COL_NAME));
                     sc.setCategoryMaterialId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY_ID)));
+                    sc.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(sc);
                 }
             }
@@ -199,7 +215,7 @@ private Connection conn;
     }
 
     public int getTotalSubCategoryByCategory(int categoryId) {
-        String sql = "SELECT COUNT(*) FROM SubCategory WHERE categoryMaterialId=?";
+        String sql = "SELECT COUNT(*) FROM SubCategory WHERE status = true AND categoryMaterialId=?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, categoryId);
             try (ResultSet rs = ps.executeQuery()) {

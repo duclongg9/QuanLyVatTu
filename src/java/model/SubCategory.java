@@ -12,15 +12,26 @@ public class SubCategory {
 private int id;
     private String subCategoryName;
     private CategoryMaterial categoryMaterialId;
+    private boolean status;
 
     public SubCategory() {
     }
 
-    public SubCategory(int id, String subCategoryName, CategoryMaterial categoryMaterialId) {
+    public SubCategory(int id, String subCategoryName, CategoryMaterial categoryMaterialId, boolean status) {
         this.id = id;
         this.subCategoryName = subCategoryName;
         this.categoryMaterialId = categoryMaterialId;
+        this.status = status;
     }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
 
     public int getId() {
         return id;

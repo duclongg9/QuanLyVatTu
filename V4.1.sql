@@ -206,3 +206,6 @@ CREATE TABLE `OutputDetail` (
 	FOREIGN KEY(`outputWarehouseId`) REFERENCES `OutputWarehouse`(`id`),
 	FOREIGN KEY(`requestDetailId`) REFERENCES `requestDetail`(`id`)
 );
+ALTER TABLE Supplier
+ADD COLUMN status BOOLEAN DEFAULT TRUE;
+UPDATE Supplier SET status = FALSE WHERE name = 'Công ty Gạch Đồng Nai';
