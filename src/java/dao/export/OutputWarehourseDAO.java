@@ -12,12 +12,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.OutputWarehourse;
+import model.RequestType;
 import model.User;
 
 public class OutputWarehourseDAO {
     private static final String COL_ID = "id";
     private static final String COL_DATE = "date";
     private static final String COL_USERID = "userId";
+    private static final String COL_TYPE = "type";
     private static final int PAGE_SIZE = 5;
 
     UserDAO udao = new UserDAO();
@@ -33,6 +35,8 @@ public class OutputWarehourseDAO {
                     ow.setId(rs.getInt(COL_ID));
                     ow.setDate(rs.getString(COL_DATE));
                     ow.setUserId(udao.getUserById(rs.getInt(COL_USERID)));
+                    String typeStr = rs.getString(COL_TYPE);
+                    ow.setType(RequestType.valueOf(typeStr.toUpperCase()));
                     return ow;
                 }
             }
@@ -54,6 +58,8 @@ public class OutputWarehourseDAO {
                 ow.setDate(rs.getString(COL_DATE));
                 int userId = rs.getInt(COL_USERID);
                 ow.setUserId(udao.getUserById(userId));
+                String typeStr = rs.getString(COL_TYPE);
+                ow.setType(RequestType.valueOf(typeStr.toUpperCase()));
                 list.add(ow);
             }
         }
@@ -89,6 +95,8 @@ public class OutputWarehourseDAO {
                     ow.setId(rs.getInt(COL_ID));
                     ow.setDate(rs.getString(COL_DATE));
                     ow.setUserId(udao.getUserById(rs.getInt(COL_USERID)));
+                    String typeStr = rs.getString(COL_TYPE);
+                    ow.setType(RequestType.valueOf(typeStr.toUpperCase()));
                     list.add(ow);
                 }
             }
@@ -115,6 +123,8 @@ public class OutputWarehourseDAO {
                     ow.setId(rs.getInt(COL_ID));
                     ow.setDate(rs.getString(COL_DATE));
                     ow.setUserId(udao.getUserById(rs.getInt(COL_USERID)));
+                    String typeStr = rs.getString(COL_TYPE);
+                    ow.setType(RequestType.valueOf(typeStr.toUpperCase()));
                     list.add(ow);
                 }
             }
@@ -145,11 +155,12 @@ public class OutputWarehourseDAO {
 
     
     // Insert new output warehouse, return generated id
-    public int insertOutputWarehouse(int userId) throws SQLException {
-        String sql = "INSERT INTO OutputWarehouse (date, userId) VALUES (NOW(), ?)";
+    public int insertOutputWarehouse(int userId, RequestType type) throws SQLException {
+        String sql = "INSERT INTO OutputWarehouse (date, userId, type) VALUES (NOW(), ?, ?)";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, userId);
+            ps.setString(2, type.name());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
