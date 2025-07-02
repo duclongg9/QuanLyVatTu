@@ -18,9 +18,9 @@
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="row g-4">
-                <div class="col-12">
+                <div class="col-14">
                     <div class="bg-light rounded p-4">
-                        <h4 class="mb-4">Material List</h4>
+                        <h4 class="mb-">Material List</h4>
                         <c:if test="${not empty error}">
                             <div class="text-danger mb-3">${error}</div>
                         </c:if>

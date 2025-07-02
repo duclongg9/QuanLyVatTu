@@ -13,6 +13,7 @@ import dao.connect.DBConnect;
 import dao.subcategory.SubCategoryDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import dao.material.MaterialHistoryDAO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
