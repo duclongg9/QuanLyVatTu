@@ -8,18 +8,20 @@ USE ql_vat_tu;
 
 -- Table: CategoryMaterial
 CREATE TABLE `CategoryMaterial` (
-	`id` INTEGER AUTO_INCREMENT,
-	`category` VARCHAR(255) NOT NULL,
-	PRIMARY KEY(`id`)
+	 `id` INTEGER AUTO_INCREMENT,
+        `category` VARCHAR(255) NOT NULL,
+        `status` BOOLEAN DEFAULT true,
+        PRIMARY KEY(`id`)
 );
 
 -- Table: SubCategory
 CREATE TABLE `SubCategory` (
 	`id` INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
-	`subCategoryName` VARCHAR(255),
-	`categoryMaterialId` INTEGER,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY (`categoryMaterialId`) REFERENCES `CategoryMaterial`(`id`)
+        `subCategoryName` VARCHAR(255),
+        `categoryMaterialId` INTEGER,
+        `status` BOOLEAN DEFAULT true,
+        PRIMARY KEY(`id`),
+        FOREIGN KEY (`categoryMaterialId`) REFERENCES `CategoryMaterial`(`id`)
 );
 
 -- Table: MaterialStatus
@@ -111,6 +113,7 @@ CREATE TABLE `Supplier` (
 	`name` VARCHAR(255) NOT NULL,
 	`phone` VARCHAR(255) NOT NULL,
 	`address` VARCHAR(255) NOT NULL,
+    `status` Boolean NOT NULL DEFAULT TRUE,
 	PRIMARY KEY(`id`)
 );
 
@@ -206,6 +209,35 @@ CREATE TABLE `OutputDetail` (
 	FOREIGN KEY(`outputWarehouseId`) REFERENCES `OutputWarehouse`(`id`),
 	FOREIGN KEY(`requestDetailId`) REFERENCES `requestDetail`(`id`)
 );
-ALTER TABLE Supplier
-ADD COLUMN status BOOLEAN DEFAULT TRUE;
-UPDATE Supplier SET status = FALSE WHERE name = 'Công ty Gạch Đồng Nai';
+
+-- create user 
+DELIMITER //
+
+CREATE PROCEDURE CreateNewUser (
+    IN p_username VARCHAR(255),
+    IN p_fullname VARCHAR(255),
+    IN p_phone VARCHAR(255),
+    IN p_password VARCHAR(255),
+    IN p_email VARCHAR(255),
+    IN p_address VARCHAR(255),
+    IN p_gender boolean,
+    IN p_birthDate DATE,
+    IN p_image VARCHAR(255),
+    IN p_status BOOLEAN,
+    IN p_roleId INTEGER
+)
+BEGIN
+    INSERT INTO `User` (
+        username, fullname, phone, password, email,
+        address, gender, birthDate, image, status, roleId
+    )
+    VALUES (
+        p_username, p_fullname, p_phone, p_password, p_email,
+        p_address, p_gender, p_birthDate, p_image, p_status, p_roleId
+    );
+END //
+
+DELIMITER ;
+
+-- CALL CreateNewUser(?,?,?,?,?,?,?,?,?,?,?);
+-- DROP PROCEDURE IF EXISTS CreateNewUser;

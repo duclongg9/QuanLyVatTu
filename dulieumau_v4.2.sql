@@ -4,15 +4,15 @@
 -- ========================================
 USE ql_vat_tu;
 -- Loại vật tư
-INSERT INTO CategoryMaterial (category) VALUES 
-('Xi măng'), ('Sắt thép'), ('Gạch'), ('Cát Đá');
+INSERT INTO CategoryMaterial (category,status) VALUES 
+('Xi măng',1), ('Sắt thép',1), ('Gạch',1), ('Cát Đá',1);
 
 -- Nhóm con vật tư
-INSERT INTO SubCategory (subCategoryName, categoryMaterialId) VALUES
-('Xi măng Hà Tiên', 1),
-('Thép D10 Việt Nhật', 2),
-('Gạch Tuynel BD', 3),
-('Cát vàng Đồng Nai', 4);
+INSERT INTO SubCategory (subCategoryName, categoryMaterialId,status) VALUES
+('Xi măng Hà Tiên', 1,1),
+('Thép D10 Việt Nhật', 2,1),
+('Gạch Tuynel BD', 3,1),
+('Cát vàng Đồng Nai', 4,1);
 
 -- Trạng thái vật tư
 INSERT INTO MaterialStatus (status) VALUES 
@@ -96,13 +96,13 @@ INSERT INTO Materials (name, unitId, subCategoryId, status) VALUES
 ('Gạch ống Đồng Nai', 3, 3, 1);
 
 -- Nhà cung cấp
-INSERT INTO Supplier (name, phone, address) VALUES
-('Công ty VLXD Hà Tiên', '0933111000', 'Quận 9, TP HCM'),
-('Công ty Thép Việt Nhật', '0944222000', 'Quận 2, TP HCM'),
-('Công ty Gạch Bình Dương', '0955333000', 'Thủ Dầu Một, Bình Dương'),
-('Công ty Cát Đồng Nai', '0966444000', 'Biên Hòa, Đồng Nai'),
-('Công ty Thép Việt Mỹ', '0977777777', 'Quận Thủ Đức, TP HCM'),
-('Công ty Gạch Đồng Nai', '0988888888', 'Long Thành, Đồng Nai');
+INSERT INTO Supplier (name, phone, address,status) VALUES
+('Công ty VLXD Hà Tiên', '0933111000', 'Quận 9, TP HCM',1),
+('Công ty Thép Việt Nhật', '0944222000', 'Quận 2, TP HCM',1),
+('Công ty Gạch Bình Dương', '0955333000', 'Thủ Dầu Một, Bình Dương',1),
+('Công ty Cát Đồng Nai', '0966444000', 'Biên Hòa, Đồng Nai',1),
+('Công ty Thép Việt Mỹ', '0977777777', 'Quận Thủ Đức, TP HCM',1),
+('Công ty Gạch Đồng Nai', '0988888888', 'Long Thành, Đồng Nai',0);
 
 -- Liên kết vật tư - nhà cung cấp
 INSERT INTO materials_Supplier (materialId, supplierId, note, price) VALUES
