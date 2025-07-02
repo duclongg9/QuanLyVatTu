@@ -58,7 +58,7 @@
                             <a href="CreateRequestImport" class="dropdown-item">Tạo đơn nhập kho</a>
                             <a href="ListImport" class="dropdown-item">Lịch sử nhập kho</a>
                             <h6 class="dropdown-header">Xuất kho</h6>
-                            <a href="CreateRequestExport" class="dropdown-item">Đề nghị xuất kho</a>
+                            <a href="createExport" class="dropdown-item">Đề nghị xuất kho</a>
                             <a href="#" class="dropdown-item">Đề nghị sửa chữa vật tư</a>
                             <a href="ListExport" class="dropdown-item">Lịch sử xuất kho</a>
                             <h6 class="dropdown-header">Thống kê</h6>

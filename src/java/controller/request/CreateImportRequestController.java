@@ -21,7 +21,6 @@ import java.util.Map;
 import model.CategoryMaterial;
 import model.MaterialItem;
 import model.SubCategory;
-import model.RequestType;
 import model.User;
 
 @WebServlet(name = "createRequestImport", urlPatterns = {"/CreateRequestImport"})
@@ -123,7 +122,7 @@ public class CreateImportRequestController extends HttpServlet {
                 conn = DBConnect.getConnection();
                 conn.setAutoCommit(false);
 
-                int requestId = requestDao.insertRequest(conn, user.getId(), note, null, RequestType.IMPORT);
+                int requestId = requestDao.insertRequest(conn, user.getId(), note, null);
 
                 if (selectedItems != null && !selectedItems.isEmpty()) {
                     for (Map.Entry<Integer, Integer> entry : selectedItems.entrySet()) {

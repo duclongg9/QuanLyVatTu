@@ -45,7 +45,6 @@
                                     <th scope="col" onclick="sortTable(0)">ID</th>
                                     <th scope="col" onclick="sortTable(1)">User</th>
                                     <th scope="col" onclick="sortTable(2)">Date</th>
-                                    <th scope="col">Type</th>
                                     <th scope="col">Detail</th>
                                 </tr>
                                 </thead>
@@ -55,7 +54,6 @@
                                         <td>${ow.id}</td>
                                         <td>${ow.userId.fullName}</td>
                                         <td>${ow.date}</td>
-                                        <td>${ow.type}</td>
                                         <td><a href="exportDetail?outputWarehouseId=${ow.id}" class="btn btn-primary btn-sm">Detail</a></td>
                                     </tr>
                                 </c:forEach>
