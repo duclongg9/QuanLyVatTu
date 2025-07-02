@@ -55,9 +55,9 @@ public class CategoryMaterialDAO {
     public CategoryMaterial getCategoryById(int id) {
 
         String sql ="""
-                     SELECT * 
-                     FROM categorymaterial 
-                     WHERE id =?
+                     SELECT *
+                    FROM CategoryMaterial
+                    WHERE id = ? AND status = true
                     """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -69,6 +69,7 @@ public class CategoryMaterialDAO {
                     CategoryMaterial c = new CategoryMaterial();
                     c.setId(rs.getInt(COL_ID));
                     c.setCategory(rs.getString(COL_CATEGORY));
+                    c.setStatus(rs.getBoolean(COL_STATUS));
                     return c;
                 }
             }
@@ -145,7 +146,7 @@ public class CategoryMaterialDAO {
 
     // Count categories
     public int getTotalCategories() {
-        String sql = "SELECT COUNT(*) FROM CategoryMaterial";
+        String sql = "SELECT COUNT(*) FROM CategoryMaterial WHERE status = true";
         try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1);
@@ -159,7 +160,7 @@ public class CategoryMaterialDAO {
     // Pagination for categories
     public List<CategoryMaterial> pagingCategories(int index) {
         List<CategoryMaterial> list = new ArrayList<>();
-        String sql = "SELECT * FROM CategoryMaterial ORDER BY id DESC LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM CategoryMaterial WHERE status = true ORDER BY id DESC LIMIT ? OFFSET ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, PAGE_SIZE);
             ps.setInt(2, (index - 1) * PAGE_SIZE);
@@ -168,6 +169,7 @@ public class CategoryMaterialDAO {
                     CategoryMaterial c = new CategoryMaterial();
                     c.setId(rs.getInt(COL_ID));
                     c.setCategory(rs.getString(COL_CATEGORY));
+                    c.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(c);
                 }
             }
@@ -180,7 +182,7 @@ public class CategoryMaterialDAO {
     // Search categories by name with pagination
     public List<CategoryMaterial> searchCategoriesByName(String name, int index) {
         List<CategoryMaterial> list = new ArrayList<>();
-        String sql = "SELECT * FROM CategoryMaterial WHERE category LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM CategoryMaterial WHERE status = true AND category LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + name + "%");
             ps.setInt(2, PAGE_SIZE);
@@ -190,6 +192,7 @@ public class CategoryMaterialDAO {
                     CategoryMaterial c = new CategoryMaterial();
                     c.setId(rs.getInt(COL_ID));
                     c.setCategory(rs.getString(COL_CATEGORY));
+                    c.setStatus(rs.getBoolean(COL_STATUS));
                     list.add(c);
                 }
             }
@@ -201,7 +204,7 @@ public class CategoryMaterialDAO {
 
     // Count categories when searching by name
     public int getTotalCategoriesByName(String name) {
-        String sql = "SELECT COUNT(*) FROM CategoryMaterial WHERE category LIKE ?";
+        String sql = "SELECT COUNT(*) FROM CategoryMaterial WHERE status = true AND category LIKE ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + name + "%");
             try (ResultSet rs = ps.executeQuery()) {
