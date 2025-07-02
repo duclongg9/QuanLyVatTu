@@ -1,11 +1,11 @@
 package controller.request;
 
 import dao.material.CategoryMaterialDAO;
-import dao.Category.SubCategoryDAO;
 import dao.connect.DBConnect;
 import dao.material.MaterialItemDAO;
 import dao.request.InputDetailDAO;
 import dao.request.requestDAO;
+import dao.subcategory.SubCategoryDAO;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;

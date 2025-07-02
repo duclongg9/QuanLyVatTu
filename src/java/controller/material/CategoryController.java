@@ -5,6 +5,7 @@
 package controller.material;
 
 import dao.material.CategoryMaterialDAO;
+import dao.material.MaterialsDAO;
 import dao.subcategory.SubCategoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,6 +24,7 @@ public class CategoryController extends HttpServlet {
 
     CategoryMaterialDAO dao = new CategoryMaterialDAO();
     SubCategoryDAO subDao = new SubCategoryDAO();
+    MaterialsDAO materialsDAO = new MaterialsDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -41,10 +43,27 @@ public class CategoryController extends HttpServlet {
                 request.setAttribute("category", dao.getCategoryById(id));
                 request.getRequestDispatcher("/jsp/material/createCategory.jsp").forward(request, response);
                 break;
+            case "deleted":
+                String delIndexPage = request.getParameter("index");
+                if (delIndexPage == null) delIndexPage = "1";
+                int delIndex = Integer.parseInt(delIndexPage);
+                request.setAttribute("categories", dao.pagingDeletedCategories(delIndex));
+                int totalDel = dao.getTotalDeletedCategories();
+                int endDel = totalDel / CategoryMaterialDAO.PAGE_SIZE;
+                if (totalDel % CategoryMaterialDAO.PAGE_SIZE != 0) endDel++;
+                request.setAttribute("endP", endDel);
+                request.setAttribute("tag", delIndex);
+                request.getRequestDispatcher("/jsp/material/deletedCategory.jsp").forward(request, response);
+                break;
+            case "activate":
+                int aId = Integer.parseInt(request.getParameter("id"));
+                dao.activateCategory(aId);
+                response.sendRedirect("categoryController?action=deleted");
+                break;
             case "delete":
                 int delId = Integer.parseInt(request.getParameter("id"));
-                if (subDao.getTotalSubCategoryByCategory(delId) > 0) {
-                    request.setAttribute("error", "Không thể xóa danh mục do còn loại vật tư phụ thuộc");
+                if (subDao.getTotalSubCategoryByCategory(delId) > 0 || materialsDAO.getTotalMaterialsByCategory(delId) > 0) {
+                    request.setAttribute("error", "Không thể xóa danh mục do còn vật tư phụ thuộc");
                     String indexPage = request.getParameter("index");
                     if (indexPage == null) indexPage = "1";
                     int index = Integer.parseInt(indexPage);
@@ -107,9 +126,25 @@ public class CategoryController extends HttpServlet {
             throws ServletException, IOException {
         String idParam = request.getParameter("id");
         String category = request.getParameter("category");
-        int result;
+        if (!isValidName(category)) {
+            request.setAttribute("error", "Tên danh mục không hợp lệ");
+            request.getRequestDispatcher("/jsp/material/createCategory.jsp").forward(request, response);
+            return;
+        }
+
+        Integer id = null;
         if (idParam != null && !idParam.isEmpty()) {
-            int id = Integer.parseInt(idParam);
+            id = Integer.parseInt(idParam);
+        }
+
+        if (dao.isNameExists(category, id)) {
+            request.setAttribute("error", "Tên danh mục đã tồn tại");
+            request.getRequestDispatcher("/jsp/material/createCategory.jsp").forward(request, response);
+            return;
+        }
+
+        int result;
+        if (id != null) {
             result = dao.updateCategory(id, category);
         } else {
             result = dao.createCategory(category);
@@ -120,5 +155,12 @@ public class CategoryController extends HttpServlet {
             request.setAttribute("error", "Xử lý thất bại");
             request.getRequestDispatcher("/jsp/material/createCategory.jsp").forward(request, response);
         }
+    }
+    
+    private boolean isValidName(String name) {
+        if (name == null || name.length() > 50) {
+            return false;
+        }
+        return !name.contains("  ");
     }
 }

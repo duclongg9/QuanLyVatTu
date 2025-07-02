@@ -1,6 +1,7 @@
 package controller.material;
 
 import dao.material.CategoryMaterialDAO;
+import dao.material.MaterialsDAO;
 import dao.subcategory.SubCategoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,6 +14,7 @@ import java.io.IOException;
 public class SubCategoryController extends HttpServlet {
     SubCategoryDAO dao = new SubCategoryDAO();
     CategoryMaterialDAO cDao = new CategoryMaterialDAO();
+    MaterialsDAO materialsDAO = new MaterialsDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -32,10 +34,32 @@ public class SubCategoryController extends HttpServlet {
                 request.setAttribute("sub", dao.getSubCategoryById(id));
                 request.getRequestDispatcher("/jsp/material/createSubCategory.jsp").forward(request, response);
                 break;
+            case "deleted":
+                String deletedIndex = request.getParameter("index");
+                if (deletedIndex == null) deletedIndex = "1";
+                int delIdx = Integer.parseInt(deletedIndex);
+                request.setAttribute("subCategories", dao.pagingDeletedSubCategory(delIdx));
+                int totalD = dao.getTotalDeletedSubCategory();
+                int endPD = totalD / SubCategoryDAO.PAGE_SIZE;
+                if (totalD % SubCategoryDAO.PAGE_SIZE != 0) endPD++;
+                request.setAttribute("endP", endPD);
+                request.setAttribute("tag", delIdx);
+                request.getRequestDispatcher("/jsp/material/deletedSubCategory.jsp").forward(request, response);
+                break;
+            case "activate":
+                int acId = Integer.parseInt(request.getParameter("id"));
+                dao.activateSubCategory(acId);
+                response.sendRedirect("subCategoryController?action=deleted");
+                break;
             case "delete":
                 int delId = Integer.parseInt(request.getParameter("id"));
-                dao.deleteSubCategory(delId);
-                response.sendRedirect("subCategoryController");
+                if (materialsDAO.getTotalMaterialsBySubCategory(delId) > 0) {
+                    request.setAttribute("error", "Không thể xóa do còn vật tư phụ thuộc");
+                    doGet(request, response);
+                } else {
+                    dao.deleteSubCategory(delId);
+                    response.sendRedirect("subCategoryController");
+                }
                 break;
             default:
                 String indexPage = request.getParameter("index");
@@ -72,9 +96,27 @@ public class SubCategoryController extends HttpServlet {
         String idParam = request.getParameter("id");
         String name = request.getParameter("name");
         int categoryId = Integer.parseInt(request.getParameter("categoryId"));
-        int result;
+        if (!isValidName(name)) {
+            request.setAttribute("categories", cDao.getAllCategory());
+            request.setAttribute("error", "Tên loại vật tư không hợp lệ");
+            request.getRequestDispatcher("/jsp/material/createSubCategory.jsp").forward(request, response);
+            return;
+        }
+
+        Integer id = null;
         if (idParam != null && !idParam.isEmpty()) {
-            int id = Integer.parseInt(idParam);
+            id = Integer.parseInt(idParam);
+        }
+
+        if (dao.isNameExists(name, id)) {
+            request.setAttribute("categories", cDao.getAllCategory());
+            request.setAttribute("error", "Tên loại vật tư đã tồn tại");
+            request.getRequestDispatcher("/jsp/material/createSubCategory.jsp").forward(request, response);
+            return;
+        }
+
+        int result;
+        if (id != null) {
             result = dao.updateSubCategory(id, name, categoryId);
         } else {
             result = dao.createSubCategory(name, categoryId);
@@ -86,5 +128,10 @@ public class SubCategoryController extends HttpServlet {
             request.setAttribute("error", "Xử lý thất bại");
             request.getRequestDispatcher("/jsp/material/createSubCategory.jsp").forward(request, response);
         }
+    }
+    
+    private boolean isValidName(String name) {
+        if (name == null || name.length() > 50) return false;
+        return !name.contains("  ");
     }
 }

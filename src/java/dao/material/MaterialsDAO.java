@@ -4,7 +4,7 @@
  */
 package dao.material;
 import dao.material.CategoryMaterialDAO;
-import dao.Category.SubCategoryDAO;
+import dao.subcategory.SubCategoryDAO;
 import dao.connect.DBConnect;
 import dao.request.requestDAO;
 import dao.user.UserDAO;
@@ -217,6 +217,23 @@ public class MaterialsDAO {
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, categoryId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
+    }
+
+// Count materials by subcategory
+    public int getTotalMaterialsBySubCategory(int subCategoryId) {
+        String sql = "SELECT COUNT(*) FROM Materials WHERE status = true AND subCategoryId = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, subCategoryId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1);

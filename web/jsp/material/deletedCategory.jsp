@@ -1,6 +1,6 @@
 <%-- 
-    Document   : listCategory
-    Created on : 30 Jun 2025, 06:30:42
+    Document   : deletedCategory
+    Created on : 2 Jul 2025, 10:33:01
     Author     : Dell-PC
 --%>
 
@@ -10,7 +10,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sub Category List</title>
+    <title>Deleted Category List</title>
     <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
@@ -23,40 +23,23 @@
         <%@include file="../template/navbar.jsp" %>
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="bg-light rounded p-4">
-                <h4 class="mb-4">Sub Category List</h4>
-                <a href="${pageContext.request.contextPath}/subCategoryController?action=add" class="btn btn-primary mb-3">Add New</a>
-                <a href="${pageContext.request.contextPath}/subCategoryController?action=deleted" class="btn btn-outline-secondary mb-3 ms-2">View Deleted</a>
-                <form action="subCategoryController" method="get" class="d-flex align-items-center gap-2 mb-3">
-                    <input type="hidden" name="action" value="list"/>
-                    <select name="categoryId" class="form-select w-auto">
-                        <option value="">All Category</option>
-                        <c:forEach var="c" items="${categoryFilter}">
-                            <option value="${c.id}" ${selectedCategory == c.id ? 'selected' : ''}>${c.category}</option>
-                        </c:forEach>
-                    </select>
-                    <input class="form-control border-0" type="search" placeholder="Search" name="search" value="${param.search}" />
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </form>
+                <h4 class="mb-4">Deleted Category List</h4>
+                <a href="${pageContext.request.contextPath}/categoryController" class="btn btn-secondary mb-3">Back to List</a>
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Category</th>
-                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="c" items="${subCategories}">
+                        <c:forEach var="c" items="${categories}">
                             <tr>
                                 <td>${c.id}</td>
-                                <td>${c.subCategoryName}</td>
-                                <td>${c.categoryMaterialId.category}</td>
-                                <td>${c.status ? 'Active' : 'Inactive'}</td>
+                                <td>${c.category}</td>
                                 <td>
-                                    <a href="subCategoryController?action=edit&id=${c.id}" class="btn btn-sm btn-warning">Edit</a>
-                                    <a href="subCategoryController?action=delete&id=${c.id}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this sub category?');">Delete</a>
+                                    <a href="categoryController?action=activate&id=${c.id}" class="btn btn-sm btn-success" onclick="return confirm('Activate this category?');">Activate</a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -66,7 +49,7 @@
                     <ul class="pagination justify-content-center">
                         <c:forEach begin="1" end="${endP}" var="i">
                             <li class="page-item ${tag == i ? 'active' : ''}">
-                                <a class="page-link" href="subCategoryController?index=${i}&search=${param.search}&categoryId=${selectedCategory}">${i}</a>
+                                <a class="page-link" href="categoryController?action=deleted&index=${i}">${i}</a>
                             </li>
                         </c:forEach>
                     </ul>

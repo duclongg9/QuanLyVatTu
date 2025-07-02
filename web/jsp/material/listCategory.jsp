@@ -28,6 +28,7 @@
                     <div class="text-danger mb-3">${error}</div>
                 </c:if>
                 <a href="${pageContext.request.contextPath}/categoryController?action=add" class="btn btn-primary mb-3">Add New</a>
+                <a href="${pageContext.request.contextPath}/categoryController?action=deleted" class="btn btn-outline-secondary mb-3 ms-2">View Deleted</a>
                 <form action="categoryController" method="get" class="d-flex align-items-center gap-2 mb-3">
                     <input type="hidden" name="action" value="list"/>
                     <input class="form-control border-0" type="search" placeholder="Search" name="search" value="${param.search}" />
@@ -38,6 +39,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -46,6 +48,7 @@
                             <tr>
                                 <td>${c.id}</td>
                                 <td>${c.category}</td>
+                                <td>${c.status ? 'Active' : 'Inactive'}</td>
                                 <td>
                                     <a href="categoryController?action=edit&id=${c.id}" class="btn btn-sm btn-warning">Edit</a>
                                     <a href="categoryController?action=delete&id=${c.id}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this category?');">Delete</a>

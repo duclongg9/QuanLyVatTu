@@ -179,6 +179,28 @@ public class CategoryMaterialDAO {
         return list;
     }
 
+    // Paging deleted categories
+    public List<CategoryMaterial> pagingDeletedCategories(int index) {
+        List<CategoryMaterial> list = new ArrayList<>();
+        String sql = "SELECT * FROM CategoryMaterial WHERE status = false ORDER BY id DESC LIMIT ? OFFSET ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, PAGE_SIZE);
+            ps.setInt(2, (index - 1) * PAGE_SIZE);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CategoryMaterial c = new CategoryMaterial();
+                    c.setId(rs.getInt(COL_ID));
+                    c.setCategory(rs.getString(COL_CATEGORY));
+                    c.setStatus(rs.getBoolean(COL_STATUS));
+                    list.add(c);
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(CategoryMaterialDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return list;
+    }
+
     // Search categories by name with pagination
     public List<CategoryMaterial> searchCategoriesByName(String name, int index) {
         List<CategoryMaterial> list = new ArrayList<>();
@@ -216,5 +238,50 @@ public class CategoryMaterialDAO {
             Logger.getLogger(CategoryMaterialDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return 0;
+    }
+    
+    public int getTotalDeletedCategories() {
+        String sql = "SELECT COUNT(*) FROM CategoryMaterial WHERE status = false";
+        try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            Logger.getLogger(CategoryMaterialDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
+    }
+
+    // restore category
+    public void activateCategory(int id) {
+        String sql = "UPDATE CategoryMaterial SET status = true WHERE id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            Logger.getLogger(CategoryMaterialDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    // Check duplicate category name
+    public boolean isNameExists(String name, Integer excludeId) {
+        String sql = "SELECT COUNT(*) FROM CategoryMaterial WHERE LOWER(category) = LOWER(?)";
+        if (excludeId != null) {
+            sql += " AND id <> ?";
+        }
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            if (excludeId != null) {
+                ps.setInt(2, excludeId);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(CategoryMaterialDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return false;
     }
 }
