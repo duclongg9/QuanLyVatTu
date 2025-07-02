@@ -105,7 +105,39 @@ public static final int PAGE_NUMBER = 7;
                 int deleteId = Integer.parseInt(request.getParameter("id"));
                 if (mDao.hasRemainingQuantity(deleteId)) {
                     request.setAttribute("error", "Không thể xóa vật tư do còn số lượng tồn");
-//                    doGet(request, response);
+                // load list view with error message
+                    String indexPage = request.getParameter("index");
+                    if (indexPage == null) {
+                        indexPage = "1";
+                    }
+                    int index = Integer.parseInt(indexPage);
+                    List<Materials> list;
+                    int count;
+                    try {
+                        list = mDao.pagingMaterials(index);
+                        count = mDao.getTotalMaterials();
+                    } catch (Exception e) {
+                        throw new ServletException(e);
+                    }
+
+                    int endP = count / PAGE_NUMBER;
+                    if (count % PAGE_NUMBER != 0) {
+                        endP++;
+                    }
+
+                    Map<Integer, Materials> updatedMap = new HashMap<>();
+                    for (Materials m : list) {
+                        Materials newVer = mDao.getNewVersionOf(m.getId());
+                        if (newVer != null) {
+                            updatedMap.put(m.getId(), newVer);
+                        }
+                    }
+                    request.setAttribute("materials", list);
+                    request.setAttribute("categoryFilter", cDao.getAllCategory());
+                    request.setAttribute("updatedMap", updatedMap);
+                    request.setAttribute("endP", endP);
+                    request.setAttribute("tag", index);
+                    request.getRequestDispatcher("/jsp/material/listMaterials.jsp").forward(request, response);
                 } else {
                     mDao.deactivateMaterial(deleteId);
                     response.sendRedirect("materialController?action=list");
