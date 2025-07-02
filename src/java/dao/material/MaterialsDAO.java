@@ -4,7 +4,7 @@
  */
 package dao.material;
 import dao.material.CategoryMaterialDAO;
-import dao.subcategory.SubCategoryDAO;
+import dao.material.MaterialHistoryDAO;
 import dao.connect.DBConnect;
 import dao.request.requestDAO;
 import dao.user.UserDAO;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Materials;
+import model.SubCategory;
 /**
  *
  * @author D E L L
@@ -361,7 +362,34 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, su
             return 0;
         }    }
 
-// Lấy danh sách vật tư đã bị xóa (statusId = 2)// Lấy danh sách vật tư đã bị xóa (status = false)
+
+    
+    
+ // Update material by creating a new record and archiving the old one
+    public int updateMaterialWithHistory(int id, String name, int unitId,
+                                         String imageName, int subCategoryId) {
+        // Get current material information
+        Materials old = getMaterialsById(id);
+        if (old == null) {
+            return 0;
+        }
+
+        // Save old data to history table
+        MaterialHistoryDAO historyDAO = new MaterialHistoryDAO();
+        historyDAO.insertHistory(old);
+
+        // Create new material that replaces the old one
+        int result = createMaterial(name, unitId, imageName, subCategoryId, id);
+        if (result > 0) {
+            // deactivate old material so it is no longer in use
+            deactivateMaterial(id);
+        }
+        return result;
+    }
+
+
+
+
     public List<Materials> getDeletedMaterials() {
         List<Materials> list = new ArrayList<>();
         String sql = "SELECT * FROM Materials WHERE status = false ORDER BY id DESC";

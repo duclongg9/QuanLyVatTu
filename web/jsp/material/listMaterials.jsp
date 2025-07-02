@@ -26,6 +26,7 @@
                         </c:if>
                         <a href="${pageContext.request.contextPath}/materialController?action=add" class="btn btn-primary mb-3">Add New</a>
                         <a href="${pageContext.request.contextPath}/materialController?action=deleted" class="btn btn-outline-secondary mb-3 ms-2">View Deleted</a>
+                        <a href="${pageContext.request.contextPath}/materialController?action=history" class="btn btn-outline-secondary mb-3 ms-2">History Update Material</a>
                         <form action="materialController" method="get" class="d-flex align-items-center gap-2 mb-3">
                             <input type="hidden" name="action" value="list"/>
                             <select name="categoryId" class="form-select w-auto">

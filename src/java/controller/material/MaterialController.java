@@ -105,7 +105,7 @@ public static final int PAGE_NUMBER = 7;
                 int deleteId = Integer.parseInt(request.getParameter("id"));
                 if (mDao.hasRemainingQuantity(deleteId)) {
                     request.setAttribute("error", "Không thể xóa vật tư do còn số lượng tồn");
-                    doGet(request, response);
+//                    doGet(request, response);
                 } else {
                     mDao.deactivateMaterial(deleteId);
                     response.sendRedirect("materialController?action=list");
