@@ -21,6 +21,9 @@
                 <div class="col-12">
                     <div class="bg-light rounded p-4">
                         <h4 class="mb-4">Material List</h4>
+                        <c:if test="${not empty error}">
+                            <div class="text-danger mb-3">${error}</div>
+                        </c:if>
                         <a href="${pageContext.request.contextPath}/materialController?action=add" class="btn btn-primary mb-3">Add New</a>
                         <a href="${pageContext.request.contextPath}/materialController?action=deleted" class="btn btn-outline-secondary mb-3 ms-2">View Deleted</a>
                         <form action="materialController" method="get" class="d-flex align-items-center gap-2 mb-3">
