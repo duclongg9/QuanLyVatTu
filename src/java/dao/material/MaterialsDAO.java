@@ -472,25 +472,21 @@ public int getTotalDeletedMaterials() {
         }    }
     
     public boolean hasRemainingQuantity(int materialId) {
-        String sql = "SELECT SUM(mi.quantity) AS total FROM MaterialItem mi "
-                + "JOIN materials_Supplier ms ON mi.materials_SupplierId = ms.id "
-                + "WHERE ms.materialId = ?";
+        String sql = "SELECT SUM(mi.quantity) AS total FROM MaterialItem mi " +
+                     "JOIN materials_Supplier ms ON mi.materials_SupplierId = ms.id " +
+                     "WHERE ms.materialId = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, materialId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    int total = rs.getInt("total");
-                    if (rs.wasNull()) {
-                        return false; // no quantity found
-                    }
-                    return total > 0;
+                    return rs.getInt("total") > 0;
                 }
             }
         } catch (Exception e) {
             Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
         }
-        return false;
+        return true;
     }
     
      public static void main(String[] args) throws SQLException {

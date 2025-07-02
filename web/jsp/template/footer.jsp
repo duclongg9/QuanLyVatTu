@@ -15,8 +15,4 @@
                     &copy; 2025 <strong>QL Vật Tư Xây Dựng</strong> &nbsp;|&nbsp; Thiết kế và phát triển bởi <a href="https://drive.google.com/drive/folders/1yaabMI22ZgWlIT6g89OPGBNbKOaAiRxO">Nhóm 1 SWP391_SU25</a>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- Footer End -->
-</body>
-</html>
+            <!-- Footer End -->
