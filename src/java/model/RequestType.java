@@ -9,5 +9,5 @@ package model;
  * @author D E L L
  */
 public enum RequestType {
-    IMPORT, EXPORT
+    IMPORT, EXPORT,REPAIR,PURCHASE
 }

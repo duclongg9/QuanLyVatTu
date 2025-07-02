@@ -3,8 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao.material;
-import dao.Category.CategoryMaterialDAO;
-import dao.Category.SubCategoryDAO;
+import dao.material.CategoryMaterialDAO;
+import dao.subcategory.SubCategoryDAO;
 import dao.connect.DBConnect;
 import dao.request.requestDAO;
 import dao.user.UserDAO;
@@ -228,6 +228,23 @@ public class MaterialsDAO {
         return 0;
     }
 
+// Count materials by subcategory
+    public int getTotalMaterialsBySubCategory(int subCategoryId) {
+        String sql = "SELECT COUNT(*) FROM Materials WHERE status = true AND subCategoryId = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, subCategoryId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
+    }
+
 
     
     public Materials getMaterialsById(int id) {
@@ -426,6 +443,23 @@ public int getTotalDeletedMaterials() {
             Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
         }    }
     
+    public boolean hasRemainingQuantity(int materialId) {
+        String sql = "SELECT SUM(mi.quantity) AS total FROM MaterialItem mi " +
+                     "JOIN materials_Supplier ms ON mi.materials_SupplierId = ms.id " +
+                     "WHERE ms.materialId = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, materialId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("total") > 0;
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return true;
+    }
     
      public static void main(String[] args) throws SQLException {
         MaterialsDAO mdao = new MaterialsDAO();

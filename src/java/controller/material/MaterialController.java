@@ -6,6 +6,7 @@ import dao.subcategory.SubCategoryDAO;
 import dao.material.MaterialUnitDAO;
 import dao.material.MaterialsDAO;
 import dao.material.CategoryMaterialDAO;
+import dao.material.MaterialHistoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -88,6 +89,11 @@ public static final int PAGE_NUMBER = 7;
                 }
                 request.getRequestDispatcher("/jsp/material/createMaterial.jsp").forward(request, response);
                 break;
+            case "history":
+                MaterialHistoryDAO hDao = new MaterialHistoryDAO();
+                request.setAttribute("historyList", hDao.getAllHistory());
+                request.getRequestDispatcher("/jsp/material/materialHistory.jsp").forward(request, response);
+                break;
             case "edit":
                 int id = Integer.parseInt(request.getParameter("id"));
                 request.setAttribute("units", muDao.getAllUnit());
@@ -97,8 +103,13 @@ public static final int PAGE_NUMBER = 7;
                 break;
             case "delete":
                 int deleteId = Integer.parseInt(request.getParameter("id"));
-                mDao.deactivateMaterial(deleteId);
-                response.sendRedirect("materialController?action=list");
+                if (mDao.hasRemainingQuantity(deleteId)) {
+                    request.setAttribute("error", "Không thể xóa vật tư do còn số lượng tồn");
+                    doGet(request, response);
+                } else {
+                    mDao.deactivateMaterial(deleteId);
+                    response.sendRedirect("materialController?action=list");
+                }
                 break;
             case "confirmDelete":
                 int idToConfirm = Integer.parseInt(request.getParameter("id"));
@@ -196,6 +207,15 @@ public static final int PAGE_NUMBER = 7;
         String name = request.getParameter("name");
         int unitId = Integer.parseInt(request.getParameter("unitId"));
         int subCategoryId = Integer.parseInt(request.getParameter("subCategoryId"));
+        
+        if (!isValidName(name)) {
+            request.setAttribute("units", muDao.getAllUnit());
+            request.setAttribute("categories", scDao.getAllSubCategory());
+            request.setAttribute("error", "Tên vật tư không hợp lệ");
+            request.getRequestDispatcher("/jsp/material/createMaterial.jsp").forward(request, response);
+            return;
+        }
+
 
         Part imagePart = request.getPart("image");
         String imageName = null;
@@ -218,10 +238,7 @@ public static final int PAGE_NUMBER = 7;
                     imageName = old.getImage();
                 }
             }
-            result = mDao.createMaterial(name, unitId, imageName, subCategoryId, id);
-            if (result > 0) {
-                mDao.deactivateMaterial(id);
-            }
+            result = mDao.updateMaterialWithHistory(id, name, unitId, imageName, subCategoryId);
         } else {
             result = mDao.createMaterial(name, unitId, imageName, subCategoryId);
         }
@@ -241,6 +258,12 @@ public static final int PAGE_NUMBER = 7;
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
+    
+    private boolean isValidName(String name) {
+        if (name == null || name.length() > 50) {
+            return false;
+        }
+        return !name.contains("  ");
+    }
 }

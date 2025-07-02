@@ -11,13 +11,24 @@ package model;
 public class CategoryMaterial {
     private int id;
     private String category;
+    private boolean status;
 
     public CategoryMaterial() {
     }
 
-    public CategoryMaterial(int id, String category) {
+
+    public CategoryMaterial(int id, String category, boolean status) {
         this.id = id;
         this.category = category;
+        this.status = status;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public int getId() {

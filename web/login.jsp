@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Qu?n l� v?t t?</title>
+    <title>Login Materials Management</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
@@ -108,18 +108,18 @@
         <h2 class="app-title">Materials Management</h2>
         <h3 class="login-title">Sign In</h3>
 
-        <!-- Th�ng b�o l?i n?u c� -->
+        
         <div class="error-message">${msg}</div>
 
         <form action="login" method="post">
             <div class="form-group">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" placeholder="Nh?p t�n ??ng nh?p" required>
+                <input type="text" id="username" name="username" placeholder="Username" required>
             </div>
 
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Nh?p m?t kh?u" required>
+                <input type="password" id="password" name="password" placeholder="Password" required>
             </div>
 
             <button type="submit" class="btn">Login</button>

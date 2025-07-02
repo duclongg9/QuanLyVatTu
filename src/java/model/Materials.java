@@ -81,7 +81,7 @@ public class Materials {
     public void setSubCategoryId(SubCategory subCategoryId) {
         this.subCategoryId = subCategoryId;
     }
-public boolean isStatus() {
+    public boolean isStatus() {
         return status;
     }
 
