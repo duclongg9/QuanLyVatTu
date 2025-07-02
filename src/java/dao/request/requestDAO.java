@@ -139,18 +139,19 @@ public class requestDAO {
     }
 
     // Thêm request mới, trả về requestId vừa tạo
-    public int insertRequest(Connection conn, int userId, String note, Integer approverId) throws SQLException {
-        String sql = "INSERT INTO Request (date, statusId, userId, note, type, approvedBy) VALUES (NOW(), ?, ?, ?, 'Import', ?)";
+    public int insertRequest(Connection conn, int userId, String note, Integer approverId, RequestType type) throws SQLException {
+        String sql = "INSERT INTO Request (date, statusId, userId, note, type, approvedBy) VALUES (NOW(), ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, 1); // statusId: 1 = Pending
             ps.setInt(2, userId);
             ps.setString(3, note);
+            ps.setString(4, type.name());
 
             if (approverId != null) {
-                ps.setInt(4, approverId); // nếu có approverId
+                ps.setInt(5, approverId);
             } else {
-                ps.setNull(4, Types.INTEGER); // nếu chưa có người duyệt
+                ps.setNull(5, Types.INTEGER); 
             }
 
             int affectedRows = ps.executeUpdate(); // execute
