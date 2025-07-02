@@ -28,6 +28,6 @@
             <a href="#">Theo loại chi phí</a>
             <a href="#">Quyền và vai trò</a>
             <a href="#">Gán quyền cho vai trò</a>
-            <a href="${pageContext.request.contextPath}/unitList">🏷️ Đơn vị tính</a>
+            <a href="${pageContext.request.contextPath}/unit">🏷️ Đơn vị tính</a>
             <a href="#">Nhà cung cấp</a>
         </aside>

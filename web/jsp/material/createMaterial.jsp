@@ -31,7 +31,7 @@
         <form action="${pageContext.request.contextPath}/materialController" method="post" enctype="multipart/form-data" class="w-50">
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" id="name" name="name" class="form-control" required>
+                <input type="text" id="name" name="name" class="form-control" maxlength="50" pattern="(?!.*  ).+" title="Không nhập quá 50 ký tự và không chứa khoảng trắng liên tiếp" required>
             </div>
             <div class="mb-3">
                 <label for="unitId" class="form-label">Unit</label>
@@ -42,10 +42,10 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="categoryId" class="form-label">Category</label>
-                <select id="categoryId" name="categoryId" class="form-select" required>
+                <label for="subCategoryId" class="form-label">Sub Category</label>
+                <select id="subCategoryId" name="subCategoryId" class="form-select" required>
                     <c:forEach var="c" items="${categories}">
-                        <option value="${c.id}">${c.category}</option>
+                        <option value="${c.id}">${c.subCategoryName}</option>
                     </c:forEach>
                 </select>
             </div>

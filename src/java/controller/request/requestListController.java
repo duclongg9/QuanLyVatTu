@@ -25,7 +25,7 @@ import model.Request;
  * @author D E L L
  */
 @WebServlet(name="requestListController", urlPatterns={"/requestList"})
-public class RequestListController extends HttpServlet {
+public class requestListController extends HttpServlet {
    public static final int PAGE_NUMBER = 5;
    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

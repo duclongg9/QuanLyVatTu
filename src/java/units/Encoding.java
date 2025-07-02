@@ -29,7 +29,8 @@ public class Encoding {
     }
     
     public static void main(String[] args) {
-        String test = "kho";
+        String test = "admin";
         System.out.println(toSHA1(test));
     }
 }
+

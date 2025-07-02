@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 import units.Encoding;
 
 @WebServlet(name = "login", urlPatterns = {"/login"})
@@ -19,14 +20,18 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("index.jsp").forward(request, response);
+        request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        
+        
         try {
             String username = request.getParameter("username");
+            System.out.println(username);
             String password = request.getParameter("password");
 
             // Mã hóa mật khẩu bằng SHA-1 trước khi kiểm tra
@@ -39,11 +44,18 @@ public class LoginController extends HttpServlet {
             if (account == null) {
                 request.setAttribute("msg", "Tài khoản hoặc mật khẩu không đúng!");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
+            } else if (account.isStatus() == false) {
+                request.setAttribute("msg", "Tài khoản của bạn bị khóa.");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
             } else {
                 // Lưu thông tin vào session
                 session.setAttribute("account", account);
                 session.setAttribute("fullname", account.getFullName());
                 session.setAttribute("email", account.getEmail());
+                session.setAttribute("loggedInUser", account);
+                session.setAttribute("roleName", account.getRole().getRoleName());
+                session.setAttribute("role_id", account.getRole().getId());
+                session.setAttribute("status", account.isStatus() ? 1 : 0);
 
                 // Lưu cookie cho username
                 Cookie usernameCookie = new Cookie("username", username);
@@ -58,7 +70,7 @@ public class LoginController extends HttpServlet {
                 response.addCookie(emailCookie);
 
                 System.out.println("Đăng nhập thành công, cookie đã được lưu, chuyển hướng đến board.jsp");
-                response.sendRedirect("index.jsp");
+                response.sendRedirect("home");
 
                 //request.getRequestDispatcher("board.jsp").forward(request, response);
             }

@@ -55,7 +55,7 @@
                             <h6 class="mb-4">Request</h6>
                           
                             <div class="table-responsive">
-                                <a href="CreateRequestImport" class="btn btn-primary m-2">Create Import</a>
+                                
                                 <table class="table" id="userTable">
                                     <thead>
                                         <tr>
@@ -79,7 +79,7 @@
                                             <td>${lr.note}</td>
                                             <td>${lr.statusId.status}</td>
                                             <td>${lr.approvedBy.fullName}</td>
-                                            <td><a href="requestDetail?requestId=${lr.id}" class="delete-btn">Detail</a> </td>
+                                            <td><a href="requestDetailController?requestId=${lr.id}" class="delete-btn">Detail</a> </td>
                                         </tr>
                                         </c:forEach>
                                     </tbody>
