@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import com.qlvt.model.User;
 
 /**
  *
@@ -51,7 +52,7 @@ public class UserProfileController extends HttpServlet {
             throws ServletException, IOException {
         
          // Lấy user từ session
-    model.User user = (model.User) request.getSession().getAttribute("account");
+    User user = (User) request.getSession().getAttribute("account");
  
     if (user == null) {
         // Nếu chưa đăng nhập, chuyển về trang đăng nhập
