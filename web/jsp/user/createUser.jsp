@@ -47,9 +47,9 @@
             <%@include file="../template/navbar.jsp" %>
 
             <form method="post" enctype="multipart/form-data" action="${pageContext.request.contextPath}/createUser">
-        <div class="row">
+        <div class="row g-0">
             <div class="col-sm-12">
-                <div class="col-sm-12 text-center mb-3">
+                <div class="col-sm-12 bg-light rounded h-100 p-4 text-center ">
                     <h4 class="fw-bold">CREATE USER</h4>
                 </div>
                 

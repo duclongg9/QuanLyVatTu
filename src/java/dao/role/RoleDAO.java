@@ -85,6 +85,33 @@ public class RoleDAO {
 
         return null;
     }
+    
+     public List<Role> getAllRoleExeptedCEO() {
+        List<Role> lr = new ArrayList<>();
+        
+        String sql = "SELECT * FROM ql_vat_tu.role";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                
+                while (rs.next()) {
+                    Role r = new Role();
+                    if (rs.getInt(COL_ID) != 1 && rs.getInt(COL_ID) != 4) { //trừ ADMIN ra 
+                        r.setId(rs.getInt(COL_ID));
+                        r.setRoleName(rs.getString(COL_ROLE));
+                        lr.add(r);
+                    }
+
+                }
+                return lr;
+            }
+        } catch (Exception e) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return null;
+    }
 
     public static void main(String[] args) {
         RoleDAO rdao = new RoleDAO();

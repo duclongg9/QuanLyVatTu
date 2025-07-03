@@ -25,6 +25,7 @@
             <div class="bg-light rounded p-4">
                 <h4 class="mb-4">Sub Category List</h4>
                 <a href="${pageContext.request.contextPath}/subCategoryController?action=add" class="btn btn-primary mb-3">Add New</a>
+                <a href="${pageContext.request.contextPath}/subCategoryController?action=deleted" class="btn btn-outline-secondary mb-3 ms-2">View Deleted</a>
                 <form action="subCategoryController" method="get" class="d-flex align-items-center gap-2 mb-3">
                     <input type="hidden" name="action" value="list"/>
                     <select name="categoryId" class="form-select w-auto">
@@ -42,6 +43,7 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Category</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -51,6 +53,7 @@
                                 <td>${c.id}</td>
                                 <td>${c.subCategoryName}</td>
                                 <td>${c.categoryMaterialId.category}</td>
+                                <td>${c.status ? 'Active' : 'Inactive'}</td>
                                 <td>
                                     <a href="subCategoryController?action=edit&id=${c.id}" class="btn btn-sm btn-warning">Edit</a>
                                     <a href="subCategoryController?action=delete&id=${c.id}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this sub category?');">Delete</a>

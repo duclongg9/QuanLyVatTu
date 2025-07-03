@@ -31,7 +31,7 @@
         <form action="${pageContext.request.contextPath}/materialController" method="post" enctype="multipart/form-data" class="w-50">
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" id="name" name="name" class="form-control" required>
+                <input type="text" id="name" name="name" class="form-control" maxlength="50" pattern="(?!.*  ).+" title="Không nhập quá 50 ký tự và không chứa khoảng trắng liên tiếp" required>
             </div>
             <div class="mb-3">
                 <label for="unitId" class="form-label">Unit</label>

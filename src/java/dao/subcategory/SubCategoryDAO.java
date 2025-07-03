@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Materials;
 import model.SubCategory;
 /**
  *
@@ -48,25 +49,57 @@ private Connection conn;
         return list;
     }
 
-    public SubCategory getSubCategoryById(int id) {
-        String sql = "SELECT * FROM SubCategory WHERE id=? AND status = true";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    SubCategory sc = new SubCategory();
-                    sc.setId(rs.getInt(COL_ID));
-                    sc.setSubCategoryName(rs.getString(COL_NAME));
-                    sc.setCategoryMaterialId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY_ID)));
-                    sc.setStatus(rs.getBoolean(COL_STATUS));
-                    return sc;
+    public SubCategory getSubCategoryById(int subCategoryId){
+        String sql = "SELECT * FROM subcategory WHERE id = ? AND status = true";
+        try (Connection conn = DBConnect.getConnection();PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, subCategoryId);
+            try(ResultSet rs = ps.executeQuery()){
+                if(rs.next()){
+                     SubCategory m = new SubCategory();
+                    m.setId(rs.getInt(COL_ID));
+                    m.setSubCategoryName(rs.getString(COL_NAME));
+                    m.setCategoryMaterialId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY_ID)));
+                    m.setStatus(rs.getBoolean(COL_STATUS));
+                    return m;
                 }
             }
         } catch (Exception e) {
-            Logger.getLogger(SubCategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(Materials.class.getName()).log(Level.SEVERE, null, e);
         }
         return null;
     }
+    
+    
+    public List<SubCategory> getSubCategoryByCatId(int categoryMaterialId){
+        List<SubCategory> subCatList = new ArrayList<>();
+        String sql="SELECT * FROM subcategory WHERE status = true ";
+        if(categoryMaterialId != 0){
+            sql+="AND categoryMaterialId = ?";
+        }
+       try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+           if(categoryMaterialId != 0){
+            ps.setInt(1, categoryMaterialId);
+           }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    SubCategory m = new SubCategory();
+                    m.setId(rs.getInt(COL_ID));
+                    m.setSubCategoryName(rs.getString(COL_NAME));
+                    m.setCategoryMaterialId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY_ID)));
+                    m.setStatus(rs.getBoolean(COL_STATUS));
+                    subCatList.add(m);
+                }
+                return subCatList;
+            }
+
+        } catch (Exception e) {
+            Logger.getLogger(Materials.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return null;
+    }
+    
+    
+    
     public int createSubCategory(String name, int categoryId) {
         String sql = "INSERT INTO SubCategory(subCategoryName, categoryMaterialId) VALUES(?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -104,6 +137,20 @@ private Connection conn;
         return 0;
     }
 
+    
+    // Restore subcategory
+    public void activateSubCategory(int id) {
+        String sql = "UPDATE SubCategory SET status = true WHERE id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            Logger.getLogger(SubCategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+
+    
     // Deactivate all subcategories under a category
     public void deactivateByCategoryId(int categoryId) {
         String sql = "UPDATE SubCategory SET status = false WHERE categoryMaterialId=?";
@@ -151,6 +198,43 @@ private Connection conn;
         return list;
     }
 
+    // List deleted subcategories
+    public List<SubCategory> pagingDeletedSubCategory(int index) {
+        List<SubCategory> list = new ArrayList<>();
+        String sql = "SELECT * FROM SubCategory WHERE status = false ORDER BY id DESC LIMIT ? OFFSET ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, PAGE_SIZE);
+            ps.setInt(2, (index - 1) * PAGE_SIZE);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    SubCategory sc = new SubCategory();
+                    sc.setId(rs.getInt(COL_ID));
+                    sc.setSubCategoryName(rs.getString(COL_NAME));
+                    sc.setCategoryMaterialId(cmdao.getCategoryById(rs.getInt(COL_CATEGORY_ID)));
+                    sc.setStatus(rs.getBoolean(COL_STATUS));
+                    list.add(sc);
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(SubCategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return list;
+    }
+
+    public int getTotalDeletedSubCategory() {
+        String sql = "SELECT COUNT(*) FROM SubCategory WHERE status = false";
+        try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            Logger.getLogger(SubCategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
+    }
+
+
+    
     // Search subcategory by name
     public List<SubCategory> searchSubCategoryByName(String name, int index) {
         List<SubCategory> list = new ArrayList<>();
@@ -227,5 +311,27 @@ private Connection conn;
             Logger.getLogger(SubCategoryDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return 0;
+    }
+    
+    // Check duplicate subcategory name
+    public boolean isNameExists(String name, Integer excludeId) {
+        String sql = "SELECT COUNT(*) FROM SubCategory WHERE LOWER(subCategoryName) = LOWER(?)";
+        if (excludeId != null) {
+            sql += " AND id <> ?";
+        }
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            if (excludeId != null) {
+                ps.setInt(2, excludeId);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(SubCategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return false;
     }
 }

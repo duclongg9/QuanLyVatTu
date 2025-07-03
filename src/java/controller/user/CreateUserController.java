@@ -58,7 +58,7 @@ public class CreateUserController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // Kiểm tra đăng nhập
         HttpSession session = request.getSession();
         User loggedInUser = (User) session.getAttribute("account");
@@ -69,9 +69,13 @@ public class CreateUserController extends HttpServlet {
         }
 
         //Lấy list role
-        List<Role> lr = rdao.getAllRole();
+        List<Role> lr;
+        if (!udao.isCEOExit()) {
+            lr = rdao.getAllRole();
+        } else {
+            lr = rdao.getAllRoleExeptedCEO();
+        }
         request.setAttribute("listRole", lr);
-
         request.getRequestDispatcher("/jsp/user/createUser.jsp").forward(request, response);
     }
 
@@ -95,8 +99,12 @@ public class CreateUserController extends HttpServlet {
             int roleId = Integer.parseInt(roleIdParam);
 
             //lấy lại list vai trò 
-            List<Role> lr = rdao.getAllRole();
-
+            List<Role> lr;
+            if (!udao.isCEOExit()) {
+                lr = rdao.getAllRole();
+            } else {
+                lr = rdao.getAllRoleExeptedCEO();
+            }
 
             boolean emailExists = udao.isEmailExists(email);
             boolean phoneExists = udao.isPhoneExits(phone);
@@ -142,18 +150,14 @@ public class CreateUserController extends HttpServlet {
                 }
                 imagePart.write(uploadPath + File.separator + imageName);
             }
-            
-             
-            
+
             // Đảm bảo hệ thống chỉ có 1 role duy nhất
             if (roleId == 4 && udao.isCEOExit()) {
-                
-                request.setAttribute("error", "Hệ thống chỉ cho phép một CEO. Không thể gán vai trò CEO cho người này.");
 
                 // Truyền lại dữ liệu user và danh sách role
-                request.setAttribute("listRole", rdao.getAllRole());
+                request.setAttribute("listRole", rdao.getAllRoleExeptedCEO());
                 request.getRequestDispatcher("/jsp/user/updateUser.jsp").forward(request, response);
-                return; 
+                return;
             }
 
             int updated = udao.createUser(username, fullname, phone, encodingPassword, email, address, gender, birthDate, imageName, status, roleId);

@@ -55,7 +55,7 @@
                             <h6 class="mb-4">Request</h6>
                           
                             <div class="table-responsive">
-                                <a href="CreateRequestImport" class="btn btn-primary m-2">Create Import</a>
+                                
                                 <table class="table" id="userTable">
                                     <thead>
                                         <tr>

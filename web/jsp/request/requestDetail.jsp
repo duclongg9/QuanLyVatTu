@@ -54,19 +54,19 @@
                         <div class="table-responsive">
                             <c:if test="${userRequest.statusId.id == 1 && sessionScope.account.role.id == 1}">
                             <div class="m-2">
-                            <form action="requestDetail" method="post" style="display:inline;">
+                            <form action="requestDetailController" method="post" style="display:inline;">
                                 <input type="hidden" name="requestId" value="${requestId}" />
                                 <input type="hidden" name="newStatusId" value="2" /> <!-- 2 = Approve -->
                                 <button type="submit" class="btn btn-success">Approve</button>
                             </form>
 
-                            <form action="requestDetail" method="post" style="display:inline;">
+                            <form action="requestDetailController" method="post" style="display:inline;">
                                 <input type="hidden" name="requestId" value="${requestId}" />
                                 <input type="hidden" name="newStatusId" value="3" /> <!-- 3 = Reject -->
                                 <button type="submit" class="btn btn-danger">Reject</button>
                             </form>
 
-                            <form action="requestDetail" method="post" style="display:inline;">
+                            <form action="requestDetailController" method="post" style="display:inline;">
                                 <input type="hidden" name="requestId" value="${requestId}" />
                                 <input type="hidden" name="newStatusId" value="4" /> <!-- 4 = Cancel -->
                                 <button type="submit" class="btn btn-warning">Cancel</button>

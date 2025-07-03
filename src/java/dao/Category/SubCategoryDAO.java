@@ -26,7 +26,6 @@ public class SubCategoryDAO {
     private static final String COL_ID = "id";
     private static final String COL_SUBCATEGORYNAME = "subCategoryName";
     private static final String COL_CATEGORYMATERIALID = "categoryMaterialId";
-    private static final String COL_STATUS = "status";
     
     CategoryMaterialDAO cmdao = new CategoryMaterialDAO();
 
@@ -36,7 +35,7 @@ public class SubCategoryDAO {
     }
     
     public SubCategory getSubCategoryById(int subCategoryId){
-        String sql = "SELECT * FROM subcategory WHERE id = ? AND status = true";
+        String sql = "SELECT * FROM subcategory WHERE id = ?";
         try (Connection conn = DBConnect.getConnection();PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setInt(1, subCategoryId);
             try(ResultSet rs = ps.executeQuery()){
@@ -45,7 +44,6 @@ public class SubCategoryDAO {
                     m.setId(rs.getInt(COL_ID));
                     m.setSubCategoryName(rs.getString(COL_SUBCATEGORYNAME));
                     m.setCategoryMaterialId(cmdao.getCategoryById(rs.getInt(COL_CATEGORYMATERIALID)));
-                    m.setStatus(rs.getBoolean(COL_STATUS));
                     return m;
                 }
             }
@@ -55,10 +53,9 @@ public class SubCategoryDAO {
         return null;
     }
     
-    
     public List<SubCategory> getSubCategoryByCatId(int categoryMaterialId){
         List<SubCategory> subCatList = new ArrayList<>();
-        String sql="SELECT * FROM subcategory WHERE status = true ";
+        String sql="SELECT * FROM subcategory WHERE 1=1 ";
         if(categoryMaterialId != 0){
             sql+="AND categoryMaterialId = ?";
         }
@@ -72,7 +69,6 @@ public class SubCategoryDAO {
                     m.setId(rs.getInt(COL_ID));
                     m.setSubCategoryName(rs.getString(COL_SUBCATEGORYNAME));
                     m.setCategoryMaterialId(cmdao.getCategoryById(rs.getInt(COL_CATEGORYMATERIALID)));
-                    m.setStatus(rs.getBoolean(COL_STATUS));
                     subCatList.add(m);
                 }
                 return subCatList;

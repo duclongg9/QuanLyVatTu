@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.export_warehourse;
+package controller.export_warehouse;
 
 import dao.export.OutputDetailDAO;
 import dao.export.OutputWarehourseDAO;
@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.RequestDetail;
+import model.RequestType;
 import model.User;
 
 @WebServlet(name = "CreateExportController", urlPatterns = {"/createExport"})
@@ -54,9 +55,16 @@ public class CreateExportController extends HttpServlet {
             return;
         }
         int requestId = Integer.parseInt(requestIdParam);
+        String typeParam = request.getParameter("type");
+        RequestType type = RequestType.EXPORT;
+        if (typeParam != null && !typeParam.isEmpty()) {
+            type = RequestType.valueOf(typeParam.toUpperCase());
+        }
+
+
         int exportId = 0;
         try {
-            exportId = owdao.insertOutputWarehouse(loggedInUser.getId());
+            exportId = owdao.insertOutputWarehouse(loggedInUser.getId(), type);
         } catch (Exception ex) {
             Logger.getLogger(CreateExportController.class.getName()).log(Level.SEVERE, null, ex);
         }

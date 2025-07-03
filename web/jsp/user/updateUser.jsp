@@ -44,10 +44,10 @@
         <!-- Content Start -->
         <div class="content">
             <%@include file="../template/navbar.jsp" %>
-
+          
             <form method="post"  action="${pageContext.request.contextPath}/updateUser">
                 <input type="hidden" name="id" value="${user.id}">
-        <div class="row">
+        <div class="row g-0">
             <div class="col-sm-6">
                 <div class="bg-light rounded h-100 p-4">
 
@@ -142,7 +142,7 @@
 
         
 </form>
-                                        
+                                     
                                         <!-- FORM ẨN GỬI TỚI resetPassword -->
 <form id="resetPasswordForm" method="post" action="resetPassword">
     <input type="hidden" name="userId" value="${user.id}" />

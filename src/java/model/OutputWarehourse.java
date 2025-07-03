@@ -12,15 +12,26 @@ public class OutputWarehourse {
     private int id;
     private String date;
     private User userId;
-
+    private RequestType type;
+    
     public OutputWarehourse() {
     }
 
-    public OutputWarehourse(int id, String date, User userId) {
+    public OutputWarehourse(int id, String date, User userId, RequestType type) {
         this.id = id;
         this.date = date;
         this.userId = userId;
+        this.type = type;
     }
+
+    public RequestType getType() {
+        return type;
+    }
+
+    public void setType(RequestType type) {
+        this.type = type;
+    }
+
     
 
     public int getId() {

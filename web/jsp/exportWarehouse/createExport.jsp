@@ -39,6 +39,13 @@
                                 <label for="requestId" class="form-label">Request ID</label>
                                 <input type="number" class="form-control" id="requestId" name="requestId" required>
                             </div>
+                            <div class="mb-3">
+                                <label for="type" class="form-label">Type</label>
+                                <select class="form-select" id="type" name="type">
+                                    <option value="EXPORT">Export</option>
+                                    <option value="REPAIR">Repair</option>
+                                </select>
+                            </div>
                             <button type="submit" class="btn btn-primary">Create</button>
                             <a href="ListExport" class="btn btn-secondary">Cancel</a>
                         </form>

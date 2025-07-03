@@ -203,8 +203,10 @@ if (canvas.length > 0) { // Chỉ khi có thẻ canvas thì mới vẽ biểu đ
         options: {
             responsive: true
         }
+        
+        
     });
 
     
-})(jQuery);
+})(jQuery);;
 

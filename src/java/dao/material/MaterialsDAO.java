@@ -3,8 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao.material;
-import dao.Category.CategoryMaterialDAO;
-import dao.Category.SubCategoryDAO;
+import dao.material.CategoryMaterialDAO;
+import dao.material.MaterialHistoryDAO;
 import dao.connect.DBConnect;
 import dao.request.requestDAO;
 import dao.user.UserDAO;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Materials;
+import model.SubCategory;
 /**
  *
  * @author D E L L
@@ -228,6 +229,23 @@ public class MaterialsDAO {
         return 0;
     }
 
+// Count materials by subcategory
+    public int getTotalMaterialsBySubCategory(int subCategoryId) {
+        String sql = "SELECT COUNT(*) FROM Materials WHERE status = true AND subCategoryId = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, subCategoryId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
+    }
+
 
     
     public Materials getMaterialsById(int id) {
@@ -344,7 +362,34 @@ StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, su
             return 0;
         }    }
 
-// Lấy danh sách vật tư đã bị xóa (statusId = 2)// Lấy danh sách vật tư đã bị xóa (status = false)
+
+    
+    
+ // Update material by creating a new record and archiving the old one
+    public int updateMaterialWithHistory(int id, String name, int unitId,
+                                         String imageName, int subCategoryId) {
+        // Get current material information
+        Materials old = getMaterialsById(id);
+        if (old == null) {
+            return 0;
+        }
+
+        // Save old data to history table
+        MaterialHistoryDAO historyDAO = new MaterialHistoryDAO();
+        historyDAO.insertHistory(old);
+
+        // Create new material that replaces the old one
+        int result = createMaterial(name, unitId, imageName, subCategoryId, id);
+        if (result > 0) {
+            // deactivate old material so it is no longer in use
+            deactivateMaterial(id);
+        }
+        return result;
+    }
+
+
+
+
     public List<Materials> getDeletedMaterials() {
         List<Materials> list = new ArrayList<>();
         String sql = "SELECT * FROM Materials WHERE status = false ORDER BY id DESC";
@@ -426,6 +471,27 @@ public int getTotalDeletedMaterials() {
             Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
         }    }
     
+    public boolean hasRemainingQuantity(int materialId) {
+        String sql = "SELECT SUM(mi.quantity) AS total FROM MaterialItem mi "
+                + "JOIN materials_Supplier ms ON mi.materials_SupplierId = ms.id "
+                + "WHERE ms.materialId = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, materialId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int total = rs.getInt("total");
+                    if (rs.wasNull()) {
+                        return false; // no quantity found
+                    }
+                    return total > 0;
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return false;
+    }
     
      public static void main(String[] args) throws SQLException {
         MaterialsDAO mdao = new MaterialsDAO();

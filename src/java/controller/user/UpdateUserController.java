@@ -45,7 +45,13 @@ public class UpdateUserController extends HttpServlet {
             throws ServletException, IOException {
 
         //Lấy list role
-        List<Role> lr = rdao.getAllRole();
+        List<Role> lr;
+        if (!udao.isCEOExit()) {
+            lr = rdao.getAllRole();
+        } else {
+            lr = rdao.getAllRoleExeptedCEO();
+        }
+
         request.setAttribute("listRole", lr);
 
         //Lấy user theo id
@@ -62,22 +68,18 @@ public class UpdateUserController extends HttpServlet {
             int id = Integer.parseInt((request.getParameter("id")));
             boolean status = Boolean.parseBoolean((request.getParameter("status")));
             int roleId = Integer.parseInt((request.getParameter("roleId")));
-            
 
             // Lấy user hiện tại theo id để kiểm tra role gốc
             User currentUser = udao.getUserById(id);
 
-            
             // Đảm bảo hệ thống chỉ có 1 role duy nhất
             if (roleId == 4 && currentUser.getRole().getId() != 4 && udao.isCEOExit()) {
-                
-                request.setAttribute("error", "Hệ thống chỉ cho phép một CEO. Không thể gán vai trò CEO cho người này.");
 
                 // Truyền lại dữ liệu user và danh sách role
                 request.setAttribute("user", currentUser);
-                request.setAttribute("listRole", rdao.getAllRole());
+                request.setAttribute("listRole", rdao.getAllRoleExeptedCEO());
                 request.getRequestDispatcher("/jsp/user/updateUser.jsp").forward(request, response);
-                return; 
+                return;
             }
 
             boolean updated = udao.updateUser(

@@ -63,72 +63,81 @@ public class UnitServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        String action = request.getParameter("action");
-        if (action == null) {
-            action = "list";
-        }
+                HttpSession session = request.getSession();
+        
+    String action = request.getParameter("action");
+    if (action == null) {
+        action = "list";
+    }
 
-        String message = (String) session.getAttribute("message");
-        String messageType = (String) session.getAttribute("messageType");
-        session.removeAttribute("message");
-        session.removeAttribute("messageType");
+    String message = (String) session.getAttribute("message");
+    String messageType = (String) session.getAttribute("messageType");
+    session.removeAttribute("message");
+    session.removeAttribute("messageType");
 
-        switch (action) {
-            case "add":
-                if (message != null) {
-                    request.setAttribute("message", message);
-                    request.setAttribute("messageType", messageType);
-                }
-                request.getRequestDispatcher("unitForm.jsp").forward(request, response);
-                break;
+    switch (action) {
+        case "add":
+            if (message != null) {
+                request.setAttribute("message", message);
+                request.setAttribute("messageType", messageType);
+            }
+            request.getRequestDispatcher("jsp/unit/unitForm.jsp").forward(request, response);
+            break;
 
-            case "edit":
-                int id = Integer.parseInt(request.getParameter("id"));
-                Unit u = unitDAO.getUnitById(id);
-                request.setAttribute("unit", u);
-                request.getRequestDispatcher("unitForm.jsp").forward(request, response);
-                break;
+        case "edit":
+    int id = Integer.parseInt(request.getParameter("id"));
+    Unit u = unitDAO.getUnitById(id);
+    request.setAttribute("unit", u);
 
-            case "delete":
-                int deleteId = Integer.parseInt(request.getParameter("id"));
-                if (unitDAO.isUsedInMaterials(deleteId)) {
-                    session.setAttribute("message", "Không thể xóa đơn vị đang được sử dụng.");
-                    session.setAttribute("messageType", "danger");
-                } else {
-                    unitDAO.deactivateUnit(deleteId);
-                    session.setAttribute("message", "Xóa đơn vị thành công (đã ẩn).");
-                    session.setAttribute("messageType", "success");
-                }
-                response.sendRedirect("unit");
-                break;
+    if (message != null) {
+        request.setAttribute("message", message);
+        request.setAttribute("messageType", messageType);
+    }
 
-            case "confirmDelete":
-                int idToConfirm = Integer.parseInt(request.getParameter("id"));
-                Unit unitToConfirm = unitDAO.getUnitById(idToConfirm);
-                request.setAttribute("unit", unitToConfirm);
-                request.getRequestDispatcher("unitConfirmDelete.jsp").forward(request, response);
-                break;
+    request.getRequestDispatcher("jsp/unit/unitForm.jsp").forward(request, response);
+    break;
 
-            case "search":
+        case "delete":
+    int deleteId = Integer.parseInt(request.getParameter("id"));
+    if (unitDAO.isUsedInMaterials(deleteId)) {
+        session.setAttribute("message", "Không thể xóa đơn vị đang được sử dụng.");
+        session.setAttribute("messageType", "danger");
+    } else {
+        unitDAO.deleteUnit(deleteId); // xóa cứng
+        session.setAttribute("message", "Xóa đơn vị thành công.");
+        session.setAttribute("messageType", "success");
+    }
+    response.sendRedirect("unit");
+    break;
+
+        case "confirmDelete":
+            int idToConfirm = Integer.parseInt(request.getParameter("id"));
+            Unit unitToConfirm = unitDAO.getUnitById(idToConfirm);
+            request.setAttribute("unit", unitToConfirm);
+            request.getRequestDispatcher("jsp/unit/unitConfirmDelete.jsp").forward(request, response);
+            break;
+            
+                        case "search":
                 String keyword = request.getParameter("keyword");
-                List<Unit> searchResults = unitDAO.searchByName(keyword);
+                List<Unit> searchResults = unitDAO.searchByUnit(keyword);
                 request.setAttribute("list", searchResults);
                 request.setAttribute("keyword", keyword);
                 if (message != null) {
                     request.setAttribute("message", message);
                     request.setAttribute("messageType", messageType);
                 }
-                request.getRequestDispatcher("unitList.jsp").forward(request, response);
+                request.getRequestDispatcher("jsp/unit/unitList.jsp").forward(request, response);
                 break;
 
-            default:
-                int page = 1,
-                 size = 5;
+        default:
+                int page = 1, size = 5;
                 String pageStr = request.getParameter("page");
                 if (pageStr != null) {
-                    page = Integer.parseInt(pageStr);
+                    try {
+                        page = Integer.parseInt(pageStr);
+                    } catch (NumberFormatException ignored) {}
                 }
+
                 List<Unit> list = unitDAO.getUnitsByPage(page, size);
                 int total = unitDAO.countUnits();
                 int totalPage = (int) Math.ceil((double) total / size);
@@ -142,10 +151,15 @@ public class UnitServlet extends HttpServlet {
                     request.setAttribute("messageType", messageType);
                 }
 
-                request.getRequestDispatcher("unitList.jsp").forward(request, response);
+                request.getRequestDispatcher("jsp/unit/unitList.jsp").forward(request, response);
                 break;
         }
+    
+
+
+        
     }
+
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -186,27 +200,26 @@ public class UnitServlet extends HttpServlet {
 //        response.sendRedirect("unit");
 //    
         HttpSession session = request.getSession();
-        String idStr = request.getParameter("id");
-        String name = request.getParameter("name");
+    String idStr = request.getParameter("id");
+    String unitName = request.getParameter("unit");
 
-        try {
-            if (idStr == null || idStr.isEmpty()) {
-                unitDAO.addOrRestoreUnit(name);
-                request.getSession().setAttribute("message", "Thêm đơn vị thành công!");
-            } else {
-                int id = Integer.parseInt(idStr);
-                unitDAO.updateUnit(id, name);
-                request.getSession().setAttribute("message", "Cập nhật đơn vị thành công!");
-            }
-            request.getSession().setAttribute("messageType", "success");
-            response.sendRedirect("unit");
-        } catch (RuntimeException e) {
-
-            request.getSession().setAttribute("message", e.getMessage());
-            request.getSession().setAttribute("messageType", "danger");
-            response.sendRedirect("unit?action=add");
+    try {
+        if (idStr == null || idStr.isEmpty()) {
+            unitDAO.addUnit(unitName); 
+            session.setAttribute("message", "Thêm đơn vị thành công!");
+        } else {
+            int id = Integer.parseInt(idStr);
+            unitDAO.updateUnit(id, unitName); 
+            session.setAttribute("message", "Cập nhật đơn vị thành công!");
         }
+        session.setAttribute("messageType", "success");
+        response.sendRedirect(request.getContextPath() + "/unit");
+    } catch (RuntimeException e) {
+        session.setAttribute("message", e.getMessage());
+        session.setAttribute("messageType", "danger");
+        response.sendRedirect(request.getContextPath() + "/unit?action=add");
     }
+}
 
     /**
      * Returns a short description of the servlet.

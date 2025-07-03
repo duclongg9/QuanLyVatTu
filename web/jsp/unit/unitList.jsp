@@ -39,7 +39,12 @@
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="bg-light rounded p-4">
                 <h4 class="mb-4">Danh sách đơn vị tính</h4>
-
+                <form class="d-flex mb-3" method="get" action="${pageContext.request.contextPath}/unit">
+    <input type="hidden" name="action" value="search"/>
+    <input class="form-control me-2" type="search" placeholder="Tìm đơn vị tính..." name="keyword"
+           value="${keyword != null ? keyword : ''}" aria-label="Search">
+    <button class="btn btn-outline-primary" type="submit">Tìm</button>
+</form>
                 <!-- Thông báo -->
                 <c:if test="${not empty message}">
                     <div class="alert alert-${messageType} alert-dismissible fade show" role="alert">
@@ -48,35 +53,30 @@
                     </div>
                 </c:if>
 
-                <a href="unit?action=add" class="btn btn-primary mb-3">+ Thêm mới</a>
+                <a href="${pageContext.request.contextPath}/unit?action=add" class="btn btn-primary mb-3">+ Thêm mới</a>
 
                 <table class="table table-hover table-striped">
                     <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Tên đơn vị</th>
-                            <th>Trạng thái</th>
-                            <th>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="u" items="${list}">
-                            <tr>
-                                <td>${u.id}</td>
-                                <td>${u.name}</td>
-                                <td>
-                                    <span class="badge bg-${u.status ? 'success' : 'secondary'}">
-                                        ${u.status ? 'Hiển thị' : 'Đã ẩn'}
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="unit?action=edit&id=${u.id}" class="btn btn-sm btn-warning">Sửa</a>
-                                    <a href="unit?action=confirmDelete&id=${u.id}" class="btn btn-sm btn-danger">Xóa</a>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                    <nav>
+    <tr>
+        <th>ID</th>
+        <th>Tên đơn vị</th>
+        <th>Hành động</th>
+    </tr>
+</thead>
+<tbody>
+    <c:forEach var="u" items="${list}">
+        <tr>
+            <td>${u.id}</td>
+            <td>${u.unit}</td>
+            <td>
+                <a href="unit?action=edit&id=${u.id}" class="btn btn-sm btn-warning">Sửa</a>
+                <a href="unit?action=confirmDelete&id=${u.id}" class="btn btn-sm btn-danger">Xóa</a>
+            </td>
+        </tr>
+    </c:forEach>
+</tbody>
+
+                    
  
 
                 </table>

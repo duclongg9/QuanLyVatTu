@@ -38,18 +38,18 @@ public class UserDAO {
     private static final String COL_STATUS = "status";
     private static final String COL_ROLEID = "roleId";
 
-    private Connection conn;
+//    private Connection conn;
 
     RoleDAO rdao = new RoleDAO();
 
     public UserDAO() {
-        conn = DBConnect.getConnection();
+//        conn = DBConnect.getConnection();
     }
 
     //Cập nhật mật khẩu mới vào database
      public boolean updatePassword(int userId, String hashedPassword) {
         String sql = "UPDATE User SET password=? WHERE id=?";
-        try ( PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, hashedPassword);
             ps.setInt(2, userId);
             int rows = ps.executeUpdate();
@@ -63,7 +63,7 @@ public class UserDAO {
      //Cập nhật thông tin người dùng vào database
     public boolean updateUserProfile(int id, String email, String phone, String address, boolean gender, String birthDate) {
         String sql = "UPDATE User SET email=?, phone=?, address=?, gender=?, birthDate=? WHERE id=?";
-        try ( PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.setString(2, phone);
             ps.setString(3, address);
@@ -88,7 +88,7 @@ public class UserDAO {
         LIMIT 1;
     """;
 
-        try ( PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
 
@@ -123,7 +123,7 @@ public class UserDAO {
     //Kiểm tra email đã tồn tại chưa
     public boolean isEmailExists(String email) {
         String sql = "SELECT 1 FROM User WHERE email = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next(); // tồn tại nếu có kết quả
@@ -137,7 +137,7 @@ public class UserDAO {
     //kiểm tra xem đã có username này hay chưa
     public boolean isUserName(String username){
         String sql="SELECT 1 FROM User WHERE username = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)){
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, username);
             try(ResultSet rs = ps.executeQuery()){
                 return rs.next();
@@ -151,7 +151,7 @@ public class UserDAO {
     //kiểm tra xem đã có CEO hay chưa
     public boolean isCEOExit() {
         String sql = "SELECT 1 FROM User WHERE roleId = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, 4);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next(); // tồn tại nếu có kết quả
@@ -165,7 +165,7 @@ public class UserDAO {
     //kiểm tra xem số điện thoại này đã tồn tại chưa
     public boolean isPhoneExits(String phone) {
         String sql = "SELECT 1 FROM User WHERE phone = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, phone);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next(); // tồn tại nếu có kết quả
@@ -191,7 +191,7 @@ public class UserDAO {
             boolean status,
             int roleId) {
         String sql = "CALL CreateNewUser(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
             ps.setString(2, fullname);
             ps.setString(3, phone);
@@ -221,7 +221,7 @@ public class UserDAO {
                     WHERE id = ?
                     """;
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(3, id);
             ps.setBoolean(1, status);
             ps.setInt(2, roleId);
@@ -238,7 +238,8 @@ public class UserDAO {
 
         String sql = "SELECT * FROM ql_vat_tu.user where id = ?";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
+
 
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -270,7 +271,7 @@ public class UserDAO {
 
         String sql = "SELECT * FROM ql_vat_tu.user where roleId = ?";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
 
             ps.setInt(1, roleId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -305,7 +306,8 @@ public class UserDAO {
                 + "FROM user \n"
                 + "WHERE fullName LIKE ? LIMIT ? OFFSET ?";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
+
 
             ps.setString(1, "%" + name + "%");
             ps.setInt(2, PAGE_SIZE);            
@@ -338,7 +340,7 @@ public class UserDAO {
 
     public int getTotalStaffBySearchName(String name) {
         String sql = "SELECT COUNT(*) FROM user Where fullName Like ? ;";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + name + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -357,7 +359,7 @@ public class UserDAO {
     public void deleteStaffById(int id) {
         String getStatus = "SELECT status FROM user WHERE id = ?";
         String updateSql = "UPDATE user SET status = ? WHERE id = ?";
-        try (PreparedStatement getStatusPs = conn.prepareStatement(getStatus)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement getStatusPs = conn.prepareStatement(getStatus)) {
 
             getStatusPs.setInt(1, id);
             try (ResultSet rs = getStatusPs.executeQuery()) {
@@ -365,6 +367,7 @@ public class UserDAO {
                     boolean currentStatus = rs.getBoolean("status");
                     boolean newStatus = !currentStatus;
                     try (PreparedStatement updatePs = conn.prepareStatement(updateSql)) {
+
                         updatePs.setBoolean(1, newStatus);
                         updatePs.setInt(2, id);
                         updatePs.executeUpdate();
@@ -383,7 +386,7 @@ public class UserDAO {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM user\n"
                 + "LIMIT ? OFFSET ?;";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, PAGE_SIZE);
             ps.setInt(2, (index - 1) * PAGE_SIZE);
@@ -416,7 +419,7 @@ public class UserDAO {
     //đếm số lượng người dùng trong database
     public int getTotalStaff() {
         String sql = "SELECT COUNT(*) FROM user;";
-        try (PreparedStatement ps = conn.prepareStatement(sql);) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql);) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     return rs.getInt(1);
@@ -437,7 +440,7 @@ public class UserDAO {
                      SELECT * FROM user
                      ORDER BY id DESC
                      """;
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             // Chỉ lấy sản phẩm theo cId
             try (ResultSet rs = ps.executeQuery()) {
@@ -471,7 +474,7 @@ public class UserDAO {
     public List<User> getUsersByRoleId(int roleId, int index) throws SQLException {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM User WHERE roleId = ? LIMIT ?, ?;";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, roleId);
             ps.setInt(2, (index - 1) * PAGE_SIZE);
             ps.setInt(3, PAGE_SIZE);
@@ -505,7 +508,7 @@ public class UserDAO {
 
     public int getTotalUserByRoleId(int roleId) {
         String sql = "SELECT COUNT(*) FROM user Where roleId = ?;";
-        try (PreparedStatement ps = conn.prepareStatement(sql);) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql);) {
             ps.setInt(1, roleId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
