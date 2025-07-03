@@ -62,6 +62,7 @@ public class RequestEditController extends HttpServlet {
         String[] detailIds = request.getParameterValues("detailId");
         String[] quantities = request.getParameterValues("quantity");
         String[] notes = request.getParameterValues("note");
+        int requestId = Integer.parseInt(request.getParameter("requestId"));
 
         if (detailIds != null && quantities != null && notes != null) {
             requestDAO dao = new requestDAO();
@@ -77,6 +78,7 @@ public class RequestEditController extends HttpServlet {
                     Logger.getLogger(RequestEditController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            dao.updateStatusRequest(requestId, 1, 0);
         } else {
             // Dữ liệu không hợp lệ
             response.sendRedirect("error.jsp");
