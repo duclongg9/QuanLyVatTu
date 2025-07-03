@@ -6,6 +6,7 @@ package com.qlvt.dao.export;
 
 import com.qlvt.dao.connect.DBConnect;
 import com.qlvt.dao.material.MaterialItemDAO;
+import com.qlvt.dao.request.requestDetailDAO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class OutputDetailDAO {
     private static final String COL_MATERIALITEMID = "materialItemId";
 
     OutputWarehourseDAO owdao = new OutputWarehourseDAO();
-    dao.request.requestDetailDAO rddao = new dao.request.requestDetailDAO();
+    requestDetailDAO rddao = new requestDetailDAO();
     MaterialItemDAO midao = new MaterialItemDAO();
 
     public void insertOutputDetail(int outputWarehouseId, int requestDetailId, int materialItemId, int quantity) throws SQLException {

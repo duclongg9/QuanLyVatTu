@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.qlvt.controller.request;
+package com.qlvt.controller.importwarehouse;
 
-import com.qlvt.dao.request.InputWarehourseDAO;
+import com.qlvt.dao.imports.InputWarehourseDAO;
 import com.qlvt.dao.request.requestDAO;
 import java.io.IOException;
 import java.io.PrintWriter;

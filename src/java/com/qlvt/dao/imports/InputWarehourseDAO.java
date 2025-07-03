@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.qlvt.dao.request;
+package com.qlvt.dao.imports;
 
 import com.qlvt.dao.connect.DBConnect;
 import com.qlvt.dao.user.UserDAO;

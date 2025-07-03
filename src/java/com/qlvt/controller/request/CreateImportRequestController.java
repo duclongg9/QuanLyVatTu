@@ -3,7 +3,7 @@ package com.qlvt.controller.request;
 import com.qlvt.dao.material.CategoryMaterialDAO;
 import com.qlvt.dao.connect.DBConnect;
 import com.qlvt.dao.material.MaterialItemDAO;
-import com.qlvt.dao.request.InputDetailDAO;
+import com.qlvt.dao.imports.InputDetailDAO;
 import com.qlvt.dao.request.requestDAO;
 import com.qlvt.dao.subcategory.SubCategoryDAO;
 import java.io.IOException;

@@ -8,6 +8,7 @@ import com.qlvt.dao.material.MaterialHistoryDAO;
 import com.qlvt.dao.connect.DBConnect;
 import com.qlvt.dao.request.requestDAO;
 import com.qlvt.dao.user.UserDAO;
+import com.qlvt.dao.subcategory.SubCategoryDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,7 +27,7 @@ public class MaterialsDAO {
 //    private Connection conn;
     
     MaterialUnitDAO mudao = new MaterialUnitDAO();
-    dao.subcategory.SubCategoryDAO scdao = new dao.subcategory.SubCategoryDAO();
+    SubCategoryDAO scdao = new SubCategoryDAO();
 
     private static final String COL_ID = "id";
     private static final String COL_NAME = "name";

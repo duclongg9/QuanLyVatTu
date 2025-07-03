@@ -6,8 +6,8 @@ package com.qlvt.controller.importwarehouse;
 
 
 import com.qlvt.controller.user.UserListController;
-import com.qlvt.dao.request.InputDetailDAO;
-import com.qlvt.dao.request.InputWarehourseDAO;
+import com.qlvt.dao.imports.InputDetailDAO;
+import com.qlvt.dao.imports.InputWarehourseDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
