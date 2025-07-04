@@ -169,20 +169,28 @@ CREATE TABLE `requestDetail` (
 
 -- Table: InputWarehouse
 CREATE TABLE `InputWarehouse` (
-	`id` INTEGER AUTO_INCREMENT,
-	`dateInput` DATE NOT NULL,
-	`userId` INTEGER,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`userId`) REFERENCES `User`(`id`)
+    `id` INTEGER AUTO_INCREMENT,           -- Mã phiếu nhập
+    `dateInput` DATE NOT NULL,             -- Ngày nhập kho
+    `userId` INTEGER,                      -- Người nhập (nhân viên kho)
+    `reason` VARCHAR(255),                 -- Lý do nhập kho (ví dụ: nhập theo Request)
+    `note` VARCHAR(255),                   -- Ghi chú thêm (nếu có)
+    `requestId` INTEGER,                   -- ID của Request tương ứng
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`userId`) REFERENCES `User`(`id`),
+    FOREIGN KEY (`requestId`) REFERENCES `Request`(`id`)
 );
 
 -- Table: OutputWarehouse
 CREATE TABLE `OutputWarehouse` (
-	`id` INTEGER AUTO_INCREMENT,
-	`date` DATE NOT NULL,
-	`userId` INTEGER,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`userId`) REFERENCES `User`(`id`)
+    `id` INTEGER AUTO_INCREMENT,           -- Mã phiếu xuất
+    `date` DATE NOT NULL,                  -- Ngày xuất kho
+    `userId` INTEGER,                      -- Người thực hiện xuất (nhân viên kho)
+    `reason` VARCHAR(255),                 -- Lý do xuất kho
+    `note` VARCHAR(255),                   -- Ghi chú nếu có
+    `requestId` INTEGER,                   -- Gắn với yêu cầu xuất nào
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`userId`) REFERENCES `User`(`id`),
+    FOREIGN KEY (`requestId`) REFERENCES `Request`(`id`)
 );
 
 -- Table: InputDetail
@@ -241,3 +249,4 @@ DELIMITER ;
 
 -- CALL CreateNewUser(?,?,?,?,?,?,?,?,?,?,?);
 -- DROP PROCEDURE IF EXISTS CreateNewUser;
+
