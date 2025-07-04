@@ -135,9 +135,9 @@ INSERT INTO requestDetail (requestId, materialItemId, quantity, note) VALUES
 (2, 6, 3000, 'Nhập 3000 viên gạch ống');
 
 -- Phiếu nhập
-INSERT INTO InputWarehouse (id, dateInput, userId, reason, note, requestId) VALUES
-(1, '2025-06-23', 2, 'Nhập theo yêu cầu #1', 'Không có vấn đề', 1),
-(2, '2025-06-25', 2, 'Nhập theo yêu cầu #2', 'Chậm giao 1 ngày', 2);
+INSERT INTO InputWarehouse (dateInput, userId) VALUES
+('2025-06-23', 2),
+('2025-06-25', 2);
 
 -- Chi tiết nhập kho
 INSERT INTO InputDetail (quantity, inputWarehouseId, requestDetailId, materialItemId, inputPrice) VALUES
@@ -147,8 +147,8 @@ INSERT INTO InputDetail (quantity, inputWarehouseId, requestDetailId, materialIt
 (3000, 2, 4, 6, 1000);
 
 -- Phiếu xuất kho
-INSERT INTO OutputWarehouse (id, date, userId, reason, note, requestId) VALUES
-(1, '2025-06-28', 2, 'Xuất theo yêu cầu #1', 'Xuất gấp cho công trình X', 1);
+INSERT INTO OutputWarehouse (date, userId) VALUES
+('2025-06-28', 2);
 
 -- Chi tiết xuất kho
 INSERT INTO OutputDetail (quantity, outputWarehouseId, requestDetailId, materialItemId) VALUES
