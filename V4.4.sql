@@ -238,4 +238,3 @@ DELIMITER ;
 
 -- CALL CreateNewUser(?,?,?,?,?,?,?,?,?,?,?);
 -- DROP PROCEDURE IF EXISTS CreateNewUser;
-
