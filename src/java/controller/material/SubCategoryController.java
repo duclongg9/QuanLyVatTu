@@ -1,8 +1,7 @@
 package controller.material;
 
-import dao.material.CategoryMaterialDAO;
+import dao.Category.CategoryDAO;
 import dao.material.MaterialsDAO;
-import dao.subcategory.SubCategoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,8 +11,8 @@ import java.io.IOException;
 
 @WebServlet(name = "SubCategoryController", urlPatterns = {"/subCategoryController"})
 public class SubCategoryController extends HttpServlet {
-    SubCategoryDAO dao = new SubCategoryDAO();
-    CategoryMaterialDAO cDao = new CategoryMaterialDAO();
+    CategoryDAO dao = new CategoryDAO();
+    CategoryDAO cDao = new CategoryDAO();
     MaterialsDAO materialsDAO = new MaterialsDAO();
 
     @Override
@@ -31,7 +30,7 @@ public class SubCategoryController extends HttpServlet {
             case "edit":
                 int id = Integer.parseInt(request.getParameter("id"));
                 request.setAttribute("categories", cDao.getAllCategory());
-                request.setAttribute("sub", dao.getSubCategoryById(id));
+                request.setAttribute("sub", dao.getCategoryById(id));
                 request.getRequestDispatcher("/jsp/material/createSubCategory.jsp").forward(request, response);
                 break;
             case "deleted":
@@ -40,8 +39,8 @@ public class SubCategoryController extends HttpServlet {
                 int delIdx = Integer.parseInt(deletedIndex);
                 request.setAttribute("subCategories", dao.pagingDeletedSubCategory(delIdx));
                 int totalD = dao.getTotalDeletedSubCategory();
-                int endPD = totalD / SubCategoryDAO.PAGE_SIZE;
-                if (totalD % SubCategoryDAO.PAGE_SIZE != 0) endPD++;
+                int endPD = totalD / CategoryDAO.PAGE_SIZE;
+                if (totalD % CategoryDAO.PAGE_SIZE != 0) endPD++;
                 request.setAttribute("endP", endPD);
                 request.setAttribute("tag", delIdx);
                 request.getRequestDispatcher("/jsp/material/deletedSubCategory.jsp").forward(request, response);
@@ -81,8 +80,8 @@ public class SubCategoryController extends HttpServlet {
                     request.setAttribute("subCategories", dao.pagingSubCategory(index));
                     total = dao.getTotalSubCategory();
                 }
-                int endP = total / SubCategoryDAO.PAGE_SIZE;
-                if (total % SubCategoryDAO.PAGE_SIZE != 0) endP++;
+                int endP = total / CategoryDAO.PAGE_SIZE;
+                if (total % CategoryDAO.PAGE_SIZE != 0) endP++;
                 request.setAttribute("categoryFilter", cDao.getAllCategory());
                 request.setAttribute("endP", endP);
                 request.setAttribute("tag", index);

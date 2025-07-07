@@ -4,10 +4,9 @@
  */
 package controller.request;
 
-import dao.material.CategoryMaterialDAO;
+import dao.Category.CategoryDAO;
 import dao.connect.DBConnect;
 import dao.material.MaterialItemDAO;
-import dao.subcategory.SubCategoryDAO;
 import dao.request.requestDAO;
 import java.io.IOException;
 import java.sql.Connection;
@@ -21,17 +20,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
-import model.CategoryMaterial;
+import model.Category;
 import model.MaterialItem;
-import model.SubCategory;
+import model.Category;
 import model.User;
 import model.RequestType;
 
 @WebServlet(name = "createRequestExport", urlPatterns = {"/CreateRequestExport"})
 public class CreateExportRequestController extends HttpServlet {
 
-    CategoryMaterialDAO cmdao = new CategoryMaterialDAO();
-    SubCategoryDAO scdao = new SubCategoryDAO();
+    CategoryDAO cmdao = new CategoryDAO();
+    CategoryDAO cdao = new CategoryDAO();
     MaterialItemDAO midao = new MaterialItemDAO();
 
     @Override
@@ -59,8 +58,8 @@ public class CreateExportRequestController extends HttpServlet {
             categoryMaterialId = 0;
         }
 
-        List<CategoryMaterial> cateList = cmdao.getAllCategory();
-        List<SubCategory> subList = scdao.getSubCategoryByCatId(0);
+        List<Category> cateList = cmdao.getAllCategory();
+        List<Category> subList = cdao.getSubCategoryByCatId(0);
         List<MaterialItem> miList = midao.filterMaterial(categoryMaterialId, subCategoryId, keyword);
 
         HttpSession session = request.getSession();

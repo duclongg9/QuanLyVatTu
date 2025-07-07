@@ -32,7 +32,7 @@
                             <select name="categoryId" class="form-select w-auto">
                                 <option value="">All Category</option>
                                 <c:forEach var="c" items="${categoryFilter}">
-                                    <option value="${c.id}" ${selectedCategory == c.id ? 'selected' : ''}>${c.category}</option>
+                                    <option value="${c.id}" ${selectedCategory == c.id ? 'selected' : ''}>${c.categoryName}</option>
                                 </c:forEach>
                             </select>
                             <input class="form-control border-0" type="search" placeholder="Search" name="search" value="${param.search}" />
@@ -57,7 +57,7 @@
                                 <td>${m.id}</td>
                                 <td>${m.name}</td>
                                 <td>${m.unitId.unitName}</td>
-                                <td>${m.subCategoryId.subCategoryName}</td>
+                                <td>${m.subCategoryId.categoryName}</td>
                                 <td>${m.replacementMaterialId != null ? m.replacementMaterialId.name : '-'}</td>
                                 <td>
                                     <c:choose>
