@@ -1,14 +1,18 @@
 package controller.request;
 
 import dao.Category.CategoryDAO;
+import dao.material.MaterialItemDAO;
 import dao.material.MaterialSupplierDAO;
 import dao.material.MaterialsDAO;
+import dao.request.requestDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.*;
 
 @WebServlet(name = "createRequestImport", urlPatterns = {"/CreateRequestImport"})
@@ -16,80 +20,70 @@ public class CreateImportRequestController extends HttpServlet {
 
     CategoryDAO cmdao = new CategoryDAO();
     MaterialsDAO mdao = new MaterialsDAO();
+    MaterialItemDAO midao = new MaterialItemDAO();
     MaterialSupplierDAO msdao = new MaterialSupplierDAO();
+    requestDAO rdao = new requestDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//
-//        List<Category> categoryList = cmdao.getAllCategory();
-//        request.setAttribute("categoryList", categoryList);
-//
-//        HttpSession session = request.getSession();
-//        List<SlotItem> slotList = (List<SlotItem>) session.getAttribute("slotList");
-//
-//        if (slotList == null) {
-//            slotList = new ArrayList<>();
-//            slotList.add(new SlotItem());
-//        }
-//
-//        // Gán danh sách phụ thuộc cho mỗi slot
-//        for (SlotItem slot : slotList) {
-//            if (slot.getCategoryId() != null) {
-//                slot.setSubCategoryList(scdao.getSubCategoryByCatId(slot.getCategoryId()));
-//            }
-//
-//            if (slot.getSubCategoryId() != null) {
-//                try {
-//                    slot.setMaterialList(mdao.getMaterialListBySubCateId(slot.getSubCategoryId()));
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            if (slot.getMaterialId() != null) {
-//                slot.setSupplierList(msdao.getListSupplierByMaterialId(slot.getMaterialId()));
-//            }
-//        }
-//
-//        request.setAttribute("slotList", slotList);
-//        request.getRequestDispatcher("/jsp/request/createImportRequest.jsp").forward(request, response);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("loggedInUser");
+        String userName = user.getFullName();
+        List<Category> categoryList = cmdao.getAllCategory();
+        request.setAttribute("userName", userName);
+        request.setAttribute("categoryList", categoryList);
+        request.getRequestDispatcher("/jsp/request/createImportRequest.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        String action = request.getParameter("action");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("loggedInUser"); // đã đăng nhập
+        int userId = user.getId();
+        String note = request.getParameter("note");
+        // 1. Tạo Request mới
+        int requestId = 0;
+        try {
+            requestId = rdao.insertRequest(userId, note, userId, RequestType.IMPORT);
+        } catch (SQLException ex) {
+            Logger.getLogger(CreateImportRequestController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-//        if ("addSlot".equals(action)) {
-//            List<SlotItem> slotList = new ArrayList<>();
-//            int count = Integer.parseInt(request.getParameter("slotCount"));
-//
-//            for (int i = 0; i < count; i++) {
-//                SlotItem slot = new SlotItem();
-//                slot.setCategoryId(parseInteger(request.getParameter("categoryId" + i)));
-//                slot.setSubCategoryId(parseInteger(request.getParameter("subCategoryId" + i)));
-//                slot.setMaterialId(parseInteger(request.getParameter("materialId" + i)));
-//                slot.setSupplierId(parseInteger(request.getParameter("supplierId" + i)));
-//                slot.setQuantity(parseInteger(request.getParameter("quantity" + i)));
-//
-//                slotList.add(slot);
-//            }
-//
-//            slotList.add(new SlotItem()); // dòng trống mới
-//            session.setAttribute("slotList", slotList);
-//            response.sendRedirect("CreateRequestImport");
-//            return;
-//        }
-//
-//        if ("cancel".equals(action)) {
-//            session.removeAttribute("slotList");
-//            response.sendRedirect("requestList");
-//        }
+        // 2. Duyệt từng slot được submit
+        String[] materialIds = request.getParameterValues("materialId");
+        String[] supplierIds = request.getParameterValues("supplierId");
+        String[] quantities = request.getParameterValues("quantity");
+
+        for (int i = 0; i < materialIds.length; i++) {
+            // Bỏ qua nếu thiếu dữ liệu
+            if (materialIds[i] == null || materialIds[i].isEmpty()
+                    || supplierIds[i] == null || supplierIds[i].isEmpty()
+                    || quantities[i] == null || quantities[i].isEmpty()) {
+                continue;
+            }
+
+            try {
+                int materialId = Integer.parseInt(materialIds[i]);
+                int supplierId = Integer.parseInt(supplierIds[i]);
+                int quantity = Integer.parseInt(quantities[i]);
+
+                // 3. Lấy materials_SupplierId
+                int materialSupplierId = msdao.getMaterialSupplier(materialId, supplierId).getId();
+                int materialItemId = midao.getMaterialItemById(materialSupplierId).getId();
+
+                // 4. Lưu vào requestDetail
+                rdao.insertRequestDetail(requestId, materialItemId, quantity, "Note");
+            } catch (NumberFormatException | NullPointerException ex) {
+                Logger.getLogger(CreateImportRequestController.class.getName()).log(Level.WARNING, "Invalid input at row " + i, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(CreateImportRequestController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        response.sendRedirect("requestList");
     }
-    
+
     private Integer parseInteger(String str) {
         try {
             return (str == null || str.isEmpty()) ? null : Integer.parseInt(str);

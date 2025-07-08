@@ -122,13 +122,13 @@ public class CreateExportRequestController extends HttpServlet {
                 conn = DBConnect.getConnection();
                 conn.setAutoCommit(false);
 
-                int requestId = requestDao.insertRequest(conn, user.getId(), note, null, RequestType.EXPORT);
+                int requestId = requestDao.insertRequest( user.getId(), note, null, RequestType.EXPORT);
 
                 if (selectedItems != null && !selectedItems.isEmpty()) {
                     for (Map.Entry<Integer, Integer> entry : selectedItems.entrySet()) {
                         int materialItemId = entry.getKey();
                         int quantity = entry.getValue();
-                        requestDao.insertRequestDetail(conn, requestId, materialItemId, quantity, null);
+                        requestDao.insertRequestDetail( requestId, materialItemId, quantity, null);
                     }
                 }
 

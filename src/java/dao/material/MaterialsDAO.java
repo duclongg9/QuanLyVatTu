@@ -47,7 +47,7 @@ public class MaterialsDAO {
 //    }
     public List<Materials> getMaterialListBySubCateId(int subCategoryId) throws SQLException {
         List<Materials> list = new ArrayList<>();
-        String sql = "SELECT * FROM Materials WHERE subCategoryId = ?";
+        String sql = "SELECT * FROM Materials WHERE category = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, subCategoryId);
             try (ResultSet rs = ps.executeQuery()) {

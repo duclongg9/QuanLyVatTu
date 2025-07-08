@@ -298,7 +298,7 @@ public class CategoryDAO {
     //Lấy danh mục vật tư con theo danh mục vật tư cha
     public List<Category> getSubCategoryByCatId(int categoryId) {
         List<Category> subCatList = new ArrayList<>();
-        String sql = "SELECT * FROM subcategory WHERE 1=1 ";
+        String sql = "SELECT * FROM Category WHERE 1=1 ";
         if (categoryId != 0) {
             sql += "AND parentCateId = ?";
         }
@@ -327,7 +327,7 @@ public class CategoryDAO {
     //lấy tất cả danh mục vật tư
     public List<Category> getAllCategory() {
         List<Category> list = new ArrayList<>();
-        String sql = "SELECT * FROM ql_vat_tu.Category where status = true";
+        String sql = "SELECT * FROM ql_vat_tu.Category where status = true AND parentCateId IS NULL";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Category c = new Category();
@@ -579,4 +579,14 @@ public class CategoryDAO {
         }
         return false;
     }
+    
+    public static void main(String[] args) {
+        CategoryDAO cdao = new CategoryDAO();
+        List<Category> subCate = cdao.getAllCategory();
+        for (Category category : subCate) {
+            System.out.println(category);
+        }
+    }
+    
 }
+
