@@ -1,5 +1,6 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,17 +48,45 @@
             <div class="row g-4">
                 <div class="col-12">
                     <div class="bg-light rounded h-100 p-4">
-                        <h4 class="mb-4">Import Detail</h4>
-                        <div>
-                            <h6>ID: ${importId}</h6>
-                            <h6>User Import: ${inputWarehouse.userId.fullName}</h6>
-                            <h6>Import Date: ${inputWarehouse.dateInput}</h6>
+                        <h3 class="mb-4">Warehouse Import Form:</h3>
+                        <div class="row mb-3">
+                        <div class="col-md-3">
+                            
+                            
+                             <div class="col-md-12 mb-1">
+                                    <label for="createdBy" class="form-label fw-bold"> Warehouse Receiver:</label>
+                                    <input type="text" class="form-control" id="createBy"  value="${inputWarehouse.userId.fullName}" readonly>
+                  
+                                </div>
+                        <div class="col-md-12 mb-1">
+                                    <label for="date" class="form-label fw-bold">Import Date:</label>
+                                    <input type="date" class="form-control" id="date" value="${inputWarehouse.dateInput}" readonly>
+              
+                                </div>
+                        <div class="col-md-12 mb-1">
+                                    <label for="requestType" class="form-label fw-bold">Type:</label>
+                                    <input type="text" class="form-control" id="requestType" value="${inputWarehouse.request.type}"readonly>
+                  
+                                </div>
                         </div>
+                                    <div class="col-md-9">
+                                        <div class="col-md-12 mb-1">
+                                    <label for="requestStatus" class="form-label fw-bold">Reason:</label>
+                                     <textarea  rows="3" class="form-control" id="requestStatus" readonly>${inputWarehouse.reason}</textarea>
+                  
+                                </div>
+                                    
+                                    <div class="col-md-12 mb-1">
+                                    <label for="requestStatus" class="form-label fw-bold">Note:</label>
+                                    <textarea  rows="2" class="form-control" id="requestStatus" readonly>${inputWarehouse.note}</textarea>
+                                </div>
+                                    </div>
+                                    </div>
                         
                             <table id="userTable" class="table table-bordered">
                                <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>STT</th>
                                     <th>Material Name</th>
                                     <th>Current Quantity</th>
                                     <th>Unit</th>
@@ -68,18 +97,28 @@
                             </thead>
                             <tbody>
                                
-                                        <c:forEach var="m" items="${listImportDetail}">
+                                        <c:forEach var="m" items="${listImportDetail}" varStatus="status">
                                             <tr>
-                                                <td>${m.id}</td>
+                                                <td>${status.index + 1}</td>
                                                 <td>${m.materialItemId.materialSupplier.materialId.name}</td>
                                                 <td>${m.quantity}</td>
                                                 <td>${m.materialItemId.materialSupplier.materialId.unitId.unitName}</td>
                                                 <td>${m.materialItemId.materialSupplier.supplierId.name}</td>
                                                 <td>${m.requestDetailId.note}</td>
-                                                <td>${m.inputPrice}</td>
+                                                <td><fmt:formatNumber value="${m.inputPrice}" type="currency" currencySymbol="VNĐ" groupingUsed="true" maxFractionDigits="0"/></td>
                                                 
                                             </tr>
                                         </c:forEach>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>TOTAL:</td>
+                                                <td><fmt:formatNumber value="${totalPrice}" type="currency" currencySymbol="VNĐ" groupingUsed="true" maxFractionDigits="0"/></td>
+                                                
+                                            </tr>
                             </tbody>
 
                             </table>

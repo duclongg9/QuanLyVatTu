@@ -4,15 +4,14 @@
  */
 package controller.material;
 
-import dao.material.CategoryMaterialDAO;
+import dao.Category.CategoryDAO;
 import dao.material.MaterialsDAO;
-import dao.subcategory.SubCategoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.CategoryMaterial;
+import model.Category;
 import java.io.IOException;
 import java.util.List;
 import model.Materials;
@@ -22,8 +21,8 @@ import model.Materials;
  */@WebServlet(name = "CategoryController", urlPatterns = {"/categoryController"})
 public class CategoryController extends HttpServlet {
 
-    CategoryMaterialDAO dao = new CategoryMaterialDAO();
-    SubCategoryDAO subDao = new SubCategoryDAO();
+    CategoryDAO dao = new CategoryDAO();
+    CategoryDAO subDao = new CategoryDAO();
     MaterialsDAO materialsDAO = new MaterialsDAO();
 
     @Override
@@ -49,8 +48,8 @@ public class CategoryController extends HttpServlet {
                 int delIndex = Integer.parseInt(delIndexPage);
                 request.setAttribute("categories", dao.pagingDeletedCategories(delIndex));
                 int totalDel = dao.getTotalDeletedCategories();
-                int endDel = totalDel / CategoryMaterialDAO.PAGE_SIZE;
-                if (totalDel % CategoryMaterialDAO.PAGE_SIZE != 0) endDel++;
+                int endDel = totalDel / CategoryDAO.PAGE_SIZE;
+                if (totalDel % CategoryDAO.PAGE_SIZE != 0) endDel++;
                 request.setAttribute("endP", endDel);
                 request.setAttribute("tag", delIndex);
                 request.getRequestDispatcher("/jsp/material/deletedCategory.jsp").forward(request, response);
@@ -77,8 +76,8 @@ public class CategoryController extends HttpServlet {
                         request.setAttribute("categories", dao.pagingCategories(index));
                         total = dao.getTotalCategories();
                     }
-                    int endP = total / CategoryMaterialDAO.PAGE_SIZE;
-                    if (total % CategoryMaterialDAO.PAGE_SIZE != 0) endP++;
+                    int endP = total / CategoryDAO.PAGE_SIZE;
+                    if (total % CategoryDAO.PAGE_SIZE != 0) endP++;
                     request.setAttribute("endP", endP);
                     request.setAttribute("tag", index);
                     request.getRequestDispatcher("/jsp/material/listCategory.jsp").forward(request, response);
@@ -109,8 +108,8 @@ public class CategoryController extends HttpServlet {
                     request.setAttribute("categories", dao.pagingCategories(index));
                     total = dao.getTotalCategories();
                 }
-                int endP = total / CategoryMaterialDAO.PAGE_SIZE;
-                if (total % CategoryMaterialDAO.PAGE_SIZE != 0) {
+                int endP = total / CategoryDAO.PAGE_SIZE;
+                if (total % CategoryDAO.PAGE_SIZE != 0) {
                     endP++;
                 }
                 request.setAttribute("endP", endP);

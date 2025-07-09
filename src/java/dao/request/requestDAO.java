@@ -146,7 +146,7 @@ public class requestDAO {
     }
 
     // Thêm request mới, trả về requestId vừa tạo
-    public int insertRequest(Connection conn, int userId, String note, Integer approverId, RequestType type) throws SQLException {
+    public int insertRequest( int userId, String note, Integer approverId, RequestType type) throws SQLException {
         String sql = "INSERT INTO Request (date, statusId, userId, note, type, approvedBy) VALUES (NOW(), ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -179,7 +179,7 @@ public class requestDAO {
     }
 
     // Thêm chi tiết các vật tư cho Request vào bảng RequestDetail
-    public void insertRequestDetail(Connection conn, int requestId, int materialItemId, int quantity, String note) throws SQLException {
+    public void insertRequestDetail( int requestId, int materialItemId, int quantity, String note) throws SQLException {
         String sql = "INSERT INTO RequestDetail (requestId, materialItemId, quantity, note) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, requestId);

@@ -31,7 +31,7 @@
                     <input type="hidden" name="id" value="<%=sc.getId()%>" />
                     <div class="mb-3">
                         <label for="subCategoryName" class="form-label">Sub Category Name</label>
-                        <input type="text" id="subCategoryName" name="subCategoryName" value="<%=sc.getSubCategoryName()%>" class="form-control" required>
+                        <input type="text" id="subCategoryName" name="subCategoryName" value="<%=sc.getCategoryName()%>" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="categoryMaterialId" class="form-label">Category</label>

@@ -33,7 +33,7 @@
                     <input type="hidden" name="id" value="${sub.id}" />
                     <div class="mb-3">
                         <label for="name" class="form-label">Sub Category Name</label>
-                        <input type="text" id="name" name="name" class="form-control" value="${sub.subCategoryName}" required>
+                        <input type="text" id="name" name="name" class="form-control" value="${sub.categoryName}" required>
                     </div>
                     <div class="mb-3">
                         <label for="categoryId" class="form-label">Category</label>

@@ -12,13 +12,13 @@ public class MaterialHistory {
     private String name;
     private MaterialUnit unit;
     private String image;
-    private SubCategory subCategory;
+    private Category subCategory;
     private java.sql.Timestamp archivedAt;
 
     public MaterialHistory() {
     }
 
-    public MaterialHistory(int id, Materials material, String name, MaterialUnit unit, String image, SubCategory subCategory, java.sql.Timestamp archivedAt) {
+    public MaterialHistory(int id, Materials material, String name, MaterialUnit unit, String image, Category subCategory, java.sql.Timestamp archivedAt) {
         this.id = id;
         this.material = material;
         this.name = name;
@@ -68,11 +68,11 @@ public class MaterialHistory {
         this.image = image;
     }
 
-    public SubCategory getSubCategory() {
+    public Category getSubCategory() {
         return subCategory;
     }
 
-    public void setSubCategory(SubCategory subCategory) {
+    public void setSubCategory(Category subCategory) {
         this.subCategory = subCategory;
     }
 

@@ -57,6 +57,9 @@ public class ImportDetailViewController extends HttpServlet {
         
         InputWarehourse inputWarehouse = iwdao.getInputWarehourseById(importWarehouseId);
         request.setAttribute("inputWarehouse", inputWarehouse);
+        
+        double totalPrice = iwdao.getTotalValueByInputWarehouseId(importWarehouseId);
+        request.setAttribute("totalPrice",totalPrice);
 
         
         //Lấy giá trị trang

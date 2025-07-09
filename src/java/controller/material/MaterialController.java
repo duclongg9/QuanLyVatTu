@@ -2,10 +2,9 @@
 package controller.material;
 
 
-import dao.subcategory.SubCategoryDAO;
 import dao.material.MaterialUnitDAO;
 import dao.material.MaterialsDAO;
-import dao.material.CategoryMaterialDAO;
+import dao.Category.CategoryDAO;
 import dao.material.MaterialHistoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -42,9 +41,8 @@ public static final int PAGE_NUMBER = 7;
      */
     
     MaterialUnitDAO muDao = new MaterialUnitDAO();
-    SubCategoryDAO scDao = new SubCategoryDAO();
     MaterialsDAO mDao = new MaterialsDAO();
-    CategoryMaterialDAO cDao = new CategoryMaterialDAO();
+    CategoryDAO cDao = new CategoryDAO();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -83,7 +81,7 @@ public static final int PAGE_NUMBER = 7;
         switch (action) {
             case "add":
                 request.setAttribute("units", muDao.getAllUnit());
-                request.setAttribute("categories", scDao.getAllSubCategory());
+                request.setAttribute("categories", cDao.getAllSubCategory());
                 if (request.getParameter("success") != null) {
                     request.setAttribute("success", "Thêm vật tư thành công");
                 }
@@ -97,7 +95,7 @@ public static final int PAGE_NUMBER = 7;
             case "edit":
                 int id = Integer.parseInt(request.getParameter("id"));
                 request.setAttribute("units", muDao.getAllUnit());
-                request.setAttribute("categories", scDao.getAllSubCategory());
+                request.setAttribute("categories", cDao.getAllSubCategory());
                 request.setAttribute("material", mDao.getMaterialsById(id));
                 request.getRequestDispatcher("/jsp/material/updateMaterial.jsp").forward(request, response);
                 break;
@@ -242,7 +240,7 @@ public static final int PAGE_NUMBER = 7;
         
         if (!isValidName(name)) {
             request.setAttribute("units", muDao.getAllUnit());
-            request.setAttribute("categories", scDao.getAllSubCategory());
+            request.setAttribute("categories", cDao.getAllSubCategory());
             request.setAttribute("error", "Tên vật tư không hợp lệ");
             request.getRequestDispatcher("/jsp/material/createMaterial.jsp").forward(request, response);
             return;

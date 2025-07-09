@@ -1,173 +1,94 @@
 package controller.request;
 
-import dao.material.CategoryMaterialDAO;
-import dao.connect.DBConnect;
+import dao.Category.CategoryDAO;
 import dao.material.MaterialItemDAO;
-import dao.request.InputDetailDAO;
+import dao.material.MaterialSupplierDAO;
+import dao.material.MaterialsDAO;
 import dao.request.requestDAO;
-import dao.subcategory.SubCategoryDAO;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
-import model.CategoryMaterial;
-import model.MaterialItem;
-import model.SubCategory;
-import model.User;
-import model.RequestType;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.*;
 
 @WebServlet(name = "createRequestImport", urlPatterns = {"/CreateRequestImport"})
 public class CreateImportRequestController extends HttpServlet {
 
-    CategoryMaterialDAO cmdao = new CategoryMaterialDAO();
-    SubCategoryDAO scdao = new SubCategoryDAO();
+    CategoryDAO cmdao = new CategoryDAO();
+    MaterialsDAO mdao = new MaterialsDAO();
     MaterialItemDAO midao = new MaterialItemDAO();
+    MaterialSupplierDAO msdao = new MaterialSupplierDAO();
+    requestDAO rdao = new requestDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String categoryMaterialIdParam = request.getParameter("categoryMaterialId");
-        String subCategoryIdParam = request.getParameter("subCategoryId");
-        String keyword = request.getParameter("keyword");
-        int categoryMaterialId;
-        int subCategoryId;
-
-        if (keyword == null) {
-            keyword = "";
-        }
-
-        if (subCategoryIdParam != null) {
-            subCategoryId = Integer.parseInt(subCategoryIdParam);
-        } else {
-            subCategoryId = 0;
-        }
-
-        if (categoryMaterialIdParam != null) {
-            categoryMaterialId = Integer.parseInt(categoryMaterialIdParam);
-        } else {
-            categoryMaterialId = 0;
-        }
-
-        List<CategoryMaterial> cateList = cmdao.getAllCategory();
-        List<SubCategory> subList = scdao.getSubCategoryByCatId(0);
-        List<MaterialItem> miList = midao.filterMaterial(categoryMaterialId, subCategoryId, keyword);
-
-        // Gán số lượng mà User đã chọn từ session 
         HttpSession session = request.getSession();
-        Map<Integer, Integer> selectedItems = (Map<Integer, Integer>) session.getAttribute("selectedItems");
-        if (selectedItems != null) {
-            for (MaterialItem mi : miList) {
-                if (selectedItems.containsKey(mi.getId())) {
-                    mi.setSelectedQuantity(selectedItems.get(mi.getId())); // biến tạm Java, không nằm trong DB
-                }
-            }
-        }
-
-        request.setAttribute("categoryList", cateList);
-        request.setAttribute("subCategoryList", subList);
-        request.setAttribute("materialItemList", miList);
-
+        User user = (User) session.getAttribute("loggedInUser");
+        String userName = user.getFullName();
+        List<Category> categoryList = cmdao.getAllCategory();
+        request.setAttribute("userName", userName);
+        request.setAttribute("categoryList", categoryList);
         request.getRequestDispatcher("/jsp/request/createImportRequest.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        requestDAO requestDao = new requestDAO();
-        InputDetailDAO inputDetailDao = new InputDetailDAO();
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String action = request.getParameter("action");
-        User user = (User) session.getAttribute("account");
-
-        if ("add".equals(action)) {
-            String[] materialItemIds = request.getParameterValues("materialItemIds");
-            Map<Integer, Integer> selectedItems = (Map<Integer, Integer>) session.getAttribute("selectedItems");
-            if (selectedItems == null) {
-                selectedItems = new HashMap<>();
-            }
-
-            if (materialItemIds != null) {
-                for (String idStr : materialItemIds) {
-                    int itemId = Integer.parseInt(idStr);
-                    String quantityStr = request.getParameter("quantities[" + itemId + "]");
-                    if (quantityStr != null && !quantityStr.isEmpty()) {
-                        int qty = Integer.parseInt(quantityStr);
-                        if (qty > 0) {
-                            selectedItems.put(itemId, qty); // Ghi đè nếu đã có(người dùng chỉnh lại phần số lượng khi chưa lưu về database)
-                        }
-                    }
-                }
-            }
-
-            session.setAttribute("selectedItems", selectedItems);
-            response.sendRedirect("CreateRequestImport"); // Load lại với dữ liệu mới
-            return;
+        User user = (User) session.getAttribute("loggedInUser"); // đã đăng nhập
+        int userId = user.getId();
+        String note = request.getParameter("note");
+        // 1. Tạo Request mới
+        int requestId = 0;
+        try {
+            requestId = rdao.insertRequest(userId, note, userId, RequestType.IMPORT);
+        } catch (SQLException ex) {
+            Logger.getLogger(CreateImportRequestController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if ("create".equals(action)) {
-            String note = request.getParameter("note");
-            Map<Integer, Integer> selectedItems = (Map<Integer, Integer>) session.getAttribute("selectedItems");
+        // 2. Duyệt từng slot được submit
+        String[] materialIds = request.getParameterValues("materialId");
+        String[] supplierIds = request.getParameterValues("supplierId");
+        String[] quantities = request.getParameterValues("quantity");
 
-            Connection conn = null;
+        for (int i = 0; i < materialIds.length; i++) {
+            // Bỏ qua nếu thiếu dữ liệu
+            if (materialIds[i] == null || materialIds[i].isEmpty()
+                    || supplierIds[i] == null || supplierIds[i].isEmpty()
+                    || quantities[i] == null || quantities[i].isEmpty()) {
+                continue;
+            }
+
             try {
-                conn = DBConnect.getConnection();
-                conn.setAutoCommit(false);
+                int materialId = Integer.parseInt(materialIds[i]);
+                int supplierId = Integer.parseInt(supplierIds[i]);
+                int quantity = Integer.parseInt(quantities[i]);
 
-                int requestId = requestDao.insertRequest(conn, user.getId(), note, null, RequestType.IMPORT);
+                // 3. Lấy materials_SupplierId
+                int materialSupplierId = msdao.getMaterialSupplier(materialId, supplierId).getId();
+                int materialItemId = midao.getMaterialItemById(materialSupplierId).getId();
 
-                if (selectedItems != null && !selectedItems.isEmpty()) {
-                    for (Map.Entry<Integer, Integer> entry : selectedItems.entrySet()) {
-                        int materialItemId = entry.getKey();
-                        int quantity = entry.getValue();
-                        requestDao.insertRequestDetail(conn, requestId, materialItemId, quantity, null);
-                    }
-                }
-
-                conn.commit(); // thành công
-                session.removeAttribute("selectedItems");
-                response.sendRedirect("requestList");
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                if (conn != null) {
-                    try {
-                        conn.rollback();//fail
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-                response.sendRedirect("errorPage.jsp");
-            } finally {
-                if (conn != null) {
-                    try {
-                        conn.close();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                }
+                // 4. Lưu vào requestDetail
+                rdao.insertRequestDetail(requestId, materialItemId, quantity, "Note");
+            } catch (NumberFormatException | NullPointerException ex) {
+                Logger.getLogger(CreateImportRequestController.class.getName()).log(Level.WARNING, "Invalid input at row " + i, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(CreateImportRequestController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
-        if ("cancel".equals(action)) {
-            session.removeAttribute("selectedItems"); // Xóa phần làm dở
-            response.sendRedirect("requestList"); // Chuyển hướng về danh sách yêu cầu
-            return;
-        }
-
+        response.sendRedirect("requestList");
     }
 
-    @Override
-    public String getServletInfo() {
-        return "Create Import Warehouse from Request";
+    private Integer parseInteger(String str) {
+        try {
+            return (str == null || str.isEmpty()) ? null : Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }
