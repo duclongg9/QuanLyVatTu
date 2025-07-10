@@ -4,6 +4,7 @@
  */
 package dao.export;
 
+import dao.auditLog.AuditLogDAO;
 import dao.connect.DBConnect;
 import dao.user.UserDAO;
 import java.sql.*;
@@ -11,11 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.ActionType;
 import model.OutputWarehourse;
+import model.RequestDetail;
 import model.RequestType;
 import model.User;
 
 public class OutputWarehourseDAO {
+
     private static final String COL_ID = "id";
     private static final String COL_DATE = "date";
     private static final String COL_USERID = "userId";
@@ -26,8 +30,7 @@ public class OutputWarehourseDAO {
 
     public OutputWarehourse getOutputWarehourseById(int id) {
         String sql = "SELECT * FROM OutputWarehouse WHERE id = ?";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -49,9 +52,7 @@ public class OutputWarehourseDAO {
     public List<OutputWarehourse> getAllOutputWarehouses() throws SQLException {
         List<OutputWarehourse> list = new ArrayList<>();
         String sql = "SELECT * FROM OutputWarehouse";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 OutputWarehourse ow = new OutputWarehourse();
                 ow.setId(rs.getInt(COL_ID));
@@ -69,9 +70,7 @@ public class OutputWarehourseDAO {
     // Count total export orders
     public int getTotalOutputWarehouse() {
         String sql = "SELECT COUNT(*) FROM OutputWarehouse";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -85,8 +84,7 @@ public class OutputWarehourseDAO {
     public List<OutputWarehourse> pagingOutputWarehouse(int index) throws SQLException {
         List<OutputWarehourse> list = new ArrayList<>();
         String sql = "SELECT * FROM OutputWarehouse LIMIT ? OFFSET ?";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, PAGE_SIZE);
             ps.setInt(2, (index - 1) * PAGE_SIZE);
             try (ResultSet rs = ps.executeQuery()) {
@@ -107,10 +105,9 @@ public class OutputWarehourseDAO {
     // Search with pagination
     public List<OutputWarehourse> searchOutputWarehouse(String keyword, int index) throws SQLException {
         List<OutputWarehourse> list = new ArrayList<>();
-        String sql = "SELECT ow.* FROM OutputWarehouse ow JOIN User u ON ow.userId = u.id " +
-                     "WHERE ow.id LIKE ? OR u.fullname LIKE ? OR ow.date LIKE ? LIMIT ? OFFSET ?";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        String sql = "SELECT ow.* FROM OutputWarehouse ow JOIN User u ON ow.userId = u.id "
+                + "WHERE ow.id LIKE ? OR u.fullname LIKE ? OR ow.date LIKE ? LIMIT ? OFFSET ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             String like = "%" + keyword + "%";
             ps.setString(1, like);
             ps.setString(2, like);
@@ -133,10 +130,9 @@ public class OutputWarehourseDAO {
     }
 
     public int countSearchOutputWarehouse(String keyword) {
-        String sql = "SELECT COUNT(*) FROM OutputWarehouse ow JOIN User u ON ow.userId = u.id " +
-                     "WHERE ow.id LIKE ? OR u.fullname LIKE ? OR ow.date LIKE ?";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        String sql = "SELECT COUNT(*) FROM OutputWarehouse ow JOIN User u ON ow.userId = u.id "
+                + "WHERE ow.id LIKE ? OR u.fullname LIKE ? OR ow.date LIKE ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             String like = "%" + keyword + "%";
             ps.setString(1, like);
             ps.setString(2, like);
@@ -152,16 +148,30 @@ public class OutputWarehourseDAO {
         return 0;
     }
 
-
-    
     // Insert new output warehouse, return generated id
     public int insertOutputWarehouse(int userId, RequestType type) throws SQLException {
         String sql = "INSERT INTO OutputWarehouse (date, userId, type) VALUES (NOW(), ?, ?)";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, userId);
             ps.setString(2, type.name());
-            ps.executeUpdate();
+
+            int exportId = -1;
+
+            ps.executeUpdate(); // Thực hiện insert
+
+            // Lấy ID mới sinh
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    exportId = rs.getInt(1);
+                }
+            }
+
+            User user = udao.getUserById(userId);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã thực hiện xuất kho ";
+            logDAO.insertAuditLog("OutputWarehouse", exportId, ActionType.INSERT, message, userId);
+
+            
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     return rs.getInt(1);

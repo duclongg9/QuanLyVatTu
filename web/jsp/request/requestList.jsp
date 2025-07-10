@@ -53,7 +53,27 @@
                     <div class="col-12">
                         <div class="bg-light rounded h-100 p-4">
                             <h6 class="mb-4">Request</h6>
-                          
+                            <div class="d-flex g-0">
+                            <form action="requestList" method="get">
+                                <h5>Status:</h5>
+                                <select class="form-select mb-3" aria-label="Default select example" name="requestStatus">
+                                <option selected="0">select status of request</option>
+                                <c:forEach var="status" items="">
+                                    <option value="1">One</option>
+                                </c:forEach>
+                                
+                            </select>
+                                <h5>Type:</h5>
+                                <select class="form-select mb-3" aria-label="Default select example" name="requestType">
+                                <option selected="0">select type of request</option>
+                                <c:forEach var="status" items="">
+                                    <option value="1">One</option>
+                                </c:forEach>
+                                
+                            </select>
+                                
+                            </form>
+                                </div>
                             <div class="table-responsive">
                                 
                                 <table class="table" id="userTable">

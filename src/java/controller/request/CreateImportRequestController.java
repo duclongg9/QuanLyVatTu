@@ -45,7 +45,7 @@ public class CreateImportRequestController extends HttpServlet {
         // 1. Tạo Request mới
         int requestId = 0;
         try {
-            requestId = rdao.insertRequest(userId, note, userId, RequestType.IMPORT);
+            requestId = rdao.insertRequest(userId, note, null, RequestType.IMPORT,userId);
         } catch (SQLException ex) {
             Logger.getLogger(CreateImportRequestController.class.getName()).log(Level.SEVERE, null, ex);
         }

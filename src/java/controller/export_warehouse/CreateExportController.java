@@ -78,7 +78,7 @@ public class CreateExportController extends HttpServlet {
                     Logger.getLogger(CreateExportController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            rdao.updateSuccessStatusRequest(requestId);
+            rdao.updateSuccessStatusRequest(requestId,loggedInUser.getId());
             response.sendRedirect("ListExport");
         } else {
             response.sendRedirect("errorPage.jsp");

@@ -44,6 +44,12 @@ public class RequestListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        
+//        String statusIdParam = request.getParameter(LEGACY_DO_HEAD);
+//        String type = request.getParameter(LEGACY_DO_HEAD);
+//        request.getParameter(LEGACY_DO_HEAD);
+//        request.getParameter(LEGACY_DO_HEAD);
+
         //Lấy giá trị trang
         String indexPage = request.getParameter("index");
         if (indexPage == null) {

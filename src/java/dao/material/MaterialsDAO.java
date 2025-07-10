@@ -5,6 +5,7 @@
 package dao.material;
 
 import dao.Category.CategoryDAO;
+import dao.auditLog.AuditLogDAO;
 import dao.connect.DBConnect;
 import dao.request.requestDAO;
 import dao.user.UserDAO;
@@ -16,7 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.ActionType;
+import model.Category;
 import model.Materials;
+import model.User;
 
 /**
  *
@@ -27,6 +31,8 @@ public class MaterialsDAO {
     
     MaterialUnitDAO mudao = new MaterialUnitDAO();
     CategoryDAO cdao = new CategoryDAO();
+    UserDAO udao = new UserDAO();
+    MaterialsDAO mdao = new MaterialsDAO();
 
     private static final String COL_ID = "id";
     private static final String COL_NAME = "name";
@@ -323,12 +329,12 @@ public class MaterialsDAO {
     }
 
     //create materials without replacement id
-    public int createMaterial(String name, int unitId, String image, int subCategoryId) {
-        return createMaterial(name, unitId, image, subCategoryId, null);
+    public int createMaterial(String name, int unitId, String image, int subCategoryId,int changedBy) {
+        return createMaterial(name, unitId, image, subCategoryId, null,changedBy);
     }
 
     // create materials, optionally specifying the material it replaces
-    public int createMaterial(String name, int unitId, String image, int subCategoryId, Integer replacementId) {
+    public int createMaterial(String name, int unitId, String image, int subCategoryId, Integer replacementId,int changedBy) {
         String sql = "INSERT INTO Materials(name, unitId, image, subCategoryId, status, replacementMaterialId) VALUES(?,?,?,?, true, ?)";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
@@ -340,7 +346,22 @@ public class MaterialsDAO {
             } else {
                 ps.setNull(5, java.sql.Types.INTEGER);
             }
-            return ps.executeUpdate(); // >0 nếu thành công
+            
+            int materialId = -1;
+            ps.executeUpdate(); // Thực hiện insert
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    materialId = rs.getInt(1);
+                }
+            }
+
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã thêm vật tư mới:" + name;
+            logDAO.insertAuditLog("Material", materialId, ActionType.INSERT, message, changedBy);
+            
+            return 1;
         } catch (SQLException e) {
             Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
             return 0;
@@ -348,7 +369,7 @@ public class MaterialsDAO {
     }
 
     //update materials
-    public int updateMaterial(int id, String name, int unitId, String imageName, int subCategoryId) {
+    public int updateMaterial(int id, String name, int unitId, String imageName, int subCategoryId,int changedBy) {
         StringBuilder sql = new StringBuilder("UPDATE Materials SET name=?, unitId=?, subCategoryId=?");
         if (imageName != null) {
             sql.append(", image=?");
@@ -363,6 +384,12 @@ public class MaterialsDAO {
                 ps.setString(idx++, imageName);
             }
             ps.setInt(idx, id);
+            
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã cập nhật lại danh mục con: " + name;
+            logDAO.insertAuditLog("Materials", id, ActionType.UPDATE, message, changedBy);
+            
             return ps.executeUpdate();
         } catch (SQLException e) {
             Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -372,7 +399,7 @@ public class MaterialsDAO {
 
     // Update material by creating a new record and archiving the old one
     public int updateMaterialWithHistory(int id, String name, int unitId,
-            String imageName, int subCategoryId) {
+            String imageName, int subCategoryId,int changedBy) {
         // Get current material information
         Materials old = getMaterialsById(id);
         if (old == null) {
@@ -387,7 +414,7 @@ public class MaterialsDAO {
         int result = createMaterial(name, unitId, imageName, subCategoryId, id);
         if (result > 0) {
             // deactivate old material so it is no longer in use
-            deactivateMaterial(id);
+            deactivateMaterial(id,changedBy);
         }
         return result;
     }
@@ -449,10 +476,17 @@ public class MaterialsDAO {
     }
 
     // Khôi phục vật tư bằng cách chuyển trạng thái về hoạt động (statusId = true)
-    public void activateMaterial(int id) {
+    public void activateMaterial(int id,int changedBy) {
         String sql = "UPDATE Materials SET status = true WHERE id = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
+            
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            Category category = new Category();
+            String message = "User: " + user.getFullName() + " đã bật lại vật tư: " + category.getCategoryName();
+            logDAO.insertAuditLog("Materials", id, ActionType.UPDATE, message, changedBy);
+            
             ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -460,10 +494,17 @@ public class MaterialsDAO {
     }
 
     //soft delete material
-    public void deactivateMaterial(int deleteId) {
+    public void deactivateMaterial(int deleteId,int changedBy) {
         String sql = "UPDATE Materials SET status = false WHERE id = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, deleteId);
+            
+            User user = udao.getUserById(changedBy);
+            Materials material = mdao.getMaterialsById(deleteId);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã tắt vật tư: " + material.getName();
+            logDAO.insertAuditLog("Materials", material.getId(), ActionType.UPDATE, message, changedBy);
+            
             ps.executeUpdate();
         } catch (SQLException e) {
             Logger.getLogger(MaterialsDAO.class.getName()).log(Level.SEVERE, null, e);

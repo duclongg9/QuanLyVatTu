@@ -11,10 +11,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.Category;
 import java.io.IOException;
 import java.util.List;
 import model.Materials;
+import model.User;
 /**
  *
  * @author Dell-PC
@@ -28,6 +30,15 @@ public class CategoryController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Kiểm tra đăng nhập
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+
+        if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        
         String action = request.getParameter("action");
         if (action == null) {
             action = "list";
@@ -56,7 +67,7 @@ public class CategoryController extends HttpServlet {
                 break;
             case "activate":
                 int aId = Integer.parseInt(request.getParameter("id"));
-                dao.activateCategory(aId);
+                dao.activateCategory(aId,loggedInUser.getId());
                 response.sendRedirect("categoryController?action=deleted");
                 break;
             case "delete":
@@ -82,9 +93,9 @@ public class CategoryController extends HttpServlet {
                     request.setAttribute("tag", index);
                     request.getRequestDispatcher("/jsp/material/listCategory.jsp").forward(request, response);
                 } else {
-                    int result = dao.deleteCategory(delId);
+                    int result = dao.deleteCategory(delId,loggedInUser.getId());
                     if (result > 0) {
-                        subDao.deactivateByCategoryId(delId);
+                        subDao.deactivateByCategoryId(delId,loggedInUser.getId());
                         response.sendRedirect("categoryController");
                     } else {
                         request.setAttribute("error", "Xử lý thất bại");
@@ -123,6 +134,15 @@ public class CategoryController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Kiểm tra đăng nhập
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+
+        if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        
         String idParam = request.getParameter("id");
         String category = request.getParameter("category");
         if (!isValidName(category)) {
@@ -144,9 +164,9 @@ public class CategoryController extends HttpServlet {
 
         int result;
         if (id != null) {
-            result = dao.updateCategory(id, category);
+            result = dao.updateCategory(id, category,loggedInUser.getId());
         } else {
-            result = dao.createCategory(category);
+            result = dao.createCategory(category,loggedInUser.getId());
         }
         if (result > 0) {
             response.sendRedirect("categoryController");

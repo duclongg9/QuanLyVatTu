@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Request;
 import model.RequestDetail;
 import model.User;
 
@@ -89,7 +88,7 @@ public class CreateImportController extends HttpServlet {
                     Logger.getLogger(CreateImportController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            rdao.updateSuccessStatusRequest(requestId);
+            rdao.updateSuccessStatusRequest(requestId,loggedInUser.getId());
             response.sendRedirect("ListImport"); 
             return;
         } else {

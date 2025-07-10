@@ -4,15 +4,22 @@
  */
 package dao.unit;
 
+import dao.auditLog.AuditLogDAO;
 import java.sql.*;
 import java.util.*;
 import model.UnitConversion;
 import dao.connect.DBConnect;
+import dao.user.UserDAO;
+import model.ActionType;
+import model.User;
 /**
  *
  * @author KIET
  */
 public class UnitConversionDAO {
+    
+    UserDAO udao = new UserDAO();
+    
     public List<UnitConversion> getAllUnitConversion() {
         List<UnitConversion> list = new ArrayList<>();
         String sql = "SELECT uc.*, m.name AS materialName, u1.name AS fromUnitName, u2.name AS toUnitName " +
@@ -71,6 +78,9 @@ public class UnitConversionDAO {
             ps.setInt(2, uc.getFromUnitId());
             ps.setInt(3, uc.getToUnitId());
             ps.setDouble(4, uc.getRatio());
+            
+            
+            
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,6 +97,7 @@ public class UnitConversionDAO {
             ps.setInt(3, uc.getToUnitId());
             ps.setDouble(4, uc.getRatio());
             ps.setInt(5, uc.getId());
+            
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

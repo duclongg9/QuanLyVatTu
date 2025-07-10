@@ -12,11 +12,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.RequestDetail;
+import model.User;
 
 /**
  *
@@ -38,6 +40,7 @@ public class RequestEditController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         String requestIdStr = request.getParameter("requestId");
         if (requestIdStr != null) {
             int requestId = Integer.parseInt(requestIdStr);
@@ -59,6 +62,14 @@ public class RequestEditController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+        
+        
+         if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
         String[] detailIds = request.getParameterValues("detailId");
         String[] quantities = request.getParameterValues("quantity");
         String[] notes = request.getParameterValues("note");
@@ -78,7 +89,7 @@ public class RequestEditController extends HttpServlet {
                     Logger.getLogger(RequestEditController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            dao.updateStatusRequest(requestId, 1, 0);
+            dao.updateStatusRequest(requestId, 1, 0,loggedInUser.getId());
         } else {
             // Dữ liệu không hợp lệ
             response.sendRedirect("error.jsp");

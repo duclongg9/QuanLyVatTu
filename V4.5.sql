@@ -206,51 +206,15 @@ CREATE TABLE `OutputDetail` (
 	FOREIGN KEY(`materialItemId`) REFERENCES `MaterialItem`(`id`)
 );
 
-CREATE TABLE AuditMessageTemplate (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
-    description TEXT
-);
-
 CREATE TABLE AuditLog (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     table_name VARCHAR(100) NOT NULL,
     record_id INT,
     action_type ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
-    message_template_id INT,
+    message TEXT, -- ghi trực tiếp chi tiết
     changed_by INT,
-    changed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (message_template_id) REFERENCES AuditMessageTemplate(id)
+    changed_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
--- create audit log
-DELIMITER $$
-
-CREATE PROCEDURE insert_audit_log (
-    IN p_table_name VARCHAR(100),
-    IN p_record_id INT,
-    IN p_action_type ENUM('INSERT', 'UPDATE', 'DELETE'),
-    IN p_message_code VARCHAR(50),
-    IN p_changed_by INT
-)
-BEGIN
-    DECLARE msg_id INT;
-
-    -- Lấy ID template theo code
-    SELECT id INTO msg_id
-    FROM AuditMessageTemplate
-    WHERE code = p_message_code
-    LIMIT 1;
-
-    -- Ghi log
-    INSERT INTO AuditLog (table_name, record_id, action_type, message_template_id, changed_by)
-    VALUES (p_table_name, p_record_id, p_action_type, msg_id, p_changed_by);
-END$$
-
-DELIMITER ;
-
--- CALL insert_audit_log('User', 1, 'UPDATE', 'USER_UPDATE', 1);
-
 
 
 -- create user 
@@ -263,7 +227,7 @@ CREATE PROCEDURE CreateNewUser (
     IN p_password VARCHAR(255),
     IN p_email VARCHAR(255),
     IN p_address VARCHAR(255),
-    IN p_gender boolean,
+    IN p_gender BOOLEAN,
     IN p_birthDate DATE,
     IN p_image VARCHAR(255),
     IN p_status BOOLEAN,
@@ -278,9 +242,13 @@ BEGIN
         p_username, p_fullname, p_phone, p_password, p_email,
         p_address, p_gender, p_birthDate, p_image, p_status, p_roleId
     );
+
+    -- ✅ Thêm dòng này để trả về ID
+    SELECT LAST_INSERT_ID() AS newUserId;
 END //
 
 DELIMITER ;
+
 
 -- CALL CreateNewUser(?,?,?,?,?,?,?,?,?,?,?);
 -- DROP PROCEDURE IF EXISTS CreateNewUser;

@@ -13,6 +13,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 @WebServlet(name = "processUpdateSupplier", urlPatterns = {"/processupdatesupplier"})
 public class processUpdateSupplier extends HttpServlet {
@@ -26,6 +28,14 @@ public class processUpdateSupplier extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Kiểm tra đăng nhập
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+
+        if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
         try {
             int id = Integer.parseInt(request.getParameter("id"));
             String name = request.getParameter("name");
@@ -81,7 +91,7 @@ public class processUpdateSupplier extends HttpServlet {
                 return;
             }
 
-            dao.updateSupplier(supplier);
+            dao.updateSupplier(supplier,loggedInUser.getId());
 
             // Chuyển hướng về danh sách supplier
             response.sendRedirect("suppliercontroller");

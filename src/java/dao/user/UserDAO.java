@@ -4,17 +4,19 @@
  */
 package dao.user;
 
+import dao.auditLog.AuditLogDAO;
 import dao.connect.DBConnect;
 import dao.role.RoleDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Role;
+import model.ActionType;
 import model.User;
 
 /**
@@ -22,6 +24,7 @@ import model.User;
  * @author D E L L
  */
 public class UserDAO {
+    
 
     private static final int PAGE_SIZE = 5;
 
@@ -39,19 +42,56 @@ public class UserDAO {
     private static final String COL_ROLEID = "roleId";
 
 //    private Connection conn;
-
     RoleDAO rdao = new RoleDAO();
 
     public UserDAO() {
 //        conn = DBConnect.getConnection();
     }
 
+    public List<User> getAllUser() {
+        String sql = "SELECT * FROM user";
+        List<User> listUser = new ArrayList<>();
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                // Lấy thông tin User
+                User user = new User();
+                user.setId(rs.getInt(COL_ID));
+                user.setFullName(rs.getString(COL_FULLNAME));
+                user.setGender(rs.getBoolean(COL_GENDER));
+                user.setBirthDate(rs.getString(COL_BIRTHDATE));
+                user.setAddress(rs.getString(COL_ADDRESS));
+                user.setImage(rs.getString(COL_IMAGE));
+                user.setEmail(rs.getString(COL_EMAIL));
+                user.setUsername(rs.getString(COL_USERNAME));
+                user.setPassword(rs.getString(COL_PASSWORD));
+                user.setPhone(rs.getString(COL_PHONE));
+                user.setStatus(rs.getBoolean(COL_STATUS));
+                user.setRole(rdao.getRoleById(rs.getInt(COL_ROLEID)));
+                listUser.add(user);
+            }
+            return listUser;
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi kiểm tra đăng nhập!");
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     //Cập nhật mật khẩu mới vào database
-     public boolean updatePassword(int userId, String hashedPassword) {
+    public boolean updatePassword(int userId, String hashedPassword) {
         String sql = "UPDATE User SET password=? WHERE id=?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, hashedPassword);
             ps.setInt(2, userId);
+            
+            
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: "+getUserById(userId).getFullName()+" đã đổi mật khẩu ";
+            logDAO.insertAuditLog("User", userId, ActionType.UPDATE, message, userId);
+            
             int rows = ps.executeUpdate();
             return rows > 0;
         } catch (Exception e) {
@@ -59,8 +99,8 @@ public class UserDAO {
             return false;
         }
     }
-    
-     //Cập nhật thông tin người dùng vào database
+
+    //Cập nhật thông tin người dùng vào database
     public boolean updateUserProfile(int id, String email, String phone, String address, boolean gender, String birthDate) {
         String sql = "UPDATE User SET email=?, phone=?, address=?, gender=?, birthDate=? WHERE id=?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -70,6 +110,12 @@ public class UserDAO {
             ps.setBoolean(4, gender);
             ps.setString(5, birthDate);
             ps.setInt(6, id);
+            
+            AuditLogDAO logDAO = new AuditLogDAO();
+            
+            String message = "User: "+getUserById(id).getFullName()+" đã thay đổi thông tin cá nhân";
+            logDAO.insertAuditLog("User", id, ActionType.UPDATE, message, id);
+            
             int rows = ps.executeUpdate();
             return rows > 0; // true nếu có ít nhất 1 dòng bị ảnh hưởng
         } catch (Exception e) {
@@ -77,9 +123,8 @@ public class UserDAO {
             return false;
         }
     }
-    
-    
-     // Kiểm tra thông tin đăng nhập
+
+    // Kiểm tra thông tin đăng nhập
     public User checkLogin(String username, String password) {
         String sql = """
         SELECT *
@@ -118,12 +163,11 @@ public class UserDAO {
 
         return null;
     }
-   
-    
+
     //Kiểm tra email đã tồn tại chưa
     public boolean isEmailExists(String email) {
         String sql = "SELECT 1 FROM User WHERE email = ?";
-         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next(); // tồn tại nếu có kết quả
@@ -135,11 +179,11 @@ public class UserDAO {
     }
 
     //kiểm tra xem đã có username này hay chưa
-    public boolean isUserName(String username){
-        String sql="SELECT 1 FROM User WHERE username = ?";
-        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)){
+    public boolean isUserName(String username) {
+        String sql = "SELECT 1 FROM User WHERE username = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, username);
-            try(ResultSet rs = ps.executeQuery()){
+            try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
             }
         } catch (Exception e) {
@@ -147,7 +191,7 @@ public class UserDAO {
         }
         return false;
     }
-    
+
     //kiểm tra xem đã có CEO hay chưa
     public boolean isCEOExit() {
         String sql = "SELECT 1 FROM User WHERE roleId = ?";
@@ -179,37 +223,61 @@ public class UserDAO {
     //Kiểm tra số điện thoại hợp lệ
     //Tạo mới User
     public int createUser(
-            String username,
-            String fullname,
-            String phone,
-            String password,
-            String email,
-            String address,
-            boolean gender,
-            String birthDate,
-            String image,
-            boolean status,
-            int roleId) {
-        String sql = "CALL CreateNewUser(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, username);
-            ps.setString(2, fullname);
-            ps.setString(3, phone);
-            ps.setString(4, password);
-            ps.setString(5, email);
-            ps.setString(6, address);
-            ps.setBoolean(7, gender);
-            ps.setString(8, birthDate);
-            ps.setString(9, image);
-            ps.setBoolean(10, status);
-            ps.setInt(11, roleId);
-            int affectedRows = ps.executeUpdate();
-            return affectedRows;
-        } catch (Exception e) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+        String username,
+        String fullname,
+        String phone,
+        String password,
+        String email,
+        String address,
+        boolean gender,
+        String birthDate,
+        String image,
+        boolean status,
+        int roleId) {
+
+    String sql = "CALL CreateNewUser(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    try (Connection conn = DBConnect.getConnection();
+         CallableStatement cs = conn.prepareCall(sql)) {
+
+        // Set các tham số cho stored procedure
+        cs.setString(1, username);
+        cs.setString(2, fullname);
+        cs.setString(3, phone);
+        cs.setString(4, password);
+        cs.setString(5, email);
+        cs.setString(6, address);
+        cs.setBoolean(7, gender);
+        cs.setString(8, birthDate);
+        cs.setString(9, image);
+        cs.setBoolean(10, status);
+        cs.setInt(11, roleId);
+
+        // Thực thi procedure
+        boolean hasResult = cs.execute();
+
+        if (hasResult) {
+            try (ResultSet rs = cs.getResultSet()) {
+                if (rs.next()) {
+                    int newUserId = rs.getInt("newUserId");  
+
+                    // Ghi log sau khi tạo user
+                    String message = "Admin đã tạo mới người dùng: " + getUserById(newUserId).getFullName();
+                    new AuditLogDAO().insertAuditLog("User", newUserId, ActionType.INSERT, message, 1);
+
+                    return newUserId;
+                }
+            }
         }
-        return 0;
+
+    } catch (Exception e) {
+        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
     }
+
+    return 0; // thất bại
+}
+
+
 
     //Cập nhật User
     public boolean updateUser(int id,
@@ -225,6 +293,11 @@ public class UserDAO {
             ps.setInt(3, id);
             ps.setBoolean(1, status);
             ps.setInt(2, roleId);
+            
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "Admin đã cập nhật lại Trạng thái tài khoản và Vai trò của "+getUserById(id).getFullName();
+            logDAO.insertAuditLog("User", id, ActionType.UPDATE, message, 1);
+            
             int affectedRows = ps.executeUpdate();
             return affectedRows > 0;
         } catch (Exception e) {
@@ -239,7 +312,6 @@ public class UserDAO {
         String sql = "SELECT * FROM ql_vat_tu.user where id = ?";
 
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
-
 
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -308,9 +380,8 @@ public class UserDAO {
 
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
 
-
             ps.setString(1, "%" + name + "%");
-            ps.setInt(2, PAGE_SIZE);            
+            ps.setInt(2, PAGE_SIZE);
             ps.setInt(3, (index - 1) * PAGE_SIZE);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -362,6 +433,11 @@ public class UserDAO {
         try (Connection conn = DBConnect.getConnection(); PreparedStatement getStatusPs = conn.prepareStatement(getStatus)) {
 
             getStatusPs.setInt(1, id);
+            
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "Admin đã cập nhật lại trạng thái tài khoản "+getUserById(id).getFullName();
+            logDAO.insertAuditLog("User", id, ActionType.UPDATE, message, 1);
+            
             try (ResultSet rs = getStatusPs.executeQuery()) {
                 if (rs.next()) {
                     boolean currentStatus = rs.getBoolean("status");
@@ -384,7 +460,7 @@ public class UserDAO {
     //Phân trang
     public List<User> pagingStaff(int index) throws SQLException {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT * FROM user\n"
+        String sql = "SELECT * FROM user WHERE id <> 1\n"
                 + "LIMIT ? OFFSET ?;";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -418,7 +494,7 @@ public class UserDAO {
 
     //đếm số lượng người dùng trong database
     public int getTotalStaff() {
-        String sql = "SELECT COUNT(*) FROM user;";
+        String sql = "SELECT COUNT(*) FROM user WHERE id <> 1;";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql);) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -522,16 +598,14 @@ public class UserDAO {
 
         return 0;
     }
-    
-   
 
     public static void main(String[] args) throws SQLException {
         UserDAO udao = new UserDAO();
-        String name = "n";
+//        String name = "n";
 //        udao.deleteStaffById(1);
-        List<User> list = udao.findStaffByName(name, 1);
+        List<User> list = udao.getAllUser();
 
-        int count = udao.getTotalStaffBySearchName(name);
+//        int count = udao.getTotalStaffBySearchName(name);
 //        System.out.println(count);
         for (User staff : list) {
             System.out.println(staff);

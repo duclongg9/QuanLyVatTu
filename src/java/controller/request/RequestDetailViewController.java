@@ -108,7 +108,7 @@ public class RequestDetailViewController extends HttpServlet {
             int requestId = Integer.parseInt(requestIdParam);
            
 
-            rdao.updateStatusRequest(requestId, statusId,userId);
+            rdao.updateStatusRequest(requestId, statusId,userId,userId);
             response.sendRedirect("requestDetailController?requestId=" + requestId); 
             return;
         }
