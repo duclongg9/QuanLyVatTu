@@ -4,6 +4,7 @@
  */
 package dao.request;
 
+import dao.auditLog.AuditLogDAO;
 import dao.connect.DBConnect;
 import dao.user.UserDAO;
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.ActionType;
 import model.InputWarehourse;
 import model.Request;
 import model.RequestType;
@@ -112,15 +114,27 @@ public class InputWarehourseDAO {
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, userId);
-            ps.executeUpdate();
+           int importId = -1;
 
+            ps.executeUpdate(); // Thực hiện insert
+
+            // Lấy ID mới sinh
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
-                    return rs.getInt(1);
+                    importId = rs.getInt(1);
                 }
             }
+
+            User user = udao.getUserById(userId);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã thực hiện nhập kho ";
+            logDAO.insertAuditLog("InputWarehouse", importId, ActionType.INSERT, message, userId);
+
+            
+                    return importId;
+              
         }
-        return -1;
+        
     }
 
     public static void main(String[] args) {

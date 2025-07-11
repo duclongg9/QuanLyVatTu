@@ -152,46 +152,34 @@ INSERT INTO Materials (name, unitId, category, replacementMaterialId) VALUES
 ('Thép Việt Nhật D10 - Phiên bản mới', 2, 6, 2),
 ('Gạch Tuynel BD Loại A', 3, 7, 3);
 
--- dữ liệu message audit log 
-INSERT INTO AuditMessageTemplate (code, description) VALUES
-('USER_CREATE', 'Created a new user'),
-('USER_UPDATE', 'Updated user information'),
-('MATERIAL_INSERT', 'Added a new material'),
-('MATERIAL_UPDATE', 'Updated material information'),
-('REQUEST_CREATE', 'Created import request'),
-('REQUEST_DETAIL_ADD', 'Added material to import request'),
-('INPUT_CONFIRM', 'Confirmed import detail'),
-('OUTPUT_CONFIRM', 'Confirmed export detail');
-
--- dữ liệu cho bảng audit log 
-INSERT INTO AuditLog (table_name, record_id, action_type, message_template_id, changed_by, changed_at) VALUES
+INSERT INTO AuditLog (table_name, record_id, action_type, message, changed_by, changed_at) VALUES
 -- Người dùng
-('User', 1, 'INSERT', 1, 1, '2025-06-20 08:00:00'),
-('User', 2, 'INSERT', 1, 1, '2025-06-20 08:05:00'),
-('User', 3, 'INSERT', 1, 1, '2025-06-20 08:10:00'),
-('User', 4, 'INSERT', 1, 1, '2025-06-20 08:15:00'),
+('User', 1, 'INSERT', 'Người dùng "Nguyễn Tuấn Kiệt" (admin) đã được tạo mới.', 1, '2025-06-20 08:00:00'),
+('User', 2, 'INSERT', 'Người dùng "Trần Thị Kho" (kho1) đã được tạo mới.', 1, '2025-06-20 08:05:00'),
+('User', 3, 'INSERT', 'Người dùng "Lê Thị Công Ty" (cty1) đã được tạo mới.', 1, '2025-06-20 08:10:00'),
+('User', 4, 'INSERT', 'Người dùng "Phạm Văn CEO" (ceo1) đã được tạo mới.', 1, '2025-06-20 08:15:00'),
 
 -- Vật tư
-('Materials', 1, 'INSERT', 3, 1, '2025-06-21 09:00:00'),
-('Materials', 2, 'INSERT', 3, 1, '2025-06-21 09:05:00'),
-('Materials', 5, 'INSERT', 3, 1, '2025-06-21 09:10:00'),
-('Materials', 6, 'INSERT', 3, 1, '2025-06-21 09:12:00'),
+('Materials', 1, 'INSERT', 'Thêm vật tư "Xi măng Hà Tiên" (đơn vị: Bao) thuộc danh mục "Xi măng Hà Tiên".', 1, '2025-06-21 09:00:00'),
+('Materials', 2, 'INSERT', 'Thêm vật tư "Thép Việt Nhật D10" (đơn vị: Kg) thuộc danh mục "Thép D10 Việt Nhật".', 1, '2025-06-21 09:05:00'),
+('Materials', 5, 'INSERT', 'Thêm vật tư "Thép Việt Mỹ D12" (đơn vị: Kg) thuộc danh mục "Thép D10 Việt Nhật".', 1, '2025-06-21 09:10:00'),
+('Materials', 6, 'INSERT', 'Thêm vật tư "Gạch ống Đồng Nai" (đơn vị: Viên) thuộc danh mục "Gạch Tuynel BD".', 1, '2025-06-21 09:12:00'),
 
 -- Yêu cầu nhập kho
-('Request', 1, 'INSERT', 5, 2, '2025-06-22 10:00:00'),
-('requestDetail', 1, 'INSERT', 6, 2, '2025-06-22 10:10:00'),
-('requestDetail', 2, 'INSERT', 6, 2, '2025-06-22 10:12:00'),
+('Request', 1, 'INSERT', 'Tạo yêu cầu nhập kho ID 1 bởi "Trần Thị Kho" ngày 2025-06-22.', 2, '2025-06-22 10:00:00'),
+('requestDetail', 1, 'INSERT', 'Yêu cầu nhập 100 bao "Xi măng Hà Tiên" từ nhà cung cấp "Công ty VLXD Hà Tiên".', 2, '2025-06-22 10:10:00'),
+('requestDetail', 2, 'INSERT', 'Yêu cầu nhập 500 Kg "Thép Việt Nhật D10" từ nhà cung cấp "Công ty Thép Việt Nhật".', 2, '2025-06-22 10:12:00'),
 
-('Request', 2, 'INSERT', 5, 2, '2025-06-24 11:00:00'),
-('requestDetail', 3, 'INSERT', 6, 2, '2025-06-24 11:10:00'),
-('requestDetail', 4, 'INSERT', 6, 2, '2025-06-24 11:15:00'),
+('Request', 2, 'INSERT', 'Tạo yêu cầu nhập kho ID 2 bởi "Trần Thị Kho" ngày 2025-06-24.', 2, '2025-06-24 11:00:00'),
+('requestDetail', 3, 'INSERT', 'Yêu cầu nhập 400 Kg "Thép Việt Mỹ D12" từ nhà cung cấp "Công ty Thép Việt Mỹ".', 2, '2025-06-24 11:10:00'),
+('requestDetail', 4, 'INSERT', 'Yêu cầu nhập 3000 viên "Gạch ống Đồng Nai" từ nhà cung cấp "Công ty Gạch Đồng Nai".', 2, '2025-06-24 11:15:00'),
 
 -- Nhập kho
-('InputWarehouse', 1, 'INSERT', 7, 2, '2025-06-23 15:00:00'),
-('InputDetail', 1, 'INSERT', 7, 2, '2025-06-23 15:05:00'),
-('InputDetail', 2, 'INSERT', 7, 2, '2025-06-23 15:10:00'),
+('InputWarehouse', 1, 'INSERT', 'Xác nhận phiếu nhập kho ID 1 bởi "Trần Thị Kho" vào ngày 2025-06-23.', 2, '2025-06-23 15:00:00'),
+('InputDetail', 1, 'INSERT', 'Nhập 100 bao "Xi măng Hà Tiên" từ yêu cầu nhập kho ID 1, giá 75.000 VNĐ.', 2, '2025-06-23 15:05:00'),
+('InputDetail', 2, 'INSERT', 'Nhập 500 Kg "Thép Việt Nhật D10" từ yêu cầu nhập kho ID 1, giá 18.000 VNĐ.', 2, '2025-06-23 15:10:00'),
 
 -- Xuất kho
-('OutputWarehouse', 1, 'INSERT', 8, 2, '2025-06-28 09:00:00'),
-('OutputDetail', 1, 'INSERT', 8, 2, '2025-06-28 09:10:00'),
-('OutputDetail', 2, 'INSERT', 8, 2, '2025-06-28 09:12:00'); 
+('OutputWarehouse', 1, 'INSERT', 'Xác nhận phiếu xuất kho ID 1 bởi "Trần Thị Kho" vào ngày 2025-06-28.', 2, '2025-06-28 09:00:00'),
+('OutputDetail', 1, 'INSERT', 'Xuất 100 bao "Xi măng Hà Tiên" từ kho theo yêu cầu nhập ID 1.', 2, '2025-06-28 09:10:00'),
+('OutputDetail', 2, 'INSERT', 'Xuất 200 Kg "Thép Việt Nhật D10" từ kho theo yêu cầu nhập ID 1.', 2, '2025-06-28 09:12:00');

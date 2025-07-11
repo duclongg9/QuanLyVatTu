@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.nio.file.Path;
@@ -22,6 +23,7 @@ import model.Materials;
 import java.util.Map;
 import java.util.HashMap;
 import java.sql.SQLException;
+import model.User;
 /**
  *
  * @author Dell-PC
@@ -73,6 +75,14 @@ public static final int PAGE_NUMBER = 7;
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+         // Kiểm tra đăng nhập
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+
+        if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
        String action = request.getParameter("action");
         if (action == null) {
             action = "list";
@@ -137,7 +147,7 @@ public static final int PAGE_NUMBER = 7;
                     request.setAttribute("tag", index);
                     request.getRequestDispatcher("/jsp/material/listMaterials.jsp").forward(request, response);
                 } else {
-                    mDao.deactivateMaterial(deleteId);
+                    mDao.deactivateMaterial(deleteId,loggedInUser.getId());
                     response.sendRedirect("materialController?action=list");
                 }
                 break;
@@ -170,7 +180,7 @@ public static final int PAGE_NUMBER = 7;
                 break;
             case "activate":
                int idRestore = Integer.parseInt(request.getParameter("id"));
-               mDao.activateMaterial(idRestore);
+               mDao.activateMaterial(idRestore,loggedInUser.getId());
                response.sendRedirect("materialController?action=deleted");
                break;
            default:
@@ -233,6 +243,15 @@ public static final int PAGE_NUMBER = 7;
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Kiểm tra đăng nhập
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+
+        if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        
         String idParam = request.getParameter("id");
         String name = request.getParameter("name");
         int unitId = Integer.parseInt(request.getParameter("unitId"));
@@ -268,9 +287,9 @@ public static final int PAGE_NUMBER = 7;
                     imageName = old.getImage();
                 }
             }
-            result = mDao.updateMaterialWithHistory(id, name, unitId, imageName, subCategoryId);
+            result = mDao.updateMaterialWithHistory(id, name, unitId, imageName, subCategoryId,loggedInUser.getId());
         } else {
-            result = mDao.createMaterial(name, unitId, imageName, subCategoryId);
+            result = mDao.createMaterial(name, unitId, imageName, subCategoryId,loggedInUser.getId());
         }
         if (result > 0) {
                         response.sendRedirect("materialController?action=list");

@@ -4,7 +4,9 @@
  */
 package dao.Category;
 
+import dao.auditLog.AuditLogDAO;
 import dao.connect.DBConnect;
+import dao.user.UserDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,8 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.ActionType;
 import model.Category;
 import model.Materials;
+import model.User;
+import java.sql.Statement;
 
 /**
  *
@@ -24,6 +29,9 @@ import model.Materials;
  */
 public class CategoryDAO {
 //     private Connection conn;
+
+    UserDAO udao = new UserDAO();
+    CategoryDAO cdao = new CategoryDAO();
 
     public static final int PAGE_SIZE = 7;
     private static final String COL_ID = "id";
@@ -34,37 +42,53 @@ public class CategoryDAO {
     public CategoryDAO() {
 //        conn = DBConnect.getConnection();
     }
-    
+
     //phân trang cho phần danh mục con đã bị xóa
     public List<Category> pagingDeletedSubCategory(int index) {
-    List<Category> list = new ArrayList<>();
-    String sql = "SELECT * FROM Category WHERE status = false AND parentCateId != 0 ORDER BY id DESC LIMIT ? OFFSET ?";
-    try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, PAGE_SIZE);
-        ps.setInt(2, (index - 1) * PAGE_SIZE);
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Category c = new Category();
-                c.setId(rs.getInt("id"));
-                c.setCategoryName(rs.getString("categoryName"));
-                c.setParentCateId(rs.getInt("parentCateId"));
-                c.setStatus(rs.getBoolean("status"));
-                list.add(c);
+        List<Category> list = new ArrayList<>();
+        String sql = "SELECT * FROM Category WHERE status = false AND parentCateId != 0 ORDER BY id DESC LIMIT ? OFFSET ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, PAGE_SIZE);
+            ps.setInt(2, (index - 1) * PAGE_SIZE);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Category c = new Category();
+                    c.setId(rs.getInt("id"));
+                    c.setCategoryName(rs.getString("categoryName"));
+                    c.setParentCateId(rs.getInt("parentCateId"));
+                    c.setStatus(rs.getBoolean("status"));
+                    list.add(c);
+                }
             }
+        } catch (Exception e) {
+            Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
         }
-    } catch (Exception e) {
-        Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        return list;
     }
-    return list;
-}
 
-    
     //tạo danh mục con
-    public int createSubCategory(String name, int categoryId) {
+    public int createSubCategory(String name, int categoryId,int changedBy) {
         String sql = "INSERT INTO Category (categoryName, parentCateId, status) VALUES (?, ?, true)";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
             ps.setInt(2, categoryId);
+            
+            
+            int newCateId = -1;
+
+            ps.executeUpdate(); // Thực hiện insert
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    newCateId = rs.getInt(1);
+                }
+            }
+
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã thêm danh mục con mới:" + name;
+            logDAO.insertAuditLog("Category", newCateId, ActionType.INSERT, message, changedBy);
+            
             return ps.executeUpdate();
         } catch (Exception e) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -73,20 +97,26 @@ public class CategoryDAO {
     }
 
     //cập nhật danh mục con
-    public int updateSubCategory(int id, String name, int categoryId) {
-    String sql = "UPDATE Category SET categoryName = ?, parentCateId = ? WHERE id = ?";
-    try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setString(1, name);
-        ps.setInt(2, categoryId);
-        ps.setInt(3, id);
-        return ps.executeUpdate();
-    } catch (Exception e) {
-        Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+    public int updateSubCategory(int id, String name, int categoryId,int changedBy) {
+        String sql = "UPDATE Category SET categoryName = ?, parentCateId = ? WHERE id = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setInt(2, categoryId);
+            ps.setInt(3, id);
+            
+            User user = udao.getUserById(changedBy);
+            Category category = cdao.getCategoryById(id);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã cập nhật lại danh mục con: " + name;
+            logDAO.insertAuditLog("Category", id, ActionType.UPDATE, message, changedBy);
+            
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return 0;
     }
-    return 0;
-}
 
-    
     //đếm số lượng danh mục con theo tên
     public int getTotalSubCategoryByName(String name) {
         String sql = "SELECT COUNT(*) FROM Category WHERE status = true AND parentCateId != 0 AND categoryName LIKE ?";
@@ -188,10 +218,17 @@ public class CategoryDAO {
     }
 
     //tắt danh mục con
-    public int deleteSubCategory(int id) {
+    public int deleteSubCategory(int id,int changedBy) {
         String sql = "UPDATE Category SET status = false WHERE id = ? AND parentCateId != 0";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
+            
+            User user = udao.getUserById(changedBy);
+            Category category = cdao.getCategoryById(id);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã xóa danh mục con: " + category.getCategoryName();
+            logDAO.insertAuditLog("Category", id, ActionType.DELETE, message, changedBy);
+            
             return ps.executeUpdate(); // Trả về số dòng bị ảnh hưởng (1 nếu xóa thành công)
         } catch (Exception e) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -200,10 +237,17 @@ public class CategoryDAO {
     }
 
     // bật lại danh mục con
-    public void activateSubCategory(int id) {
+    public void activateSubCategory(int id, int changedBy) {
         String sql = "UPDATE Category SET status = true WHERE id = ? AND parentCateId != 0";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
+
+            User user = udao.getUserById(changedBy);
+            Category category = cdao.getCategoryById(id);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã bật lại danh mục con: " + category.getCategoryName();
+            logDAO.insertAuditLog("Category", id, ActionType.INSERT, message, changedBy);
+
             ps.executeUpdate();
         } catch (Exception e) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -243,10 +287,17 @@ public class CategoryDAO {
     }
 
     //-------
-    public int deactivateByCategoryId(int categoryId) {
+    public int deactivateByCategoryId(int categoryId,int changedBy) {
         String sql = "UPDATE Category SET status = false WHERE parentCateId = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, categoryId);
+            
+            User user = udao.getUserById(changedBy);
+            Category category = cdao.getCategoryById(categoryId);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã tắt danh mục: " + category.getCategoryName();
+            logDAO.insertAuditLog("Category", categoryId, ActionType.INSERT, message, changedBy);
+            
             return ps.executeUpdate(); // trả về số dòng bị ảnh hưởng
         } catch (Exception e) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -400,11 +451,27 @@ public class CategoryDAO {
     }
 
     // Tạo mới danh mục vật tư
-    public int createCategory(String category) {
+    public int createCategory(String category,int changedBy) {
         String sql = "INSERT INTO Category(categoryName) VALUES(?)";
-        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             ps.setString(1, category);
-            return ps.executeUpdate();
+            int newCateId = -1;
+
+            ps.executeUpdate(); // Thực hiện insert
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    newCateId = rs.getInt(1);
+                }
+            }
+
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã thêm danh mục cha mới:" + category;
+            logDAO.insertAuditLog("Category", newCateId, ActionType.INSERT, message, changedBy);
+
+            return newCateId;
         } catch (Exception e) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -412,11 +479,17 @@ public class CategoryDAO {
     }
 
     // Cập nhật danh mục vật tư
-    public int updateCategory(int id, String category) {
+    public int updateCategory(int id, String category,int changedBy) {
         String sql = "UPDATE Category SET categoryName=? WHERE id=?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, category);
             ps.setInt(2, id);
+            
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã cập nhật lại danh mục con: " + category;
+            logDAO.insertAuditLog("Category", id, ActionType.UPDATE, message, changedBy);
+            
             return ps.executeUpdate();
         } catch (Exception e) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -425,10 +498,17 @@ public class CategoryDAO {
     }
 
     // Delete category by id
-    public int deleteCategory(int id) {
+    public int deleteCategory(int id,int changedBy) {
         String sql = "UPDATE Category SET status = false WHERE id=?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
+            
+            User user = udao.getUserById(changedBy);
+            Category category = cdao.getCategoryById(id);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã xóa danh mục cha: " + category.getCategoryName();
+            logDAO.insertAuditLog("Category", id, ActionType.DELETE, message, changedBy);
+            
             return ps.executeUpdate();
         } catch (Exception e) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -548,11 +628,18 @@ public class CategoryDAO {
     }
 
     // restore category
-    public void activateCategory(int id) {
+    public void activateCategory(int id, int changedBy) {
         String sql = "UPDATE Category SET status = true WHERE id=?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
+
+            User user = udao.getUserById(changedBy);
+            Category category = cdao.getCategoryById(id);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã bật lại danh mục: " + category.getCategoryName();
+            logDAO.insertAuditLog("Category", id, ActionType.INSERT, message, changedBy);
+
         } catch (Exception e) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -579,7 +666,7 @@ public class CategoryDAO {
         }
         return false;
     }
-    
+
     public static void main(String[] args) {
         CategoryDAO cdao = new CategoryDAO();
         List<Category> subCate = cdao.getAllCategory();
@@ -587,6 +674,5 @@ public class CategoryDAO {
             System.out.println(category);
         }
     }
-    
-}
 
+}
