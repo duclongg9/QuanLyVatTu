@@ -11,6 +11,7 @@
 <%
     StatisticDAO dao = new StatisticDAO();
     List<Map<String, Object>> remainStats = dao.getRemainByCategoryAndStatus();
+    request.setAttribute("remainStats", remainStats);
 %>
 
 <!DOCTYPE html>

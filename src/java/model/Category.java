@@ -4,9 +4,6 @@
  */
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  * @author D E L L
@@ -16,8 +13,6 @@ public class Category {
     private String categoryName;
     private int parentCateId;
     private boolean status;
-    private List<Category> children = new ArrayList<>();
-
 
     public Category() {
     }
@@ -60,19 +55,6 @@ public class Category {
     public void setStatus(boolean status) {
         this.status = status;
     }
-
-    public List<Category> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<Category> children) {
-        this.children = children;
-    }
-
-    public void addChild(Category child) {
-    this.children.add(child);
-}
-    
 
     
     

@@ -7,11 +7,10 @@ package controller.statistic;
 import dao.connect.DBConnect;
 import dao.statistic.StatisticDAO;
 import model.Statistic;
-
-import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
-import java.io.IOException;
+import model.Category;
+import model.User;
+import dao.material.CategoryDAO;
+import dao.user.UserDAO;
 import java.sql.Connection;
 import java.sql.Date;
 import java.util.List;
@@ -71,13 +70,50 @@ public class StatisticServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         if ("import".equals(action)) {
-            handleImportStatistic(request, response);
-        } else if ("remain".equals(action)) {
-            handleRemainStatistic(request, response);
-        } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy chức năng.");
-        }
+    handleImportStatistic(request, response);
+} else if ("remain".equals(action)) {
+    handleRemainStatistic(request, response);
+} else if ("dashboard".equals(action)) {
+     handleDashboard(request, response);
+} else {
+    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy chức năng.");
+}
     }
+    
+    private void handleDashboard(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    try (Connection conn = DBConnect.getConnection()) {
+        StatisticDAO dao = new StatisticDAO(conn);
+
+        int totalMaterials = dao.getTotalMaterials();
+        int totalCategories = dao.getTotalCategories();
+        int totalUnits = dao.getTotalUnits();
+        int totalStatuses = dao.getTotalStatuses();
+
+        Map<String, Integer> statusMap = dao.getMaterialCountByStatus();
+        Map<String, Integer> unitMap = dao.getMaterialCountByUnit();
+        Map<Integer, Integer> inputMap = dao.getMonthlyInput();
+        Map<Integer, Integer> outputMap = dao.getMonthlyOutput();
+
+        request.setAttribute("totalMaterials", totalMaterials);
+        request.setAttribute("totalCategories", totalCategories);
+        request.setAttribute("totalUnits", totalUnits);
+        request.setAttribute("totalStatuses", totalStatuses);
+
+        request.setAttribute("statusMap", statusMap);
+        request.setAttribute("unitMap", unitMap);
+        request.setAttribute("inputMap", inputMap);
+        request.setAttribute("outputMap", outputMap);
+
+        request.getRequestDispatcher("jsp/statistic/statisticsDashboard.jsp").forward(request, response);
+    } catch (Exception e) {
+        e.printStackTrace();
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Lỗi khi load dashboard.");
+    }
+}
+
+
+
 
     private void handleImportStatistic(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -100,11 +136,9 @@ public class StatisticServlet extends HttpServlet {
             request.setAttribute("importByCategory", importByCategory);
             request.setAttribute("importByDate", importByDate);
 
-
             request.getRequestDispatcher("jsp/statistic/statisticImport.jsp").forward(request, response);
 
             request.getRequestDispatcher("/jsp/statistic/statisticImport.jsp").forward(request, response);
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,27 +190,46 @@ public class StatisticServlet extends HttpServlet {
     }
 
     private void handleExportStatistic(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            Date from = Date.valueOf(request.getParameter("fromDate"));
-            Date to = Date.valueOf(request.getParameter("toDate"));
+        throws ServletException, IOException {
+    try {
+        Date from = Date.valueOf(request.getParameter("fromDate"));
+        Date to = Date.valueOf(request.getParameter("toDate"));
 
-            int categoryId = parseIntOrDefault(request.getParameter("categoryId"), 0);
-            int userId = parseIntOrDefault(request.getParameter("userId"), 0);
+        int categoryId = parseIntOrDefault(request.getParameter("categoryId"), 0);
+        int userId = parseIntOrDefault(request.getParameter("userId"), 0);
 
-            Connection conn = new DBConnect().getConnection();
-            StatisticDAO dao = new StatisticDAO(conn);
+        Connection conn = new DBConnect().getConnection();
+        StatisticDAO dao = new StatisticDAO(conn);
 
-            List<Statistic> list = dao.getExportStatistic(from, to, categoryId, userId);
+        
+        List<Statistic> list = dao.getExportStatistic(from, to, categoryId, userId);
+        
+        String message;
+if (list == null || list.isEmpty()) {
+    message = "Không tìm thấy dữ liệu xuất kho trong khoảng thời gian đã chọn.";
+} else {
+    message = "Đã tìm thấy " + list.size() + " vật tư đã xuất trong khoảng thời gian đã chọn.";
+}
 
-            request.setAttribute("exportStats", list);
-            request.getRequestDispatcher("jsp/statistic/statisticExport.jsp").forward(request, response);
+request.setAttribute("message", message);
+        
+        CategoryDAO categoryDAO = new CategoryDAO();
+        UserDAO userDAO = new UserDAO();
+        List<Category> categoryList = categoryDAO.getAllCategory();
+        List<User> userList = userDAO.getListUser();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Có lỗi xảy ra khi thống kê.");
-        }
+        
+        request.setAttribute("categoryList", categoryList);
+        request.setAttribute("userList", userList);
+        request.setAttribute("exportStats", list);
+        request.getRequestDispatcher("jsp/statistic/statisticExport.jsp").forward(request, response);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Có lỗi xảy ra khi thống kê.");
     }
+}
+
 
 // ham nay de tranh loi number format 
     private int parseIntOrDefault(String input, int defaultValue) {
