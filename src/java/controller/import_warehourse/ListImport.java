@@ -51,12 +51,36 @@ public class ListImport extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String fromDate = request.getParameter("fromDate");
+        String toDate = request.getParameter("toDate");
+        String indexPage = request.getParameter("index");
+
+        int index = 1;
+        if (indexPage != null && !indexPage.isEmpty()) {
+            try {
+                index = Integer.parseInt(indexPage);
+            } catch (NumberFormatException e) {
+                index = 1; // fallback nếu lỗi
+            }
+        }
+
+        int pageSize = 5;
+
         try {
-            List<InputWarehourse> list = dao.getAllInputWarehouses();
+            List<InputWarehourse> list = dao.getFilteredInputWarehouses(fromDate, toDate, index, pageSize);
+            int total = dao.countFilteredInputWarehouses(fromDate, toDate);
+            int endP = (int) Math.ceil((double) total / pageSize);
+
             request.setAttribute("inputWarehouses", list);
+            request.setAttribute("endP", endP);
+            request.setAttribute("index", index);
+            request.setAttribute("fromDate", fromDate);
+            request.setAttribute("toDate", toDate);
+
             request.getRequestDispatcher("/jsp/importWarehouse/Import.jsp").forward(request, response);
+
         } catch (SQLException ex) {
-            Logger.getLogger(CreateImportRequestController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ListImport.class.getName()).log(Level.SEVERE, null, ex);
             response.sendRedirect("error.jsp");
         }
     }

@@ -32,7 +32,7 @@ public class MaterialsDAO {
     MaterialUnitDAO mudao = new MaterialUnitDAO();
     CategoryDAO cdao = new CategoryDAO();
     UserDAO udao = new UserDAO();
-    MaterialsDAO mdao = new MaterialsDAO();
+    
 
     private static final String COL_ID = "id";
     private static final String COL_NAME = "name";
@@ -500,7 +500,7 @@ public class MaterialsDAO {
             ps.setInt(1, deleteId);
             
             User user = udao.getUserById(changedBy);
-            Materials material = mdao.getMaterialsById(deleteId);
+            Materials material = getMaterialsById(deleteId);
             AuditLogDAO logDAO = new AuditLogDAO();
             String message = "User: " + user.getFullName() + " đã tắt vật tư: " + material.getName();
             logDAO.insertAuditLog("Materials", material.getId(), ActionType.UPDATE, message, changedBy);

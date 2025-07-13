@@ -26,8 +26,8 @@ import model.RequestStatus;
  *
  * @author D E L L
  */
-@WebServlet(name = "requestListController", urlPatterns = {"/requestList"})
-public class RequestListController extends HttpServlet {
+@WebServlet(name = "approveRequestController", urlPatterns = {"/approveRequest"})
+public class approveRequestController extends HttpServlet {
 
     public static final int PAGE_NUMBER = 5;
 
@@ -48,18 +48,12 @@ public class RequestListController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String statusRaw = request.getParameter("requestStatus");
-        String typeRaw = request.getParameter("requestType");
+       
         String fromDate = request.getParameter("fromDate");
         String toDate = request.getParameter("toDate");
 
-        Integer statusId = (statusRaw != null && !statusRaw.isEmpty() && !"0".equals(statusRaw))
-                ? Integer.parseInt(statusRaw)
-                : null;
-
-        String type = (typeRaw != null && !typeRaw.isEmpty() && !"0".equals(typeRaw))
-                ? typeRaw
-                : null;
+        
+       
 
         List<RequestStatus> listRequestStatus = rsdao.getStatusList();
         request.setAttribute("statusList", listRequestStatus);
@@ -76,7 +70,7 @@ public class RequestListController extends HttpServlet {
         //hiển thị list request
         List<Request> lr = null;
         try {
-            lr = rdao.pagingRequestWithFilter(index, statusId, type, fromDate, toDate);
+            lr = rdao.pagingRequestPending(index, fromDate, toDate);
         } catch (SQLException ex) {
             Logger.getLogger(UserListController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -86,7 +80,7 @@ public class RequestListController extends HttpServlet {
         request.setAttribute("tag", index);
 
         //Lấy tổng số staff trong database
-        int count = rdao.getFilteredTotalRequest(statusId, type, fromDate, toDate);
+        int count = rdao.getTotalRequestPending(fromDate, toDate);
         int endPage = count / PAGE_NUMBER;
         //để nếu chia dư thì 1 trang sẽ có phần tử ít hơn
         if (count % PAGE_NUMBER != 0) {
@@ -94,7 +88,7 @@ public class RequestListController extends HttpServlet {
         }
         request.setAttribute("endP", endPage);
 
-        request.getRequestDispatcher("/jsp/request/requestList.jsp").forward(request, response);
+        request.getRequestDispatcher("/jsp/request/approveRequest.jsp").forward(request, response);
     }
 
     @Override

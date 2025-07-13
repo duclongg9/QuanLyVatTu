@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <%@page contentType="text/html; charset=UTF-8" %>
-    <title>User List</title>
+    <title>Request List</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -52,31 +52,10 @@
                    
                     <div class="col-12">
                         <div class="bg-light rounded h-100 p-4">
-                            <h3 class="mb-4">Request:</h3>
+                            <h3 class="mb-4">Approve Request:</h3>
                             
-                            <form action="requestList" method="get">
+                            <form action="approveRequest" method="get">
                                <div class="row">
-                                <!-- Status -->
-                                <div class="col-md-3 mb-3">
-                                    <label for="requestStatus" class="form-label">Status:</label>
-                                    <select class="form-select" name="requestStatus" id="requestStatus">
-                                        <option selected value="0">-- All Status --</option>
-                                        <c:forEach var="status" items="${statusList}">
-                                            <option value="${status.id}">${status.status}</option>
-                                        </c:forEach>
-                                    </select>
-                                </div>
-
-                                <!-- Type -->
-                                <div class="col-md-3 mb-3">
-                                    <label for="requestType" class="form-label">Type:</label>
-                                    <select class="form-select" name="requestType" id="requestType">
-                                        <option selected value="0">-- All Type --</option>
-                                        <c:forEach var="type" items="${typeList}">
-                                            <option value="${type}">${type}</option>
-                                        </c:forEach>
-                                    </select>
-                                </div>
 
                                 <!-- From Date -->
                                 <div class="col-md-3 mb-3">
@@ -126,7 +105,7 @@
                                 </table>
                                 <!-- Pagination -->
                                 <c:forEach begin="1" end="${endP}" var="i">
-                                    <a href="requestList?index=${i}&requestStatus=${param.requestStatus}&requestType=${param.requestType}&fromDate=${param.fromDate}&toDate=${param.toDate}"
+                                    <a href="approveRequest?index=${i}&fromDate=${param.fromDate}&toDate=${param.toDate}"
                                        class="btn btn-primary">${i}</a>
                                 </c:forEach>
                                 

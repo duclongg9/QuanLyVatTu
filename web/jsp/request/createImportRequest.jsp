@@ -134,6 +134,7 @@
                             <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSlot()">Add Slot</button>
                             <br><br>
                             <input type="submit" class="btn btn-success" value="Create Request"/>
+                            <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill">Back to list</a>
                         </form>
                     </div>
                 </div>

@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import model.ActionType;
 import model.InputWarehourse;
 import model.Request;
-import model.RequestType;
+
 import model.User;
 
 /**
@@ -31,38 +31,33 @@ public class InputWarehourseDAO {
     private static final String COL_ID = "id";
     private static final String COL_DATEINPUT = "dateInput";
     private static final String COL_USERID = "userId";
-    private static final String COL_REASON = "reason";
-    private static final String COL_NOTE = "note";
-    private static final String COL_REQUEST = "requestId";
 
     private Connection conn;
 
     UserDAO udao = new UserDAO();
     requestDAO rdao = new requestDAO();
-    
+
     public double getTotalValueByInputWarehouseId(int inputWarehouseId) {
-    double totalValue = 0;
-    String sql = "SELECT SUM(quantity * inputPrice) AS total_input_value " +
-                 "FROM inputdetail WHERE inputWarehouseId = ?";
+        double totalValue = 0;
+        String sql = "SELECT SUM(quantity * inputPrice) AS total_input_value "
+                + "FROM inputdetail WHERE inputWarehouseId = ?";
 
-    try (Connection conn = DBConnect.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ps.setInt(1, inputWarehouseId);
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                totalValue = rs.getDouble("total_input_value");
+            ps.setInt(1, inputWarehouseId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    totalValue = rs.getDouble("total_input_value");
+                }
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return totalValue;
     }
 
-    return totalValue;
-}
-    
-    
     public InputWarehourse getInputWarehourseById(int inputWarehourseId) {
         String sql = "SELECT * FROM inputwarehouse WHERE id = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) { //Sử dụng try-with-Resource để đóng tài nguyên sau khi sử dụng
@@ -74,9 +69,6 @@ public class InputWarehourseDAO {
                     iw.setId(rs.getInt(COL_ID));
                     iw.setDateInput(rs.getString(COL_DATEINPUT));
                     iw.setUserId(udao.getUserById(rs.getInt(COL_USERID)));
-                    iw.setReason(rs.getString(COL_REASON));
-                    iw.setNote(rs.getString(COL_NOTE));
-                    iw.setRequest(rdao.getRequestById(rs.getInt(COL_REQUEST)));
                     return iw;
                 }
             }
@@ -87,25 +79,69 @@ public class InputWarehourseDAO {
         return null;
     }
 
-    public List<InputWarehourse> getAllInputWarehouses() throws SQLException {
+    public List<InputWarehourse> getFilteredInputWarehouses(String fromDate, String toDate, int index, int pageSize) throws SQLException {
         List<InputWarehourse> list = new ArrayList<>();
-        String sql = "SELECT * FROM InputWarehouse";
+        StringBuilder sql = new StringBuilder("SELECT * FROM InputWarehouse WHERE 1=1 ");
 
-        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        if (fromDate != null && !fromDate.isEmpty()) {
+            sql.append("AND dateInput >= ? ");
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            sql.append("AND dateInput <= ? ");
+        }
 
+        sql.append("ORDER BY dateInput DESC LIMIT ?, ?");
+
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            if (fromDate != null && !fromDate.isEmpty()) {
+                ps.setString(paramIndex++, fromDate);
+            }
+            if (toDate != null && !toDate.isEmpty()) {
+                ps.setString(paramIndex++, toDate);
+            }
+
+            ps.setInt(paramIndex++, (index - 1) * pageSize);
+            ps.setInt(paramIndex, pageSize);
+
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 InputWarehourse iw = new InputWarehourse();
                 iw.setId(rs.getInt(COL_ID));
                 iw.setDateInput(rs.getString(COL_DATEINPUT));
-                iw.setUserId(udao.getUserById(rs.getInt(COL_USERID)));
-                iw.setReason(rs.getString(COL_REASON));
-                iw.setNote(rs.getString(COL_NOTE));
-                iw.setRequest(rdao.getRequestById(rs.getInt(COL_REQUEST)));
+                iw.setUserId(udao.getUserById(rs.getInt(COL_USERID))); // map như cũ
 
                 list.add(iw);
             }
         }
         return list;
+    }
+
+    public int countFilteredInputWarehouses(String fromDate, String toDate) throws SQLException {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM InputWarehouse WHERE 1=1 ");
+
+        if (fromDate != null && !fromDate.isEmpty()) {
+            sql.append("AND dateInput >= ? ");
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            sql.append("AND dateInput <= ? ");
+        }
+
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            if (fromDate != null && !fromDate.isEmpty()) {
+                ps.setString(paramIndex++, fromDate);
+            }
+            if (toDate != null && !toDate.isEmpty()) {
+                ps.setString(paramIndex++, toDate);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
     }
 
     // Insert phiếu nhập kho mới, trả về inputWarehouseId vừa tạo
@@ -114,7 +150,7 @@ public class InputWarehourseDAO {
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, userId);
-           int importId = -1;
+            int importId = -1;
 
             ps.executeUpdate(); // Thực hiện insert
 
@@ -130,11 +166,10 @@ public class InputWarehourseDAO {
             String message = "User: " + user.getFullName() + " đã thực hiện nhập kho ";
             logDAO.insertAuditLog("InputWarehouse", importId, ActionType.INSERT, message, userId);
 
-            
-                    return importId;
-              
+            return importId;
+
         }
-        
+
     }
 
     public static void main(String[] args) {

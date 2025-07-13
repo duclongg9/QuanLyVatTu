@@ -31,7 +31,6 @@ public class CategoryDAO {
 //     private Connection conn;
 
     UserDAO udao = new UserDAO();
-    CategoryDAO cdao = new CategoryDAO();
 
     public static final int PAGE_SIZE = 7;
     private static final String COL_ID = "id";
@@ -105,7 +104,7 @@ public class CategoryDAO {
             ps.setInt(3, id);
             
             User user = udao.getUserById(changedBy);
-            Category category = cdao.getCategoryById(id);
+            Category category = getCategoryById(id);
             AuditLogDAO logDAO = new AuditLogDAO();
             String message = "User: " + user.getFullName() + " đã cập nhật lại danh mục con: " + name;
             logDAO.insertAuditLog("Category", id, ActionType.UPDATE, message, changedBy);
@@ -224,7 +223,7 @@ public class CategoryDAO {
             ps.setInt(1, id);
             
             User user = udao.getUserById(changedBy);
-            Category category = cdao.getCategoryById(id);
+            Category category = getCategoryById(id);
             AuditLogDAO logDAO = new AuditLogDAO();
             String message = "User: " + user.getFullName() + " đã xóa danh mục con: " + category.getCategoryName();
             logDAO.insertAuditLog("Category", id, ActionType.DELETE, message, changedBy);
@@ -243,7 +242,7 @@ public class CategoryDAO {
             ps.setInt(1, id);
 
             User user = udao.getUserById(changedBy);
-            Category category = cdao.getCategoryById(id);
+            Category category = getCategoryById(id);
             AuditLogDAO logDAO = new AuditLogDAO();
             String message = "User: " + user.getFullName() + " đã bật lại danh mục con: " + category.getCategoryName();
             logDAO.insertAuditLog("Category", id, ActionType.INSERT, message, changedBy);
@@ -293,7 +292,7 @@ public class CategoryDAO {
             ps.setInt(1, categoryId);
             
             User user = udao.getUserById(changedBy);
-            Category category = cdao.getCategoryById(categoryId);
+            Category category = getCategoryById(categoryId);
             AuditLogDAO logDAO = new AuditLogDAO();
             String message = "User: " + user.getFullName() + " đã tắt danh mục: " + category.getCategoryName();
             logDAO.insertAuditLog("Category", categoryId, ActionType.INSERT, message, changedBy);
@@ -504,7 +503,7 @@ public class CategoryDAO {
             ps.setInt(1, id);
             
             User user = udao.getUserById(changedBy);
-            Category category = cdao.getCategoryById(id);
+            Category category = getCategoryById(id);
             AuditLogDAO logDAO = new AuditLogDAO();
             String message = "User: " + user.getFullName() + " đã xóa danh mục cha: " + category.getCategoryName();
             logDAO.insertAuditLog("Category", id, ActionType.DELETE, message, changedBy);
@@ -635,7 +634,7 @@ public class CategoryDAO {
             ps.executeUpdate();
 
             User user = udao.getUserById(changedBy);
-            Category category = cdao.getCategoryById(id);
+            Category category = getCategoryById(id);
             AuditLogDAO logDAO = new AuditLogDAO();
             String message = "User: " + user.getFullName() + " đã bật lại danh mục: " + category.getCategoryName();
             logDAO.insertAuditLog("Category", id, ActionType.INSERT, message, changedBy);

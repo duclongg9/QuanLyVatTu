@@ -65,20 +65,16 @@
                                 </div>
                         <div class="col-md-12 mb-1">
                                     <label for="requestType" class="form-label fw-bold">Type:</label>
-                                    <input type="text" class="form-control" id="requestType" value="${inputWarehouse.request.type}"readonly>
+                                    <input type="text" class="form-control" id="requestType" value="${decription.type}"readonly>
                   
                                 </div>
                         </div>
                                     <div class="col-md-9">
-                                        <div class="col-md-12 mb-1">
-                                    <label for="requestStatus" class="form-label fw-bold">Reason:</label>
-                                     <textarea  rows="3" class="form-control" id="requestStatus" readonly>${inputWarehouse.reason}</textarea>
-                  
-                                </div>
+                                       
                                     
                                     <div class="col-md-12 mb-1">
                                     <label for="requestStatus" class="form-label fw-bold">Note:</label>
-                                    <textarea  rows="2" class="form-control" id="requestStatus" readonly>${inputWarehouse.note}</textarea>
+                                    <textarea  rows="2" class="form-control" id="requestStatus" readonly>${decription.note}</textarea>
                                 </div>
                                     </div>
                                     </div>

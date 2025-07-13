@@ -184,7 +184,7 @@
 
                 <!-- Nút Quay lại và Import nằm ngoài phần bảng cuộn -->
                 <div class="d-flex mt-4 gap-2">
-                    <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill">Quay lại</a>
+                    <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill">Back to list</a>
                     <c:if test="${userRequest.statusId.id == 2 && (sessionScope.account.role.id == 1 || sessionScope.account.role.id == 2)}">
                         <c:if test="${userRequest.type == 'IMPORT'}">
                             <form action="createImport" method="post">
