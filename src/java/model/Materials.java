@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
-import model.SubCategory;
 import model.MaterialUnit;
 
 /**
@@ -16,7 +15,7 @@ public class Materials {
     private String name;
     private MaterialUnit unitId;
     private String image;
-    private SubCategory subCategoryId;
+    private Category subCategoryId;
     private java.sql.Timestamp createdAt;
     private java.sql.Timestamp updatedAt;
     private Materials replacementMaterialId;
@@ -25,7 +24,7 @@ public class Materials {
     public Materials() {
     }
 
-    public Materials(int id, String name, MaterialUnit unitId, String image, SubCategory subCategoryId, boolean status, java.sql.Timestamp createdAt, java.sql.Timestamp updatedAt, Materials replacementMaterialId) {        
+    public Materials(int id, String name, MaterialUnit unitId, String image, Category subCategoryId, boolean status, java.sql.Timestamp createdAt, java.sql.Timestamp updatedAt, Materials replacementMaterialId) {        
         this.id = id;
         this.name = name;
         this.unitId = unitId;
@@ -74,11 +73,11 @@ public class Materials {
         this.image = image;
     }
 
-     public SubCategory getSubCategoryId() {
+     public Category getSubCategoryId() {
         return subCategoryId;
     }
 
-    public void setSubCategoryId(SubCategory subCategoryId) {
+    public void setSubCategoryId(Category subCategoryId) {
         this.subCategoryId = subCategoryId;
     }
     public boolean isStatus() {

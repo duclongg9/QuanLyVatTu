@@ -25,7 +25,7 @@ import model.Request;
  * @author D E L L
  */
 @WebServlet(name="requestListController", urlPatterns={"/requestList"})
-public class requestListController extends HttpServlet {
+public class RequestListController extends HttpServlet {
    public static final int PAGE_NUMBER = 5;
    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -44,6 +44,12 @@ public class requestListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        
+//        String statusIdParam = request.getParameter(LEGACY_DO_HEAD);
+//        String type = request.getParameter(LEGACY_DO_HEAD);
+//        request.getParameter(LEGACY_DO_HEAD);
+//        request.getParameter(LEGACY_DO_HEAD);
+
         //Lấy giá trị trang
         String indexPage = request.getParameter("index");
         if (indexPage == null) {

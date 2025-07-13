@@ -4,6 +4,7 @@
  */
 package dao.request;
 
+import dao.auditLog.AuditLogDAO;
 import dao.connect.DBConnect;
 import dao.material.MaterialItemDAO;
 import dao.user.UserDAO;
@@ -17,9 +18,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.Types;
+import model.ActionType;
 import model.Request;
 import model.RequestDetail;
 import model.RequestType;
+import model.User;
 
 /**
  *
@@ -48,10 +51,17 @@ public class requestDAO {
     public requestDAO() {
         this(DBConnect.getConnection());
     }
-    public boolean updateSuccessStatusRequest(int requestId) {
+
+    public boolean updateSuccessStatusRequest(int requestId, int changedBy) {
         String sql = "UPDATE Request SET statusId = 5 WHERE id = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, requestId);
+
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "Yêu cầu phụ trách bởi User: " + user.getFullName() + "với ID: " + getRequestById(requestId).getId() + " đã hoàn thành";
+            logDAO.insertAuditLog("Category", requestId, ActionType.UPDATE, message, changedBy);
+
             int rows = ps.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
@@ -59,15 +69,27 @@ public class requestDAO {
             return false;
         }
     }
-    
-    public boolean updateStatusRequest(int requestId, int statusId,int userId) {
-        String sql = "UPDATE Request SET statusId = ?,approvedBy = ? WHERE id = ?";
+
+    public boolean updateStatusRequest(int requestId, int statusId, int userId, int changedBy) {
+        String sql = (userId == 0)
+                ? "UPDATE Request SET statusId = ?, approvedBy = NULL WHERE id = ?"
+                : "UPDATE Request SET statusId = ?, approvedBy = ? WHERE id = ?";
+
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, statusId);
-            ps.setInt(3, requestId);
-            ps.setInt(2, userId);
-            int rows = ps.executeUpdate();
-            return rows > 0;
+            if (userId == 0) {
+                ps.setInt(2, requestId);
+            } else {
+                ps.setInt(2, userId);
+                ps.setInt(3, requestId);
+            }
+
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã cập nhật lại trạng thái yêu cầu với ID: " +requestId ;
+            logDAO.insertAuditLog("Request", requestId, ActionType.UPDATE, message, changedBy);
+
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -139,23 +161,37 @@ public class requestDAO {
     }
 
     // Thêm request mới, trả về requestId vừa tạo
-    public int insertRequest(Connection conn, int userId, String note, Integer approverId) throws SQLException {
-        String sql = "INSERT INTO Request (date, statusId, userId, note, type, approvedBy) VALUES (NOW(), ?, ?, ?, 'Import', ?)";
+    public int insertRequest(int userId, String note, Integer approverId, RequestType type,int changedBy) throws SQLException {
+        String sql = "INSERT INTO Request (date, statusId, userId, note, type, approvedBy) VALUES (NOW(), ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, 1); // statusId: 1 = Pending
             ps.setInt(2, userId);
             ps.setString(3, note);
+            ps.setString(4, type.name());
 
             if (approverId != null) {
-                ps.setInt(4, approverId); // nếu có approverId
+                ps.setInt(5, approverId);
             } else {
-                ps.setNull(4, Types.INTEGER); // nếu chưa có người duyệt
+                ps.setNull(5, Types.INTEGER);
             }
 
-            int affectedRows = ps.executeUpdate(); // execute
+            
+            int requestId = -1;
+            ps.executeUpdate(); // Thực hiện insert
 
-            if (affectedRows == 0) {
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    requestId = rs.getInt(1);
+                }
+            }
+
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " Đã tạo mới Yêu cầu:";
+            logDAO.insertAuditLog("Supplier", requestId, ActionType.INSERT, message, changedBy);
+
+            if (requestId == 0) {
                 throw new SQLException("Creating request failed, no rows affected.");
             }
 
@@ -171,7 +207,7 @@ public class requestDAO {
     }
 
     // Thêm chi tiết các vật tư cho Request vào bảng RequestDetail
-    public void insertRequestDetail(Connection conn, int requestId, int materialItemId, int quantity, String note) throws SQLException {
+    public void insertRequestDetail(int requestId, int materialItemId, int quantity, String note) throws SQLException {
         String sql = "INSERT INTO RequestDetail (requestId, materialItemId, quantity, note) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, requestId);

@@ -17,6 +17,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
@@ -46,6 +48,15 @@ public class addSupplier extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //processRequest(request, response);
+        // Kiểm tra đăng nhập
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+
+        if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        
         try {
 
             String name = request.getParameter("name");
@@ -105,7 +116,7 @@ public class addSupplier extends HttpServlet {
                 return;
             }
 
-            boolean success = dao.addSupplier(name, phone, address);
+            boolean success = dao.addSupplier(name, phone, address,loggedInUser.getId());
             
             
              

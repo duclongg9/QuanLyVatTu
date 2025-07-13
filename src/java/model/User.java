@@ -9,7 +9,6 @@ package model;
  * @author D E L L
  */
 public class User {
-
     private int id;
     private String fullName;
     private boolean gender;
@@ -36,15 +35,6 @@ public class User {
         this.phone = phone;
         this.role = role;
         this.status = status;
-    }
-
-    public User(int id, String email, String phone, String address, boolean gender, String birthDate) {
-        this.id = id;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-        this.gender = gender;
-        this.birthDate = birthDate;
     }
 
     public User() {
@@ -146,4 +136,10 @@ public class User {
         this.status = status;
     }
 
+   
+    
+
+    
+    
+    
 }

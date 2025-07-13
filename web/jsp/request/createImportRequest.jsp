@@ -1,186 +1,256 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <%@page contentType="text/html; charset=UTF-8" %>
-    <title>Request Detail</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Icon Font Stylesheet -->
+    <meta charset="UTF-8">
+    <title>Create Import Request</title>
+    <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="${pageContext.request.contextPath}/assets/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/assets/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet">
 </head>
-
 <body>
-    <div class="container-flrid position-relative bg-white d-flex p-0">
-        <%@include file="../template/spinner.jsp" %>
+<div class="container-fluid position-relative bg-white d-flex p-0">
+    <%@ include file="../template/sidebar.jsp" %>
 
+    <div class="content">
+        <%@ include file="../template/navbar.jsp" %>
 
-        <%@include file="../template/sidebar.jsp" %>
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <h4 class="mb-4">Create Import Request Form:</h4>
 
+                        <form action="CreateRequestImport" method="post">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <div class="col-md-12 mb-1">
+                                        <label class="form-label fw-bold">Created by:</label>
+                                        <input type="text" class="form-control" value="${userName}" readonly>
+                                    </div>
+                                    <div class="col-md-12 mb-1">
+                                        <label class="form-label fw-bold">Type:</label>
+                                        <input type="text" class="form-control" value="IMPORT" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="col-md-12 mb-2">
+                                        <label class="form-label fw-bold">Note:</label>
+                                        <textarea rows="4" class="form-control" name="note"></textarea>
+                                    </div>
+                                </div>
+                            </div>
 
-        <!-- Content Start -->
-        <div class="content">
-            <%@include file="../template/navbar.jsp" %>
+                            <h6 class="mb-4">Materials:</h6>
+                            <table class="table" id="materialTable">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Category</th>
+                                    <th>SubCategory</th>
+                                    <th>Material</th>
+                                    <th>Supplier</th>
+                                    <th>Quantity</th>
+                                    <th>Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody id="slot-container">
+                                    <!-- Row 1: Rendered by JSTL -->
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>
+                                            <select class="form-select" name="categoryId" onchange="onParentCategoryChange(this)">
+                                                <option value="">--Select--</option>
+                                                <c:forEach var="cat" items="${categoryList}">
+                                                    <option value="${cat.id}">${cat.categoryName}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-select subcategory" name="subCategoryId" onchange="onSubCategoryChange(this)">
+                                                <option value="">--Select--</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-select material" name="materialId" onchange="onMaterialChange(this)">
+                                                <option value="">--Select--</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-select supplier" name="supplierId">
+                                                <option value="">--Select--</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="quantity" class="form-control" min="1"/>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="removeSlot(this)">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
 
+                                    <!-- Template row for cloning (hidden) -->
+                                    <tr class="slot-template d-none">
+                                        <th scope="row">#</th>
+                                        <td>
+                                            <select class="form-select" name="categoryId" onchange="onParentCategoryChange(this)">
+                                                <option value="">--Select--</option>
+                                                <c:forEach var="cat" items="${categoryList}">
+                                                    <option value="${cat.id}">${cat.categoryName}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-select subcategory" name="subCategoryId" onchange="onSubCategoryChange(this)">
+                                                <option value="">--Select--</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-select material" name="materialId" onchange="onMaterialChange(this)">
+                                                <option value="">--Select--</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-select supplier" name="supplierId">
+                                                <option value="">--Select--</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="quantity" class="form-control" min="1"/>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="removeSlot(this)">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-           <!-- Table Start -->
-<div class="container-flrid pt-4 px-4">
-    <div class="row g-4">
-        <div class="col-12">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Create New Request</h6>
-<!-- Form lọc vật tư (GET) -->
-<form method="get" action="CreateRequestImport" class="row g-3 mb-4">
-    <div class="col-md-4">
-        <label for="categoryMaterialId" class="form-label">Category</label>
-        <select name="categoryMaterialId" id="categoryMaterialId" class="form-select" onchange="this.form.submit()">
-            <option value="0">-- ALL --</option>
-            <c:forEach var="cat" items="${categoryList}">
-                <option value="${cat.id}" ${param.categoryMaterialId == cat.id ? 'selected' : ''}>${cat.category}</option>
-            </c:forEach>
-        </select>
-    </div>
-
-    <div class="col-md-4">
-        <label for="subCategoryId" class="form-label">Sub Category</label>
-        <select name="subCategoryId" id="subCategoryId" class="form-select" onchange="this.form.submit()">
-            <option value="0">-- ALL --</option>
-            <c:forEach var="sub" items="${subCategoryList}">
-                <option value="${sub.id}" ${param.subCategoryId == sub.id ? 'selected' : ''}>${sub.subCategoryName}</option>
-            </c:forEach>
-        </select>
-    </div>
-
-    <div class="col-md-4">
-        <label for="keyword" class="form-label">Search Name</label>
-        <input type="text" name="keyword" id="keyword" class="form-control"
-               value="${param.keyword}" placeholder="Nhập tên vật tư...">
-    </div>
-</form>
-
-<!-- Form thêm số lượng vật tư vào session (POST) -->
-<form method="post" action="CreateRequestImport">
-    <input type="hidden" name="action" value="add" />
-
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead class="table-light">
-            <tr>
-                <th>Material Name</th>
-                <th>Unit</th>
-                <th>Supplier</th>
-                <th>Sub Category</th>
-                <th>In Stock</th>
-                <th>Quantity</th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:forEach var="m" items="${materialItemList}">
-                <tr>
-                    <td>${m.materialSupplier.materialId.name}</td>
-                    <td>${m.materialSupplier.materialId.unitId.unitName}</td>
-                    <td>${m.materialSupplier.supplierId.name}</td>
-                    <td>${m.materialSupplier.materialId.subCategoryId.subCategoryName}</td>
-                    <td>${m.quantity}</td>
-                    <td>
-                        <input type="hidden" name="materialItemIds" value="${m.id}" />
-                        <input type="number" name="quantities[${m.id}]" class="form-control"
-                               min="0"  value="${m.selectedQuantity != null ? m.selectedQuantity : 0}" />
-                    </td>
-                </tr>
-            </c:forEach>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Nút Add -->
-    <button type="submit" class="btn btn-warning mt-2">Add Selected Items</button>
-</form>
-
-<!-- Form tạo yêu cầu nhập kho (tách biệt) -->
-<form method="post" action="CreateRequestImport" class="mt-4">
-    <input type="hidden" name="action" value="create" />
-
-    <div class="mb-3">
-        <label for="note" class="form-label">Note</label>
-        <textarea name="note" id="note" class="form-control" rows="3" required></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create Request</button>
-    <a href="requestList" class="btn btn-secondary">Cancel</a>
-</form>
-
-
-
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSlot()">Add Slot</button>
+                            <br><br>
+                            <input type="submit" class="btn btn-success" value="Create Request"/>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <%@ include file="../template/footer.jsp" %>
     </div>
 </div>
-<!-- Table End -->
 
+<!-- Scripts -->
+<%@ include file="../template/script.jsp" %>
 
-<%@include file="../template/footer.jsp" %>
-        </div>
-        <!-- Content End -->
+<script>
+    function removeSlot(button) {
+        const row = button.closest("tr");
+        row.remove();
+        reindexSlots();
+    }
 
+    function reindexSlots() {
+        const rows = document.querySelectorAll("#slot-container tr:not(.slot-template)");
+        rows.forEach((row, index) => {
+            row.querySelector("th").innerText = index + 1;
+        });
+    }
 
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-    </div>
+    function addSlot() {
+        const container = document.getElementById("slot-container");
+        const template = container.querySelector(".slot-template");
+        const newRow = template.cloneNode(true);
+        newRow.classList.remove("slot-template", "d-none");
 
-   <%@include file="../template/script.jsp" %>
-    <script>
-        
+        // Reset non-category selects
+        newRow.querySelectorAll("select").forEach(select => {
+            if (!select.name.includes("categoryId")) {
+                select.innerHTML = '<option value="">--Select--</option>';
+            }
+        });
 
-function sortTable(colrmn) {
-    var table = document.getElementById("userTable"); // lấy bảng theo ID
-    var rows = Array.from(table.rows).slice(1); // lấy tất cả dòng (trừ tiêu đề)
-    var isAsc = table.getAttribute("data-sort") !== "asc"; // kiểm tra tăng hay giảm
+        newRow.querySelector("input[name='quantity']").value = "";
 
-    // Sắp xếp các dòng
-    rows.sort(function(rowA, rowB) {
-        var cellA = rowA.cells[colrmn].innerText.toLowerCase();
-        var cellB = rowB.cells[colrmn].innerText.toLowerCase();
-        
-        if(!isNaN(cellA) && !isNaN(cellB)) { // Nếu là số thì so sánh số
-            return (cellA - cellB) * (isAsc ? 1 : -1);
-        }
-        return (cellA > cellB ? 1 : -1) * (isAsc ? 1 : -1); // So sánh chữ
-    });
+        container.appendChild(newRow);
+        reindexSlots();
+    }
 
-    // Đưa các dòng đã sắp xếp lại vào bảng
-    var tbody = table.tBodies[0];
-    rows.forEach(function(row) {
-        tbody.appendChild(row);
-    });
+    function onParentCategoryChange(selectElement) {
+        const parentId = selectElement.value;
+        const row = selectElement.closest("tr");
+        const subSelect = row.querySelector(".subcategory");
+        const materialSelect = row.querySelector(".material");
+        const supplierSelect = row.querySelector(".supplier");
 
-    // Lưu trạng thái sắp xếp cho lần click sau
-    table.setAttribute("data-sort", isAsc ? "asc" : "desc");
-}
+        subSelect.innerHTML = '<option value="">--Select--</option>';
+        materialSelect.innerHTML = '<option value="">--Select--</option>';
+        supplierSelect.innerHTML = '<option value="">--Select--</option>';
+
+        if (!parentId) return;
+
+        fetch('SubCategorysController?parentId=' + parentId)
+            .then(res => res.ok ? res.json() : Promise.reject("Network error"))
+            .then(data => {
+                data.forEach(c => {
+                    const option = document.createElement("option");
+                    option.value = c.id;
+                    option.textContent = c.categoryName;
+                    subSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("❌ SubCategory fetch failed:", error));
+    }
+
+    function onSubCategoryChange(selectElement) {
+        const subId = selectElement.value;
+        const row = selectElement.closest("tr");
+        const materialSelect = row.querySelector(".material");
+        const supplierSelect = row.querySelector(".supplier");
+
+        materialSelect.innerHTML = '<option value="">--Select--</option>';
+        supplierSelect.innerHTML = '<option value="">--Select--</option>';
+
+        if (!subId) return;
+
+        fetch('MaterialsController?subId=' + subId)
+            .then(res => res.ok ? res.json() : Promise.reject("Network error"))
+            .then(data => {
+                data.forEach(m => {
+                    const option = document.createElement("option");
+                    option.value = m.id;
+                    option.textContent = m.name;
+                    materialSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Material fetch failed:", error));
+    }
+
+    function onMaterialChange(selectElement) {
+        const materialId = selectElement.value;
+        const row = selectElement.closest("tr");
+        const supplierSelect = row.querySelector(".supplier");
+
+        supplierSelect.innerHTML = '<option value="">--Select--</option>';
+
+        if (!materialId) return;
+
+        fetch('SuppliersController?materialId=' + materialId)
+            .then(res => res.ok ? res.json() : Promise.reject("Network error"))
+            .then(data => {
+                data.forEach(s => {
+                    const option = document.createElement("option");
+                    option.value = s.id;
+                    option.textContent = s.name;
+                    supplierSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Supplier fetch failed:", error));
+    }
 </script>
 </body>
-
 </html>

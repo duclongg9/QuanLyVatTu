@@ -47,132 +47,159 @@
             <div class="row g-4">
                 <div class="col-12">
                     <div class="bg-light rounded h-100 p-4">
-                        <h6 class="mb-4">Request Detail</h6>
-
-                        
-
+                        <h3 class="mb-4">Warehouse Import Request Form:</h3>
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                        <div class="col-md-12 mb-1">
+                                    <label for="createdBy" class="form-label fw-bold">Created by:</label>
+                                    <input type="text" class="form-control" id="createBy"  value="${userRequest.userId.fullName}" readonly>
+                  
+                                </div>
+                        <div class="col-md-12 mb-1">
+                                    <label for="date" class="form-label fw-bold">Date:</label>
+                                    <input type="date" class="form-control" id="date" value="${userRequest.date}" readonly>
+              
+                                </div>
+                        <div class="col-md-12 mb-1">
+                                    <label for="requestType" class="form-label fw-bold">Request Type:</label>
+                                    <input type="text" class="form-control" id="requestType" value="${userRequest.type}"readonly>
+                  
+                                </div>
+                            </div>
+                                    <div class="col-md-9">
+                                        <div class="col-md-4 mb-1">
+                                    <label for="requestStatus" class="form-label fw-bold">Status:</label>
+                                    <input type="text" class="form-control" id="requestStatus"  value="${userRequest.statusId.status}" readonly>
+                  
+                                </div>
+                                    
+                                    <div class="col-md-12 mb-2">
+                                    <label for="requestStatus" class="form-label fw-bold">Note:</label>
+                                    <textarea  rows="4" class="form-control" id="requestStatus" readonly>${userRequest.note}</textarea>
+                                </div>
+                                    </div>
+                        </div>  
                         <div class="table-responsive">
                             <c:if test="${userRequest.statusId.id == 1 && sessionScope.account.role.id == 1}">
                             <div class="m-2">
-                            <form action="requestDetail" method="post" style="display:inline;">
+                            <form action="requestDetailController" method="post" style="display:inline;">
                                 <input type="hidden" name="requestId" value="${requestId}" />
                                 <input type="hidden" name="newStatusId" value="2" /> <!-- 2 = Approve -->
                                 <button type="submit" class="btn btn-success">Approve</button>
                             </form>
 
-                            <form action="requestDetail" method="post" style="display:inline;">
+                            <form action="requestDetailController" method="post" style="display:inline;">
                                 <input type="hidden" name="requestId" value="${requestId}" />
                                 <input type="hidden" name="newStatusId" value="3" /> <!-- 3 = Reject -->
                                 <button type="submit" class="btn btn-danger">Reject</button>
                             </form>
 
-                            <form action="requestDetail" method="post" style="display:inline;">
+                            <form action="requestDetailController" method="post" style="display:inline;">
                                 <input type="hidden" name="requestId" value="${requestId}" />
                                 <input type="hidden" name="newStatusId" value="4" /> <!-- 4 = Cancel -->
                                 <button type="submit" class="btn btn-warning">Cancel</button>
                             </form> 
                               </div>
                                 </c:if>
-                            <table id="userTable" class="table table-bordered">
-                               <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Material Name</th>
-                                    <th>Current Quantity</th>
-                                    <th>Unit</th>
-                                    <th>Supplier</th>
-                                    <th>Note</th>
-                                    <th>New Quantity</th> <!-- mới thêm -->
-                                    <th>New Note</th>   <!-- tuỳ chọn -->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:choose>
-                                    
-                                    <c:when test="${userRequest.statusId.id == 1 || userRequest.statusId.id == 3}">
-                                        <form method="post" action="updateRequest">
-                                            <input type="hidden" name="requestId" value="${requestId}" />
-                                            <c:forEach var="m" items="${listRequestDetail}">
-                                                <tr>
-                                                    <td>
-                                                        ${m.id}
-                                                        <input type="hidden" name="detailId" value="${m.id}" />
-                                                    </td>
-                                                    <td>${m.materialItem.materialSupplier.materialId.name}</td>
-                                                    <td>${m.quantity}</td>
-                                                    <td>${m.materialItem.materialSupplier.materialId.unitId.unitName}</td>
-                                                    <td>${m.materialItem.materialSupplier.supplierId.name}</td>
-                                                    <td>${m.note}</td>
-                                                    <td>
-                                                        <input type="number" name="quantity" min="1" class="form-control" value="${m.quantity}" />
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="note" class="form-control" value="${m.note}" />
-                                                    </td>
-                                                </tr>
-                                            </c:forEach>
-                                            <tr>
-                                                <td colspan="8" class="text-end">
-                                                    <button type="submit" class="btn btn-primary">Cập nhật</button>
-                                                </td>
-                                            </tr>
-                                        </form>
-                                    </c:when>
+                           <h6 class="mb-1">Materials:</h6>
 
-                                   
-                                    <c:otherwise>
+                
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table id="userTable" class="table table-bordered">
+                        <c:choose>
+                            <c:when test="${userRequest.statusId.id == 1 || userRequest.statusId.id == 3}">
+                                <thead class="fw-bold">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Material Name</th>
+                                        <th>Current Quantity</th>
+                                        <th>Unit</th>
+                                        <th>Supplier</th>
+                                        <th>Note</th>
+                                        <th>New Quantity</th>
+                                        <th>New Note</th>   
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <form method="post" action="updateRequest">
+                                        <input type="hidden" name="requestId" value="${requestId}" />
                                         <c:forEach var="m" items="${listRequestDetail}">
                                             <tr>
-                                                <td>${m.id}</td>
+                                                <td>
+                                                    ${m.id}
+                                                    <input type="hidden" name="detailId" value="${m.id}" />
+                                                </td>
                                                 <td>${m.materialItem.materialSupplier.materialId.name}</td>
                                                 <td>${m.quantity}</td>
                                                 <td>${m.materialItem.materialSupplier.materialId.unitId.unitName}</td>
                                                 <td>${m.materialItem.materialSupplier.supplierId.name}</td>
                                                 <td>${m.note}</td>
-                                                <td>--</td>
-                                                <td>--</td>
-                                                
+                                                <td>
+                                                    <input type="number" name="quantity" min="1" class="form-control" value="${m.quantity}" />
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="note" class="form-control" value="${m.note}" />
+                                                </td>
                                             </tr>
                                         </c:forEach>
+                                </tbody>
+                            </c:when>
+
+                            <c:otherwise>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Material Name</th>
+                                        <th>Current Quantity</th>
+                                        <th>Unit</th>
+                                        <th>Supplier</th>
+                                        <th>Note</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="m" items="${listRequestDetail}">
                                         <tr>
-                                            <td colspan="8" class="text-danger text-center fw-bold">Bạn không thể sửa đơn đã được chấp thuận</td>
+                                            <td>${m.id}</td>
+                                            <td>${m.materialItem.materialSupplier.materialId.name}</td>
+                                            <td>${m.quantity}</td>
+                                            <td>${m.materialItem.materialSupplier.materialId.unitId.unitName}</td>
+                                            <td>${m.materialItem.materialSupplier.supplierId.name}</td>
+                                            <td>${m.note}</td>
                                         </tr>
-                                    </c:otherwise>
-                                </c:choose>
-                            </tbody>
-
-                            </table>
-
-                            <!-- Pagination -->
-                            <div class="d-flex justify-content-center mt-3">
-                                <c:forEach begin="1" end="${endP}" var="i">
-                                    <a href="requestDetail?index=${i}&requestId=${requestId}" class="btn btn-outline-primary mx-1">${i}</a>
-                                </c:forEach>
-                            </div>
-
-                            <div class="d-flex mt-4 gap-2">
-                                <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill">Quay lại</a>
-                                 <c:if test="${userRequest.statusId.id == 2 && (sessionScope.account.role.id == 1 || sessionScope.account.role.id == 2)}">
-                                    <c:if test="${userRequest.type == 'IMPORT'}">
-                                        <form action="createImport" method="post">
-                                            <input type="hidden" name="requestId" value="${requestId}" />
-                                            <button type="submit" class="btn btn-success">Import to Warehouse</button>
-                                        </form>
-                                    </c:if>
-                                    <c:if test="${userRequest.type == 'EXPORT'}">
-                                        <form action="createExport" method="post">
-                                            <input type="hidden" name="requestId" value="${requestId}" />
-                                            <button type="submit" class="btn btn-danger">Export from Warehouse</button>
-                                        </form>
-                                    </c:if>
-                                </c:if>
-                            </div>
-                        </div>
-
-                    </div>
+                                    </c:forEach>
+                                </tbody>
+                            </c:otherwise>
+                        </c:choose>
+                    </table>
                 </div>
-            </div>
-        </div>
+
+                <!-- Nút cập nhật nằm ngoài phần cuộn -->
+                <c:if test="${userRequest.statusId.id == 1 || userRequest.statusId.id == 3}">
+                    <div class="mt-2 text-end">
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    </div>
+                    <input type="hidden" name="requestId" value="${userRequest.id}" />
+                </form> <!-- Đóng form ở đây -->
+                </c:if>
+
+                <!-- Nút Quay lại và Import nằm ngoài phần bảng cuộn -->
+                <div class="d-flex mt-4 gap-2">
+                    <a href="${pageContext.request.contextPath}/requestList" class="btn btn-secondary rounded-pill">Quay lại</a>
+                    <c:if test="${userRequest.statusId.id == 2 && (sessionScope.account.role.id == 1 || sessionScope.account.role.id == 2)}">
+                        <c:if test="${userRequest.type == 'IMPORT'}">
+                            <form action="createImport" method="post">
+                                <input type="hidden" name="requestId" value="${requestId}" />
+                                <button type="submit" class="btn btn-success">Import to Warehouse</button>
+                            </form>
+                        </c:if>
+                        <c:if test="${userRequest.type == 'EXPORT'}">
+                            <form action="createExport" method="post">
+                                <input type="hidden" name="requestId" value="${requestId}" />
+                                <button type="submit" class="btn btn-danger">Export from Warehouse</button>
+                            </form>
+                        </c:if>
+                    </c:if>
+                </div>
         <!-- Table End -->
 
         <%@include file="../template/footer.jsp" %>

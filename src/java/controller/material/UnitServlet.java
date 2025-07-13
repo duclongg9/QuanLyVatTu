@@ -61,10 +61,10 @@ public class UnitServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-                HttpSession session = request.getSession();
-        
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+
+    HttpSession session = request.getSession();
     String action = request.getParameter("action");
     if (action == null) {
         action = "list";
@@ -85,30 +85,28 @@ public class UnitServlet extends HttpServlet {
             break;
 
         case "edit":
-    int id = Integer.parseInt(request.getParameter("id"));
-    Unit u = unitDAO.getUnitById(id);
-    request.setAttribute("unit", u);
-
-    if (message != null) {
-        request.setAttribute("message", message);
-        request.setAttribute("messageType", messageType);
-    }
-
-    request.getRequestDispatcher("jsp/unit/unitForm.jsp").forward(request, response);
-    break;
+            int id = Integer.parseInt(request.getParameter("id"));
+            Unit u = unitDAO.getUnitById(id);
+            request.setAttribute("unit", u);
+            if (message != null) {
+                request.setAttribute("message", message);
+                request.setAttribute("messageType", messageType);
+            }
+            request.getRequestDispatcher("jsp/unit/unitForm.jsp").forward(request, response);
+            break;
 
         case "delete":
-    int deleteId = Integer.parseInt(request.getParameter("id"));
-    if (unitDAO.isUsedInMaterials(deleteId)) {
-        session.setAttribute("message", "Không thể xóa đơn vị đang được sử dụng.");
-        session.setAttribute("messageType", "danger");
-    } else {
-        unitDAO.deleteUnit(deleteId); // xóa cứng
-        session.setAttribute("message", "Xóa đơn vị thành công.");
-        session.setAttribute("messageType", "success");
-    }
-    response.sendRedirect("unit");
-    break;
+            int deleteId = Integer.parseInt(request.getParameter("id"));
+            if (unitDAO.isUsedInMaterials(deleteId)) {
+                session.setAttribute("message", "Không thể xóa đơn vị đang được sử dụng.");
+                session.setAttribute("messageType", "danger");
+            } else {
+                unitDAO.deleteUnit(deleteId);
+                session.setAttribute("message", "Xóa đơn vị thành công.");
+                session.setAttribute("messageType", "success");
+            }
+            response.sendRedirect("unit");
+            break;
 
         case "confirmDelete":
             int idToConfirm = Integer.parseInt(request.getParameter("id"));
@@ -116,49 +114,44 @@ public class UnitServlet extends HttpServlet {
             request.setAttribute("unit", unitToConfirm);
             request.getRequestDispatcher("jsp/unit/unitConfirmDelete.jsp").forward(request, response);
             break;
+
+        case "search":
+            String keyword = request.getParameter("keyword");
+            List<Unit> searchResults = unitDAO.searchByUnit(keyword);
+            request.setAttribute("list", searchResults);
+            request.setAttribute("keyword", keyword);
+            if (message != null) {
+                request.setAttribute("message", message);
+                request.setAttribute("messageType", messageType);
+            }
+            request.getRequestDispatcher("jsp/unit/unitList.jsp").forward(request, response);
+            break;
+
+        default: 
+            int page = 1, size = 5;
+            String pageStr = request.getParameter("page");
+            if (pageStr != null) {
+                try {
+                    page = Integer.parseInt(pageStr);
+                } catch (NumberFormatException ignored) {}
+            }
             
-                        case "search":
-                String keyword = request.getParameter("keyword");
-                List<Unit> searchResults = unitDAO.searchByUnit(keyword);
-                request.setAttribute("list", searchResults);
-                request.setAttribute("keyword", keyword);
-                if (message != null) {
-                    request.setAttribute("message", message);
-                    request.setAttribute("messageType", messageType);
-                }
-                request.getRequestDispatcher("jsp/unit/unitList.jsp").forward(request, response);
-                break;
+            List<Unit> list = unitDAO.getUnitsByPage(page, size);
+            int total = unitDAO.countUnits();
+            int totalPage = (int) Math.ceil((double) total / size);
 
-        default:
-                int page = 1, size = 5;
-                String pageStr = request.getParameter("page");
-                if (pageStr != null) {
-                    try {
-                        page = Integer.parseInt(pageStr);
-                    } catch (NumberFormatException ignored) {}
-                }
+            request.setAttribute("list", list);
+            request.setAttribute("page", page);
+            request.setAttribute("totalPage", totalPage);
+            if (message != null) {
+                request.setAttribute("message", message);
+                request.setAttribute("messageType", messageType);
+            }
 
-                List<Unit> list = unitDAO.getUnitsByPage(page, size);
-                int total = unitDAO.countUnits();
-                int totalPage = (int) Math.ceil((double) total / size);
-
-                request.setAttribute("list", list);
-                request.setAttribute("page", page);
-                request.setAttribute("totalPage", totalPage);
-
-                if (message != null) {
-                    request.setAttribute("message", message);
-                    request.setAttribute("messageType", messageType);
-                }
-
-                request.getRequestDispatcher("jsp/unit/unitList.jsp").forward(request, response);
-                break;
-        }
-    
-
-
-        
+            request.getRequestDispatcher("jsp/unit/unitList.jsp").forward(request, response);
+            break;
     }
+}
 
 
     /**

@@ -38,6 +38,7 @@
                             <h6>ID: ${exportId}</h6>
                             <h6>User Export: ${outputWarehouse.userId.fullName}</h6>
                             <h6>Export Date: ${outputWarehouse.date}</h6>
+                            <h6>Type: ${outputWarehouse.type}</h6>
                         </div>
                         <table id="userTable" class="table table-bordered">
                            <thead>

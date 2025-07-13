@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.CategoryMaterial;
+import model.Category;
 import model.MaterialItem;
 
 /**
@@ -55,10 +55,10 @@ public class MaterialItemDAO {
         return list;
     }
 
-    public MaterialItem getMaterialItemById(int id) {
-        String sql = "SELECT * FROM MaterialItem WHERE id=?";
+    public MaterialItem getMaterialItemById(int materialSupplierId) {
+        String sql = "SELECT * FROM MaterialItem WHERE materials_SupplierId=? AND statusId = 1";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
+            ps.setInt(1, materialSupplierId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     MaterialItem item = new MaterialItem();
