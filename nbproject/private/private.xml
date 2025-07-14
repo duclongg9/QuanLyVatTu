@@ -3,15 +3,22 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/QuanLyVatTu/web/jsp/template/sidebar.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/QuanLyVatTu/src/java/controller/request/CreateImportRequestController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/QuanLyVatTu/src/java/dao/request/requestDAO.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/QuanLyVatTu/web/jsp/request/requestApproval.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/QuanLyVatTu/web/jsp/request/createExportRequest.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/QuanLyVatTu/web/jsp/request/requestList.jsp</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/QuanLyVatTu/src/java/controller/request/CreateExportRequestController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/QuanLyVatTu/src/java/controller/export_warehouse/CreateExportController.java</file>
-            <file>file:/D:/DH_FPT/Ky_7/SWP_MaterialManagement/QuanLyVatTu/src/java/controller/request/ApprovalController.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/controller/category/SuppliersController.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/units/Validator.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/filter/AuthorizationFilter.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/dao/user/UserDAO.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/controller/category/SubCategorysController.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/controller/supplier/SupplierController.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/web/jsp/supplier/supplier.jsp</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/model/Supplier.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/controller/category/MaterialsController.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/dao/subcategory/SubCategoryDAO.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/dao/auditLog/AuditLogDAO.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/controller/statistic/StatisticServlet.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/controller/export_warehouse/CreateExportController.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/controller/export_warehouse/ExportDetailViewController.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/controller/export_warehouse/ListExport.java</file>
+            <file>file:/D:/swp/project1/QuanLyVatTu/src/java/controller/AuditLog/AuditLogController.java</file>
         </group>
     </open-files>
 </project-private>

@@ -17,13 +17,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.ActionType;
+import model.Role;
 import model.User;
 
 /**
  *
  * @author D E L L
  */
-public class UserDAO {
+public class UserDAO extends DBConnect{
     
 
     private static final int PAGE_SIZE = 5;
@@ -598,20 +599,65 @@ public class UserDAO {
 
         return 0;
     }
+    
+    public User findByEmail(String email) {
+    String sql = "SELECT * FROM user WHERE email = ?";
+    try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, email);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setFullName(rs.getString("fullName"));
+            user.setGender(rs.getBoolean("gender"));
+            user.setBirthDate(rs.getString("birthDate"));
+            user.setAddress(rs.getString("address"));
+            user.setImage(rs.getString("image"));
+            user.setEmail(rs.getString("email"));
+            user.setUsername(rs.getString("username"));
+            user.setPassword(rs.getString("password"));
+            user.setPhone(rs.getString("phone"));
+            user.setStatus(rs.getBoolean("status"));
 
-    public static void main(String[] args) throws SQLException {
-        UserDAO udao = new UserDAO();
-//        String name = "n";
-//        udao.deleteStaffById(1);
-        List<User> list = udao.getAllUser();
+            // Nếu bạn có class RoleDAO để lấy Role theo id
+            int roleId = rs.getInt("roleId");
+            RoleDAO roleDAO = new RoleDAO();
+            Role role = roleDAO.getRoleById(roleId);
+            user.setRole(role);
 
-//        int count = udao.getTotalStaffBySearchName(name);
-//        System.out.println(count);
-        for (User staff : list) {
-            System.out.println(staff);
+            return user;
         }
-
-//        System.out.println(udao.updateUser(7, false, 2));
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return null;
+}
+
+public boolean updatePasswordByEmail(String email, String newPassword) {
+    String sql = "UPDATE user SET password = ? WHERE email = ?";
+     try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, newPassword);
+        ps.setString(2, email);
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+//    public static void main(String[] args) throws SQLException {
+//        UserDAO udao = new UserDAO();
+////        String name = "n";
+////        udao.deleteStaffById(1);
+//        List<User> list = udao.getAllUser();
+//
+////        int count = udao.getTotalStaffBySearchName(name);
+////        System.out.println(count);
+//        for (User staff : list) {
+//            System.out.println(staff);
+//        }
+//
+////        System.out.println(udao.updateUser(7, false, 2));
+//    }
 
 }

@@ -121,6 +121,11 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" placeholder="Password" required>
             </div>
+            <div style="text-align: center; margin-top: 15px; margin-bottom: 15px;">
+                        <a href="forgotpassword" style="color: #007bff; text-decoration: none; font-size: 14px;">
+                            Forgot password?
+                        </a>
+                    </div>
 
             <button type="submit" class="btn">Login</button>
         </form>

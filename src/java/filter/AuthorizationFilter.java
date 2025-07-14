@@ -67,10 +67,14 @@
 //        || path.equals("/login") || path.equals("/login.jsp")
 //        || path.equals("/home")|| path.equals("/index.jsp")
 //        || path.equals("/403") || path.equals("/403.jsp")
-//          || path.equals("/logoutController") 
+//          || path.equals("/logout") 
 //            || path.equals("/userprofile")|| path.equals("/userprofile.jsp")
 //            || path.equals("/updateprofile")|| path.equals("/updateprofile.jsp")
 //            || path.equals("/changepassword") || path.equals("/changePassword.jsp")
+//            || path.equals("/jsp/forgotpassword/forgotpassword.jsp")
+//            || path.startsWith("/forgotpassword")
+//            || path.equals("/verifyotp")|| path.equals("/verifyotp.jsp")
+//            || path.equals("/resetpassword")|| path.equals("/jsp/forgotpassword/resetpassword.jsp")
 //            )
 //    {
 //        chain.doFilter(request, response);
