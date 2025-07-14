@@ -1,6 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ page import="java.util.List" %>
+<%@ page import="model.Statistic" %>
+<%@ page import="dao.statistic.StatisticDAO" %>
+<%@ page import="java.sql.Date" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -46,8 +49,54 @@
 
                         <h4 class="mb-4">Thống kê Nhập kho</h4>
 
-                        
-                        <form method="get" action="${pageContext.request.contextPath}/statistic" class="row g-3">
+ <%
+    String from = request.getParameter("from");
+    String to = request.getParameter("to");
+    if (from != null && to != null) {
+        java.sql.Date d1 = java.sql.Date.valueOf(from);
+        java.sql.Date d2 = java.sql.Date.valueOf(to);
+        dao.statistic.StatisticDAO dao = new dao.statistic.StatisticDAO();
+
+        
+        List<model.Statistic> importByCategory   = dao.getImportStatistic(d1, d2);
+        List<model.Statistic> statByUser = dao.getImportByUser(d1, d2);
+        List<model.Statistic> statByCategory = dao.getImportByCategory(d1, d2);
+        List<model.Statistic> importByDate = dao.getImportByDate(d1, d2);
+
+        request.setAttribute("importByCategory", importByCategory);
+        request.setAttribute("statByUser", statByUser);
+        request.setAttribute("statByCategory", statByCategory);
+        request.setAttribute("importByDate", importByDate);
+
+       
+    }
+%>
+
+
+            <c:if test="${not empty param.from and not empty param.to}">
+    <c:choose>
+        <c:when test="${empty statByUser and empty statByCategory}">
+            <div class="alert alert-warning">
+                Không có dữ liệu thống kê từ ${param.from} đến ${param.to}
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="alert alert-success">
+                Có dữ liệu thống kê từ ${param.from} đến ${param.to}
+            </div>
+        </c:otherwise>
+    </c:choose>
+</c:if>
+
+
+                        <c:if test="${not empty error}">
+    <div class="alert alert-danger">${error}</div>
+</c:if>
+
+                        <form method="get" action="${pageContext.request.contextPath}/jsp/statistic/statisticImport.jsp" class="row g-3">
+
+
+
                             <input type="hidden" name="action" value="import"/>
 
                             <div class="col-md-4">
@@ -87,7 +136,41 @@
                             </div>
                         </c:if>
 
-                        
+                        <c:if test="${not empty statByUser}">
+  <div class="mt-5 mb-2">
+    <h5 class="text-success">👤 Thống kê theo người nhập</h5>
+</div>
+    <table class="table table-bordered">
+        <thead><tr><th>Người nhập</th><th>Tổng số lượng</th></tr></thead>
+        <tbody>
+            <c:forEach var="s" items="${statByUser}">
+                <tr>
+                    <td>${s.user}</td>
+                    <td>${s.quantity}</td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
+</c:if>
+    
+    <c:if test="${not empty statByCategory}">
+    <div class="mt-5 mb-2">
+        <h5 class="text-primary">📂 Thống kê theo loại vật tư</h5>
+    </div>
+    <table class="table table-bordered">
+        <thead><tr><th>Loại vật tư</th><th>Số lượng</th></tr></thead>
+        <tbody>
+            <c:forEach var="s" items="${statByCategory}">
+                <tr>
+                    <td>${s.category}</td>
+                    <td>${s.quantity}</td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
+</c:if>
+
+    
                         <c:if test="${not empty importByCategory}">
                             <div class="card mt-5">
                                 <div class="card-header">
@@ -123,25 +206,28 @@
 
         
         <c:if test="${not empty importByCategory}">
-            <script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const ctx = document.getElementById('importByCategoryChart');
+            if (ctx) {
                 const categoryLabels = [];
                 const categoryData = [];
 
                 <c:forEach var="c" items="${importByCategory}">
-                categoryLabels.push("${c.category}");
-                categoryData.push(${c.quantity});
+                    categoryLabels.push("${c.category}");
+                    categoryData.push(${c.quantity});
                 </c:forEach>
 
-                new Chart(document.getElementById('importByCategoryChart').getContext('2d'), {
+                new Chart(ctx.getContext('2d'), {
                     type: 'bar',
                     data: {
                         labels: categoryLabels,
                         datasets: [{
-                                label: 'Số lượng nhập',
-                                data: categoryData,
-                                backgroundColor: '#0d6efd',
-                                borderRadius: 4
-                            }]
+                            label: 'Số lượng nhập',
+                            data: categoryData,
+                            backgroundColor: '#0d6efd',
+                            borderRadius: 4
+                        }]
                     },
                     options: {
                         responsive: true,
@@ -153,32 +239,36 @@
                         }
                     }
                 });
-            </script>
-        </c:if>
+            }
+        });
+    </script>
+</c:if>
 
-        
-        <c:if test="${not empty importByDate}">
-            <script>
+<c:if test="${not empty importByDate}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const ctx = document.getElementById('importByDateChart');
+            if (ctx) {
                 const dateLabels = [];
                 const dateData = [];
 
                 <c:forEach var="d" items="${importByDate}">
-                dateLabels.push("${d.materialName}");
-                dateData.push(${d.quantity});
+                    dateLabels.push("${d.materialName}");
+                    dateData.push(${d.quantity});
                 </c:forEach>
 
-                new Chart(document.getElementById('importByDateChart').getContext('2d'), {
+                new Chart(ctx.getContext('2d'), {
                     type: 'line',
                     data: {
                         labels: dateLabels,
                         datasets: [{
-                                label: 'Số lượng nhập',
-                                data: dateData,
-                                borderColor: '#198754',
-                                backgroundColor: 'rgba(25,135,84,0.2)',
-                                fill: true,
-                                tension: 0.3
-                            }]
+                            label: 'Số lượng nhập',
+                            data: dateData,
+                            borderColor: '#198754',
+                            backgroundColor: 'rgba(25,135,84,0.2)',
+                            fill: true,
+                            tension: 0.3
+                        }]
                     },
                     options: {
                         responsive: true,
@@ -190,8 +280,11 @@
                         }
                     }
                 });
-            </script>
-        </c:if>
+            }
+        });
+    </script>
+</c:if>
+
             
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -220,8 +313,7 @@
 
     <!-- Template Javascript -->
     <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-    </body>
-    <script>
+        <script>
     window.addEventListener('load', function () {
         var spinner = document.getElementById('spinner');
         if (spinner) {
@@ -229,4 +321,7 @@
         }
     });
 </script>
+
+    </body>
+
 </html>

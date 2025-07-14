@@ -1,5 +1,4 @@
-<%-- 
-    Document   : statisticExport
+<%-- Document   : statisticExport
     Created on : Jun 16, 2025, 12:02:02 PM
     Author     : KIET
 --%>
@@ -7,6 +6,8 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page import="java.util.*"%>
+<%@page import="dao.user.UserDAO"%>
+<%@page import="dao.material.CategoryDAO"%>
 <%@page import="model.Statistic"%>
 
 <!DOCTYPE html>
@@ -57,7 +58,12 @@
 
                         <h4 class="mb-4">Thống kê Xuất kho</h4>
 
-                        
+                        <c:if test="${not empty message}">
+    <div class="alert alert-info mt-4" role="alert">
+        ${message}
+    </div>
+</c:if>
+
                         <form method="post" action="${pageContext.request.contextPath}/statistic" class="row g-3">
                             <input type="hidden" name="action" value="export">
 
@@ -75,7 +81,7 @@
                                     <option value="0">Tất cả</option>
                                     
                                     <c:forEach var="c" items="${categoryList}">
-                                        <option value="${c.id}">${c.category}</option>
+                                        <option value="${c.id}">${c.categoryName}</option>
                                     </c:forEach>
                                 </select>
                             </div>
@@ -85,7 +91,7 @@
                                     <option value="0">Tất cả</option>
                                     
                                     <c:forEach var="u" items="${userList}">
-                                        <option value="${u.id}">${u.fullname}</option>
+                                        <option value="${u.id}">${u.fullName}</option>
                                     </c:forEach>
                                 </select>
                             </div>
@@ -221,4 +227,3 @@
 
 
 </html>
-
