@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.MaterialSupplier;
+import model.Supplier;
 import model.User;
 
 /**
@@ -44,20 +45,46 @@ public class MaterialSupplierDAO {
         conn = DBConnect.getConnection();
     }
 
-    public MaterialSupplier getMaterialSupplierById(int materialSupplierId){
+    public List<Supplier> getListSupplierByMaterialId(int materialId) {
+        List<Supplier> list = new ArrayList<>();
+        String sql = "SELECT supplierId FROM materials_Supplier WHERE materialId = ?";
+
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, materialId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int supplierId = rs.getInt("supplierId");
+
+                    // Gọi hàm có sẵn để lấy Supplier
+                    Supplier supplier = sdao.getSupplierById(supplierId);
+                    if (supplier != null) {
+                        list.add(supplier);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public MaterialSupplier getMaterialSupplier(int materialSupplierId, int supplierId) {
         String sql = """
                      SELECT * 
                      FROM materials_Supplier 
-                     WHERE id =?
+                     WHERE materialId =? AND supplierId = ?
                     """;
-        
+
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, materialSupplierId);
+            ps.setInt(2, supplierId);
             try (ResultSet rs = ps.executeQuery()) {
 
                 while (rs.next()) {
-                     MaterialSupplier p = new MaterialSupplier();
+                    MaterialSupplier p = new MaterialSupplier();
                     p.setId(rs.getInt(COL_ID));
                     p.setMaterialId(mdao.getMaterialsById(rs.getInt(COL_MATERIALID)));
                     p.setSupplierId(sdao.getSupplierById(rs.getInt(COL_SUPPLIERID)));
@@ -71,8 +98,35 @@ public class MaterialSupplierDAO {
 
         return null;
     }
-    
-    
+
+    public MaterialSupplier getMaterialSupplierById(int materialSupplierId) {
+        String sql = """
+                     SELECT * 
+                     FROM materials_Supplier 
+                     WHERE id =?
+                    """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, materialSupplierId);
+            try (ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+                    MaterialSupplier p = new MaterialSupplier();
+                    p.setId(rs.getInt(COL_ID));
+                    p.setMaterialId(mdao.getMaterialsById(rs.getInt(COL_MATERIALID)));
+                    p.setSupplierId(sdao.getSupplierById(rs.getInt(COL_SUPPLIERID)));
+                    p.setNote(rs.getString(COL_NOTE));
+                    return p;
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(MaterialSupplier.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return null;
+    }
+
     //Phân trang
     public List<MaterialSupplier> pagingMaterialWithSupplier(int index) throws SQLException {
         List<MaterialSupplier> list = new ArrayList<>();
@@ -117,7 +171,7 @@ public class MaterialSupplierDAO {
 
         return 0;
     }
-    
+
     public MaterialSupplier getById(int id) {
         String sql = "SELECT * FROM materials_supplier WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

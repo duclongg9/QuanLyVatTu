@@ -4,17 +4,27 @@
  */
 package dao.export;
 
+import dao.auditLog.AuditLogDAO;
 import dao.connect.DBConnect;
 import dao.material.MaterialItemDAO;
+import dao.request.requestDetailDAO;
+import dao.user.UserDAO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.ActionType;
 import model.OutputDetail;
 import model.RequestDetail;
+import model.User;
 
 public class OutputDetailDAO {
+    UserDAO udao = new UserDAO();
+    requestDetailDAO rddao = new requestDetailDAO();
+    OutputWarehourseDAO owdao = new OutputWarehourseDAO();
+    MaterialItemDAO midao = new MaterialItemDAO();
+    
     private static final int PAGE_SIZE = 5;
 
     private static final String COL_ID = "id";
@@ -23,9 +33,7 @@ public class OutputDetailDAO {
     private static final String COL_REQUESTDETAILID = "requestDetailId";
     private static final String COL_MATERIALITEMID = "materialItemId";
 
-    OutputWarehourseDAO owdao = new OutputWarehourseDAO();
-    dao.request.requestDetailDAO rddao = new dao.request.requestDetailDAO();
-    MaterialItemDAO midao = new MaterialItemDAO();
+    
 
     public void insertOutputDetail(int outputWarehouseId, int requestDetailId, int materialItemId, int quantity) throws SQLException {
         String sql = "INSERT INTO OutputDetail (quantity, outputWarehouseId, requestDetailId, materialItemId) VALUES (?, ?, ?, ?)";

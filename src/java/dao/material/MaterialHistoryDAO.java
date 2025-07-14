@@ -9,8 +9,8 @@
  */
 package dao.material;
 
+import dao.Category.CategoryDAO;
 import dao.connect.DBConnect;
-import dao.subcategory.SubCategoryDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,8 +25,8 @@ import model.Materials;
 
 public class MaterialHistoryDAO {
     private MaterialUnitDAO unitDAO = new MaterialUnitDAO();
-    private SubCategoryDAO subDAO = new SubCategoryDAO();
     private MaterialsDAO materialsDAO = new MaterialsDAO();
+    private CategoryDAO cdao = new CategoryDAO();
 
     private static final String COL_ID = "id";
     private static final String COL_MATERIAL = "materialId";
@@ -65,7 +65,7 @@ public class MaterialHistoryDAO {
                 h.setName(rs.getString(COL_NAME));
                 h.setUnit(unitDAO.getUnitById(rs.getInt(COL_UNIT)));
                 h.setImage(rs.getString(COL_IMAGE));
-                h.setSubCategory(subDAO.getSubCategoryById(rs.getInt(COL_SUBCATEGORY)));
+                h.setSubCategory(cdao.getCategoryById(rs.getInt(COL_SUBCATEGORY)));
                 h.setArchivedAt(rs.getTimestamp(COL_TIME));
                 list.add(h);
             }

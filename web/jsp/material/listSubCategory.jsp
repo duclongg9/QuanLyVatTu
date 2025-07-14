@@ -51,7 +51,7 @@
                         <c:forEach var="c" items="${subCategories}">
                             <tr>
                                 <td>${c.id}</td>
-                                <td>${c.subCategoryName}</td>
+                                <td>${c.categoryName}</td>
                                 <td>${c.categoryMaterialId.category}</td>
                                 <td>${c.status ? 'Active' : 'Inactive'}</td>
                                 <td>

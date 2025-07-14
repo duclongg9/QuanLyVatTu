@@ -4,6 +4,7 @@
  */
 package dao.request;
 
+import dao.auditLog.AuditLogDAO;
 import dao.connect.DBConnect;
 import dao.material.MaterialItemDAO;
 import dao.user.UserDAO;
@@ -17,9 +18,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.Types;
+import model.ActionType;
 import model.Request;
 import model.RequestDetail;
 import model.RequestType;
+import model.User;
+import model.importDecriptionDTO;
 
 /**
  *
@@ -48,10 +52,48 @@ public class requestDAO {
     public requestDAO() {
         this(DBConnect.getConnection());
     }
-    public boolean updateSuccessStatusRequest(int requestId) {
+
+    
+    public importDecriptionDTO getRequestByInputWarehouseId(int inputWarehouseId) {
+        importDecriptionDTO decription = null;
+        String sql = "SELECT r.id, r.type, r.note " +
+                     "FROM InputWarehouse iw " +
+                     "JOIN InputDetail id ON iw.id = id.inputWarehouseId " +
+                     "JOIN requestDetail rd ON id.requestDetailId = rd.id " +
+                     "JOIN Request r ON rd.requestId = r.id " +
+                     "WHERE iw.id = ? " +
+                     "LIMIT 1";
+
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, inputWarehouseId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                decription = new importDecriptionDTO();
+                decription.setType(rs.getString("type"));
+                decription.setNote(rs.getString("note"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return decription;
+    }
+
+
+    
+    
+    public boolean updateSuccessStatusRequest(int requestId, int changedBy) {
         String sql = "UPDATE Request SET statusId = 5 WHERE id = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, requestId);
+
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "Yêu cầu phụ trách bởi User: " + user.getFullName() + "với ID: " + getRequestById(requestId).getId() + " đã hoàn thành";
+            logDAO.insertAuditLog("Category", requestId, ActionType.UPDATE, message, changedBy);
+
             int rows = ps.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
@@ -59,15 +101,27 @@ public class requestDAO {
             return false;
         }
     }
-    
-    public boolean updateStatusRequest(int requestId, int statusId,int userId) {
-        String sql = "UPDATE Request SET statusId = ?,approvedBy = ? WHERE id = ?";
+
+    public boolean updateStatusRequest(int requestId, int statusId, int userId, int changedBy) {
+        String sql = (userId == 0)
+                ? "UPDATE Request SET statusId = ?, approvedBy = NULL WHERE id = ?"
+                : "UPDATE Request SET statusId = ?, approvedBy = ? WHERE id = ?";
+
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, statusId);
-            ps.setInt(3, requestId);
-            ps.setInt(2, userId);
-            int rows = ps.executeUpdate();
-            return rows > 0;
+            if (userId == 0) {
+                ps.setInt(2, requestId);
+            } else {
+                ps.setInt(2, userId);
+                ps.setInt(3, requestId);
+            }
+
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã cập nhật lại trạng thái yêu cầu với ID: " + requestId;
+            logDAO.insertAuditLog("Request", requestId, ActionType.UPDATE, message, changedBy);
+
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -139,23 +193,36 @@ public class requestDAO {
     }
 
     // Thêm request mới, trả về requestId vừa tạo
-    public int insertRequest(Connection conn, int userId, String note, Integer approverId) throws SQLException {
-        String sql = "INSERT INTO Request (date, statusId, userId, note, type, approvedBy) VALUES (NOW(), ?, ?, ?, 'Import', ?)";
+    public int insertRequest(int userId, String note, Integer approverId, RequestType type, int changedBy) throws SQLException {
+        String sql = "INSERT INTO Request (date, statusId, userId, note, type, approvedBy) VALUES (NOW(), ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, 1); // statusId: 1 = Pending
             ps.setInt(2, userId);
             ps.setString(3, note);
+            ps.setString(4, type.name());
 
             if (approverId != null) {
-                ps.setInt(4, approverId); // nếu có approverId
+                ps.setInt(5, approverId);
             } else {
-                ps.setNull(4, Types.INTEGER); // nếu chưa có người duyệt
+                ps.setNull(5, Types.INTEGER);
             }
 
-            int affectedRows = ps.executeUpdate(); // execute
+            int requestId = -1;
+            ps.executeUpdate(); // Thực hiện insert
 
-            if (affectedRows == 0) {
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    requestId = rs.getInt(1);
+                }
+            }
+
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " Đã tạo mới Yêu cầu:";
+            logDAO.insertAuditLog("Supplier", requestId, ActionType.INSERT, message, changedBy);
+
+            if (requestId == 0) {
                 throw new SQLException("Creating request failed, no rows affected.");
             }
 
@@ -171,7 +238,7 @@ public class requestDAO {
     }
 
     // Thêm chi tiết các vật tư cho Request vào bảng RequestDetail
-    public void insertRequestDetail(Connection conn, int requestId, int materialItemId, int quantity, String note) throws SQLException {
+    public void insertRequestDetail(int requestId, int materialItemId, int quantity, String note) throws SQLException {
         String sql = "INSERT INTO RequestDetail (requestId, materialItemId, quantity, note) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, requestId);
@@ -213,15 +280,37 @@ public class requestDAO {
     }
 
     //đếm số lượng yêu cầu trong database
-    public int getTotalRequest() {
-        String sql = "SELECT COUNT(*) FROM request;";
-        try (PreparedStatement ps = conn.prepareStatement(sql);) {
+    public int getFilteredTotalRequest(Integer statusId, String type, String fromDate, String toDate) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM request WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (statusId != null && statusId != 0) {
+            sql.append(" AND statusId = ?");
+            params.add(statusId);
+        }
+        if (type != null && !"0".equals(type)) {
+            sql.append(" AND type = ?");
+            params.add(type);
+        }
+        if (fromDate != null && !fromDate.isEmpty()) {
+            sql.append(" AND date >= ?");
+            params.add(fromDate);
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            sql.append(" AND date <= ?");
+            params.add(toDate);
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
+                if (rs.next()) {
                     return rs.getInt(1);
                 }
             }
-
         } catch (Exception e) {
             Logger.getLogger(requestDAO.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -230,16 +319,38 @@ public class requestDAO {
     }
 
     //Phân trang
-    public List<Request> pagingStaff(int index) throws SQLException {
+    public List<Request> pagingRequestWithFilter(int index, Integer statusId, String type, String fromDate, String toDate) throws SQLException {
         List<Request> list = new ArrayList<>();
-        String sql = "SELECT * FROM request\n"
-                + "LIMIT ? OFFSET ?;";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM request WHERE 1=1");
+        List<Object> params = new ArrayList<>();
 
-            ps.setInt(1, PAGE_SIZE);
-            ps.setInt(2, (index - 1) * PAGE_SIZE);
-            try (ResultSet rs = ps.executeQuery();) {
+        if (statusId != null && statusId != 0) {
+            sql.append(" AND statusId = ?");
+            params.add(statusId);
+        }
+        if (type != null && !"0".equals(type)) {
+            sql.append(" AND type = ?");
+            params.add(type);
+        }
+        if (fromDate != null && !fromDate.isEmpty()) {
+            sql.append(" AND date >= ?");
+            params.add(fromDate);
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            sql.append(" AND date <= ?");
+            params.add(toDate);
+        }
 
+        sql.append(" ORDER BY id DESC LIMIT ? OFFSET ?");
+        params.add(PAGE_SIZE);
+        params.add((index - 1) * PAGE_SIZE);
+
+        try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Request r = new Request();
                     r.setId(rs.getInt(COL_ID));
@@ -247,18 +358,20 @@ public class requestDAO {
                     r.setStatusId(rsdao.getStatusById(rs.getInt(COL_STATUS)));
                     r.setUserId(udao.getUserById(rs.getInt(COL_USER)));
                     r.setNote(rs.getString(COL_NOTE));
-                    String typeStr = rs.getString(COL_TYPE); // Lấy giá trị từ DB: "Import" hoặc "Export"
-                    RequestType type = RequestType.valueOf(typeStr.toUpperCase()); // Convert String -> Enum
-                    r.setType(type); // set đúng kiểu RequestType
+
+                    String typeStr = rs.getString(COL_TYPE);
+                    RequestType requestType = RequestType.valueOf(typeStr.toUpperCase());
+                    r.setType(requestType);
+
                     r.setApprovedBy(udao.getUserById(rs.getInt(COL_APPROVEDBY)));
                     list.add(r);
                 }
-            } catch (Exception e) {
-                Logger.getLogger(requestDAO.class.getName()).log(Level.SEVERE, null, e);
             }
-
-            return list;
+        } catch (Exception e) {
+            Logger.getLogger(requestDAO.class.getName()).log(Level.SEVERE, null, e);
         }
+
+        return list;
     }
 
     public Request getRequestById(int id) {
@@ -290,18 +403,96 @@ public class requestDAO {
         return null;
     }
 
+    //Phân trang
+    public List<Request> pagingRequestPending(int index, String fromDate, String toDate) throws SQLException {
+        List<Request> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM request WHERE statusId = 1");
+
+        // Thêm điều kiện lọc ngày nếu có
+        if (fromDate != null && !fromDate.isEmpty()) {
+            sql.append(" AND requestDate >= ?");
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            sql.append(" AND requestDate <= ?");
+        }
+
+        sql.append(" LIMIT ? OFFSET ?");
+
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+
+            if (fromDate != null && !fromDate.isEmpty()) {
+                ps.setString(paramIndex++, fromDate);
+            }
+            if (toDate != null && !toDate.isEmpty()) {
+                ps.setString(paramIndex++, toDate);
+            }
+
+            ps.setInt(paramIndex++, PAGE_SIZE);
+            ps.setInt(paramIndex, (index - 1) * PAGE_SIZE);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Request r = new Request();
+                    r.setId(rs.getInt(COL_ID));
+                    r.setDate(rs.getString(COL_DATE));
+                    r.setStatusId(rsdao.getStatusById(rs.getInt(COL_STATUS)));
+                    r.setUserId(udao.getUserById(rs.getInt(COL_USER)));
+                    r.setNote(rs.getString(COL_NOTE));
+
+                    String typeStr = rs.getString(COL_TYPE);
+                    RequestType requestType = RequestType.valueOf(typeStr.toUpperCase());
+                    r.setType(requestType);
+
+                    r.setApprovedBy(udao.getUserById(rs.getInt(COL_APPROVEDBY)));
+                    list.add(r);
+                }
+            }
+        } catch (Exception e) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return list;
+    }
+
+    //đếm số request với trạng thái pending
+    public int getTotalRequestPending(String fromDate, String toDate) {
+    StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM request WHERE statusId = 1");
+
+    if (fromDate != null && !fromDate.isEmpty()) {
+        sql.append(" AND requestDate >= ?");
+    }
+    if (toDate != null && !toDate.isEmpty()) {
+        sql.append(" AND requestDate <= ?");
+    }
+
+    try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+        int paramIndex = 1;
+        if (fromDate != null && !fromDate.isEmpty()) {
+            ps.setString(paramIndex++, fromDate);
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            ps.setString(paramIndex++, toDate);
+        }
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+
+    } catch (Exception e) {
+        Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+    }
+
+    return 0;
+}
+
+
     public static void main(String[] args) throws SQLException {
         requestDAO rdao = new requestDAO();
 
 //        udao.deleteStaffById(1);
-        List<Request> list = rdao.pagingStaff(1);
-
-        int count = rdao.getTotalRequest();
-        System.out.println(count);
-        for (Request r : list) {
-            System.out.println(r);
-        }
-
 //        System.out.println(udao.updateUser(7, false, 2));
     }
 

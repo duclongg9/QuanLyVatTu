@@ -43,7 +43,7 @@
                                 <td>${h.material.id}</td>
                                 <td>${h.name}</td>
                                 <td>${h.unit.unitName}</td>
-                                <td>${h.subCategory.subCategoryName}</td>
+                                <td>${h.subCategory.categoryName}</td>
                                 <td>${h.archivedAt}</td>
                             </tr>
                         </c:forEach>

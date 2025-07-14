@@ -48,6 +48,20 @@
                     <div class="bg-light rounded h-100 p-4">
                         <h6 class="mb-4">Import Warehouse List</h6>
                         <div class="table-responsive">
+                            <form method="get" action="ListImport" class="row mb-4">
+                                <input type="hidden" name="index" value="1" />
+                                <div class="col-md-3">
+                                    <label for="fromDate">From Date:</label>
+                                    <input type="date" class="form-control" name="fromDate" value="${param.fromDate}" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="toDate">To Date:</label>
+                                    <input type="date" class="form-control" name="toDate" value="${param.toDate}" />
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                                </div>
+                            </form>
                             <table class="table" id="importTable">
                                 <thead>
                                 <tr>
@@ -71,7 +85,12 @@
                             <!-- Pagination (if any) -->
                             <div class="d-flex justify-content-center mt-3">
                                 <c:forEach begin="1" end="${endP}" var="i">
-                                    <a href="inputWarehouseList?index=${i}" class="btn btn-outline-primary mx-1">${i}</a>
+                                    <a href="ListImport?index=${i}
+                                        <c:if test='${not empty param.fromDate}'>&fromDate=${param.fromDate}</c:if>
+                                        <c:if test='${not empty param.toDate}'>&toDate=${param.toDate}</c:if>"
+                                       class="btn ${i == index ? 'btn-primary' : 'btn-outline-primary'} mx-1">
+                                        ${i}
+                                    </a>
                                 </c:forEach>
                             </div>
                         </div>

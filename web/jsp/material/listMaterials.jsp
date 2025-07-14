@@ -18,20 +18,21 @@
 
         <div class="container-fluid pt-4 px-4 flex-grow-1">
             <div class="row g-4">
-                <div class="col-12">
+                <div class="col-14">
                     <div class="bg-light rounded p-4">
-                        <h4 class="mb-4">Material List</h4>
+                        <h4 class="mb-">Material List</h4>
                         <c:if test="${not empty error}">
                             <div class="text-danger mb-3">${error}</div>
                         </c:if>
                         <a href="${pageContext.request.contextPath}/materialController?action=add" class="btn btn-primary mb-3">Add New</a>
                         <a href="${pageContext.request.contextPath}/materialController?action=deleted" class="btn btn-outline-secondary mb-3 ms-2">View Deleted</a>
+                        <a href="${pageContext.request.contextPath}/materialController?action=history" class="btn btn-outline-secondary mb-3 ms-2">History Update Material</a>
                         <form action="materialController" method="get" class="d-flex align-items-center gap-2 mb-3">
                             <input type="hidden" name="action" value="list"/>
                             <select name="categoryId" class="form-select w-auto">
                                 <option value="">All Category</option>
                                 <c:forEach var="c" items="${categoryFilter}">
-                                    <option value="${c.id}" ${selectedCategory == c.id ? 'selected' : ''}>${c.category}</option>
+                                    <option value="${c.id}" ${selectedCategory == c.id ? 'selected' : ''}>${c.categoryName}</option>
                                 </c:forEach>
                             </select>
                             <input class="form-control border-0" type="search" placeholder="Search" name="search" value="${param.search}" />
@@ -56,7 +57,7 @@
                                 <td>${m.id}</td>
                                 <td>${m.name}</td>
                                 <td>${m.unitId.unitName}</td>
-                                <td>${m.subCategoryId.subCategoryName}</td>
+                                <td>${m.subCategoryId.categoryName}</td>
                                 <td>${m.replacementMaterialId != null ? m.replacementMaterialId.name : '-'}</td>
                                 <td>
                                     <c:choose>

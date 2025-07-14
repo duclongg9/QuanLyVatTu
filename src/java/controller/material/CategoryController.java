@@ -4,31 +4,41 @@
  */
 package controller.material;
 
-import dao.material.CategoryMaterialDAO;
+import dao.Category.CategoryDAO;
 import dao.material.MaterialsDAO;
-import dao.subcategory.SubCategoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.CategoryMaterial;
+import jakarta.servlet.http.HttpSession;
+import model.Category;
 import java.io.IOException;
 import java.util.List;
 import model.Materials;
+import model.User;
 /**
  *
  * @author Dell-PC
  */@WebServlet(name = "CategoryController", urlPatterns = {"/categoryController"})
 public class CategoryController extends HttpServlet {
 
-    CategoryMaterialDAO dao = new CategoryMaterialDAO();
-    SubCategoryDAO subDao = new SubCategoryDAO();
+    CategoryDAO dao = new CategoryDAO();
+    CategoryDAO subDao = new CategoryDAO();
     MaterialsDAO materialsDAO = new MaterialsDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Kiểm tra đăng nhập
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+
+        if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        
         String action = request.getParameter("action");
         if (action == null) {
             action = "list";
@@ -49,15 +59,15 @@ public class CategoryController extends HttpServlet {
                 int delIndex = Integer.parseInt(delIndexPage);
                 request.setAttribute("categories", dao.pagingDeletedCategories(delIndex));
                 int totalDel = dao.getTotalDeletedCategories();
-                int endDel = totalDel / CategoryMaterialDAO.PAGE_SIZE;
-                if (totalDel % CategoryMaterialDAO.PAGE_SIZE != 0) endDel++;
+                int endDel = totalDel / CategoryDAO.PAGE_SIZE;
+                if (totalDel % CategoryDAO.PAGE_SIZE != 0) endDel++;
                 request.setAttribute("endP", endDel);
                 request.setAttribute("tag", delIndex);
                 request.getRequestDispatcher("/jsp/material/deletedCategory.jsp").forward(request, response);
                 break;
             case "activate":
                 int aId = Integer.parseInt(request.getParameter("id"));
-                dao.activateCategory(aId);
+                dao.activateCategory(aId,loggedInUser.getId());
                 response.sendRedirect("categoryController?action=deleted");
                 break;
             case "delete":
@@ -77,15 +87,15 @@ public class CategoryController extends HttpServlet {
                         request.setAttribute("categories", dao.pagingCategories(index));
                         total = dao.getTotalCategories();
                     }
-                    int endP = total / CategoryMaterialDAO.PAGE_SIZE;
-                    if (total % CategoryMaterialDAO.PAGE_SIZE != 0) endP++;
+                    int endP = total / CategoryDAO.PAGE_SIZE;
+                    if (total % CategoryDAO.PAGE_SIZE != 0) endP++;
                     request.setAttribute("endP", endP);
                     request.setAttribute("tag", index);
                     request.getRequestDispatcher("/jsp/material/listCategory.jsp").forward(request, response);
                 } else {
-                    int result = dao.deleteCategory(delId);
+                    int result = dao.deleteCategory(delId,loggedInUser.getId());
                     if (result > 0) {
-                        subDao.deactivateByCategoryId(delId);
+                        subDao.deactivateByCategoryId(delId,loggedInUser.getId());
                         response.sendRedirect("categoryController");
                     } else {
                         request.setAttribute("error", "Xử lý thất bại");
@@ -109,8 +119,8 @@ public class CategoryController extends HttpServlet {
                     request.setAttribute("categories", dao.pagingCategories(index));
                     total = dao.getTotalCategories();
                 }
-                int endP = total / CategoryMaterialDAO.PAGE_SIZE;
-                if (total % CategoryMaterialDAO.PAGE_SIZE != 0) {
+                int endP = total / CategoryDAO.PAGE_SIZE;
+                if (total % CategoryDAO.PAGE_SIZE != 0) {
                     endP++;
                 }
                 request.setAttribute("endP", endP);
@@ -124,6 +134,15 @@ public class CategoryController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Kiểm tra đăng nhập
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+
+        if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        
         String idParam = request.getParameter("id");
         String category = request.getParameter("category");
         if (!isValidName(category)) {
@@ -145,9 +164,9 @@ public class CategoryController extends HttpServlet {
 
         int result;
         if (id != null) {
-            result = dao.updateCategory(id, category);
+            result = dao.updateCategory(id, category,loggedInUser.getId());
         } else {
-            result = dao.createCategory(category);
+            result = dao.createCategory(category,loggedInUser.getId());
         }
         if (result > 0) {
             response.sendRedirect("categoryController");

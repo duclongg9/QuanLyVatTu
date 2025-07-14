@@ -52,10 +52,50 @@
                    
                     <div class="col-12">
                         <div class="bg-light rounded h-100 p-4">
-                            <h6 class="mb-4">Request</h6>
-                          
+                            <h3 class="mb-4">Request:</h3>
+                            
+                            <form action="requestList" method="get">
+                               <div class="row">
+                                <!-- Status -->
+                                <div class="col-md-3 mb-3">
+                                    <label for="requestStatus" class="form-label">Status:</label>
+                                    <select class="form-select" name="requestStatus" id="requestStatus">
+                                        <option selected value="0">-- All Status --</option>
+                                        <c:forEach var="status" items="${statusList}">
+                                            <option value="${status.id}">${status.status}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+
+                                <!-- Type -->
+                                <div class="col-md-3 mb-3">
+                                    <label for="requestType" class="form-label">Type:</label>
+                                    <select class="form-select" name="requestType" id="requestType">
+                                        <option selected value="0">-- All Type --</option>
+                                        <c:forEach var="type" items="${typeList}">
+                                            <option value="${type}">${type}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+
+                                <!-- From Date -->
+                                <div class="col-md-3 mb-3">
+                                    <label for="fromDate" class="form-label">From Date:</label>
+                                    <input type="date" class="form-control" name="fromDate" id="fromDate" value="${param.fromDate}">
+                                </div>
+
+                                <!-- To Date -->
+                                <div class="col-md-3 mb-3">
+                                    <label for="toDate" class="form-label">To Date:</label>
+                                    <input type="date" class="form-control" name="toDate" id="toDate" value="${param.toDate}">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                            </form>
+                                
                             <div class="table-responsive">
-                                <a href="CreateRequestImport" class="btn btn-primary m-2">Create Import</a>
+                                
                                 <table class="table" id="userTable">
                                     <thead>
                                         <tr>
@@ -85,13 +125,10 @@
                                     </tbody>
                                 </table>
                                 <!-- Pagination -->
-                                <div class="btn-group me-2" role="group" aria-label="First group">
-                                     <div>
-                                        <c:forEach begin="1" end="${endP}" var="i">
-                                            <a href="requestList?index=${i}" class="btn btn-primary">${i}</a>
-                                        </c:forEach>
-                                     </div>
-                                </div>
+                                <c:forEach begin="1" end="${endP}" var="i">
+                                    <a href="requestList?index=${i}&requestStatus=${param.requestStatus}&requestType=${param.requestType}&fromDate=${param.fromDate}&toDate=${param.toDate}"
+                                       class="btn btn-primary">${i}</a>
+                                </c:forEach>
                                 
                                
                                 <!-- Pagination -->

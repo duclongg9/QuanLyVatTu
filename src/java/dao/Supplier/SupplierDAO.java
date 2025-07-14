@@ -4,8 +4,10 @@
  */
 package dao.Supplier;
 
+import dao.auditLog.AuditLogDAO;
 import dao.connect.DBConnect;
 import dao.role.RoleDAO;
+import dao.user.UserDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,25 +19,44 @@ import java.util.logging.Logger;
 import model.Materials;
 import model.Supplier;
 import model.Materials;
-
+import java.sql.Statement;
+import model.ActionType;
+import model.User;
 /**
  *
  * @author D E L L
  */
 public class SupplierDAO extends DBConnect {
+    
+    UserDAO udao = new UserDAO();
+    
 
     // Thêm nhà cung cấp mới (status mặc định là true = đang hoạt động)
-    public boolean addSupplier(String name, String phone, String address) {
+    public boolean addSupplier(String name, String phone, String address,int changedBy) {
         String sql = "INSERT INTO `Supplier` (`name`, `phone`, `address`, `status`) VALUES (?, ?, ?, ?)";
         Connection conn = getConnection();
         try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, name);
             stmt.setString(2, phone);
             stmt.setString(3, address);
             stmt.setBoolean(4, true); // Trạng thái hoạt động
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+           
+            int supplierId = -1;
+            stmt.executeUpdate(); // Thực hiện insert
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    supplierId = rs.getInt(1);
+                }
+            }
+
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã thêm Nhà cung cấp mới:" + name;
+            logDAO.insertAuditLog("Supplier", supplierId, ActionType.INSERT, message, changedBy);
+            
+            return true;
         } catch (SQLException e) {
             System.err.println("Lỗi khi thêm nhà cung cấp: " + e.getMessage());
             e.printStackTrace();
@@ -127,7 +148,7 @@ public class SupplierDAO extends DBConnect {
     }
 
     // Cập nhật thông tin nhà cung cấp
-    public void updateSupplier(Supplier supplier) {
+    public void updateSupplier(Supplier supplier,int changedBy) {
         String sql = "UPDATE Supplier SET name = ?, phone = ?, address = ?, status = ? WHERE id = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -137,6 +158,12 @@ public class SupplierDAO extends DBConnect {
             ps.setBoolean(4, supplier.isStatus());
             ps.setInt(5, supplier.getId());
 
+            User user = udao.getUserById(changedBy);
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã cập nhật lại danh mục con: " + supplier.getName();
+            logDAO.insertAuditLog("Category", supplier.getId(), ActionType.UPDATE, message, changedBy);
+            
+            
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -144,13 +171,20 @@ public class SupplierDAO extends DBConnect {
     }
 
     // Xóa cứng nhà cung cấp (xóa khỏi database)
-    public boolean deleteSupplier(int id) {
+    public boolean deleteSupplier(int id,int changedBy) {
         String sql = "DELETE FROM `Supplier` WHERE `id` = ?";
         Connection conn = getConnection();
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, id);
             int rowsAffected = stmt.executeUpdate();
+            
+            User user = udao.getUserById(changedBy);
+            Supplier suplier = new Supplier();
+            AuditLogDAO logDAO = new AuditLogDAO();
+            String message = "User: " + user.getFullName() + " đã xóa nhà cùng cấp: " + suplier.getName();
+            logDAO.insertAuditLog("Supplier", id, ActionType.DELETE, message, changedBy);
+            
             return rowsAffected > 0;
         } catch (SQLException e) {
             System.err.println("Lỗi khi xóa nhà cung cấp: " + e.getMessage());

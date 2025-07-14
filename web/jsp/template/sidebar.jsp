@@ -55,13 +55,15 @@
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>Storages</a>
                         <div class="dropdown-menu bg-transparent border-0">
                             <h6 class="dropdown-header">Nhập kho</h6>
-                            <a href="CreateRequestImport" class="dropdown-item">Tạo đơn nhập kho</a>
-                            <a href="ListImport" class="dropdown-item">Lịch sử nhập kho</a>
+                            <a href="#" class="dropdown-item">Đề nghị mua hàng(Staff)</a>
+                            <a href="CreateRequestImport" class="dropdown-item">Đề nghị nhập kho(Staff)</a>
+                            <a href="ListImport" class="dropdown-item">Lịch sử nhập kho(Staff)</a>
                             <h6 class="dropdown-header">Xuất kho</h6>
-                            <a href="createExport" class="dropdown-item">Tạo đơn xuất kho</a>
-                            <a href="ListExport" class="dropdown-item">Lịch sử xuất kho</a>
-                            <h6 class="dropdown-header">Thống kê</h6>
-                            <a href="#" class="dropdown-item">Xuất – Nhập – Tồn</a>
+                            <a href="CreateRequestExport" class="dropdown-item">Đề nghị xuất kho(Staff)</a>
+                            <a href="#" class="dropdown-item">Đề nghị sửa chữa vật tư(WHStaff)</a>
+                            <a href="ListExport" class="dropdown-item">Lịch sử xuất kho(Staff)</a>
+                            <h6 class="dropdown-header">Thống kê(Admin/Staff)</h6>
+                            <a href="#" class="dropdown-item">Xuất – Nhập – Tồn(Admin/Staff)</a>
                         </div>
                     </div>
 
@@ -69,10 +71,8 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>List Request</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="CreateRequestImport" class="dropdown-item">Đề nghị mua vật tư</a>
-                            <a href="#" class="dropdown-item">Đề nghị sửa chữa vật tư</a>
-                            <a href="#" class="dropdown-item">Phê duyệt yêu cầu</a>
-                            <a href="requestList" class="dropdown-item">Danh sách yêu cầu</a>
+                            <a href="approveRequest" class="dropdown-item">Phê duyệt yêu cầu(Admin)</a>
+                            <a href="requestList" class="dropdown-item">Danh sách yêu cầu(Staff)</a>
                         </div>
                     </div>
                     <!-- Thống kê chi phí -->
@@ -94,6 +94,12 @@
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>Systems</a>
                         <div class="dropdown-menu bg-transparent border-0">
                             <a href="suppliercontroller" class="dropdown-item">Nhà cung cấp</a>
+                        </div>
+                </div>
+                     <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-box me-2"></i>Audit Log</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="AuditLog" class="dropdown-item">System History</a>
                         </div>
                 </div>
                 </div>

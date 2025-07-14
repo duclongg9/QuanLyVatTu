@@ -21,7 +21,7 @@ import model.CategoryMaterial;
  * @author D E L L
  */
 public class CategoryMaterialDAO {
-     private Connection conn;
+//     private Connection conn;
 
     public static final int PAGE_SIZE = 7;
     private static final String COL_ID = "id";
@@ -29,14 +29,14 @@ public class CategoryMaterialDAO {
     private static final String COL_STATUS = "status";
 
     public CategoryMaterialDAO() {
-        conn = DBConnect.getConnection();
+//        conn = DBConnect.getConnection();
     }
     
     //lấy tất cả danh mục vật tư
     public List<CategoryMaterial> getAllCategory() {
         List<CategoryMaterial> list = new ArrayList<>();
         String sql = "SELECT * FROM ql_vat_tu.categorymaterial where status = true";
-        try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 CategoryMaterial c = new CategoryMaterial();
                 c.setId(rs.getInt(COL_ID));
@@ -60,7 +60,7 @@ public class CategoryMaterialDAO {
                     WHERE id = ? AND status = true
                     """;
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -110,7 +110,7 @@ public class CategoryMaterialDAO {
     // Tạo mới danh mục vật tư
     public int createCategory(String category) {
         String sql = "INSERT INTO CategoryMaterial(category) VALUES(?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, category);
             return ps.executeUpdate();
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class CategoryMaterialDAO {
     // Cập nhật danh mục vật tư
     public int updateCategory(int id, String category) {
         String sql = "UPDATE CategoryMaterial SET category=? WHERE id=?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, category);
             ps.setInt(2, id);
             return ps.executeUpdate();
@@ -135,7 +135,7 @@ public class CategoryMaterialDAO {
     // Delete category by id
     public int deleteCategory(int id) {
         String sql = "UPDATE CategoryMaterial SET status = false WHERE id=?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             return ps.executeUpdate();
         } catch (Exception e) {
@@ -147,7 +147,7 @@ public class CategoryMaterialDAO {
     // Count categories
     public int getTotalCategories() {
         String sql = "SELECT COUNT(*) FROM CategoryMaterial WHERE status = true";
-        try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -161,7 +161,7 @@ public class CategoryMaterialDAO {
     public List<CategoryMaterial> pagingCategories(int index) {
         List<CategoryMaterial> list = new ArrayList<>();
         String sql = "SELECT * FROM CategoryMaterial WHERE status = true ORDER BY id DESC LIMIT ? OFFSET ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, PAGE_SIZE);
             ps.setInt(2, (index - 1) * PAGE_SIZE);
             try (ResultSet rs = ps.executeQuery()) {
@@ -183,7 +183,7 @@ public class CategoryMaterialDAO {
     public List<CategoryMaterial> pagingDeletedCategories(int index) {
         List<CategoryMaterial> list = new ArrayList<>();
         String sql = "SELECT * FROM CategoryMaterial WHERE status = false ORDER BY id DESC LIMIT ? OFFSET ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, PAGE_SIZE);
             ps.setInt(2, (index - 1) * PAGE_SIZE);
             try (ResultSet rs = ps.executeQuery()) {
@@ -205,7 +205,7 @@ public class CategoryMaterialDAO {
     public List<CategoryMaterial> searchCategoriesByName(String name, int index) {
         List<CategoryMaterial> list = new ArrayList<>();
         String sql = "SELECT * FROM CategoryMaterial WHERE status = true AND category LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + name + "%");
             ps.setInt(2, PAGE_SIZE);
             ps.setInt(3, (index - 1) * PAGE_SIZE);
@@ -227,7 +227,7 @@ public class CategoryMaterialDAO {
     // Count categories when searching by name
     public int getTotalCategoriesByName(String name) {
         String sql = "SELECT COUNT(*) FROM CategoryMaterial WHERE status = true AND category LIKE ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + name + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -242,7 +242,7 @@ public class CategoryMaterialDAO {
     
     public int getTotalDeletedCategories() {
         String sql = "SELECT COUNT(*) FROM CategoryMaterial WHERE status = false";
-        try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -255,7 +255,7 @@ public class CategoryMaterialDAO {
     // restore category
     public void activateCategory(int id) {
         String sql = "UPDATE CategoryMaterial SET status = true WHERE id=?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (Exception e) {
@@ -269,7 +269,7 @@ public class CategoryMaterialDAO {
         if (excludeId != null) {
             sql += " AND id <> ?";
         }
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
             if (excludeId != null) {
                 ps.setInt(2, excludeId);

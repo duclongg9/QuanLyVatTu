@@ -2,10 +2,9 @@
 package controller.material;
 
 
-import dao.subcategory.SubCategoryDAO;
 import dao.material.MaterialUnitDAO;
 import dao.material.MaterialsDAO;
-import dao.material.CategoryMaterialDAO;
+import dao.Category.CategoryDAO;
 import dao.material.MaterialHistoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,6 +14,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.nio.file.Path;
@@ -23,6 +23,7 @@ import model.Materials;
 import java.util.Map;
 import java.util.HashMap;
 import java.sql.SQLException;
+import model.User;
 /**
  *
  * @author Dell-PC
@@ -42,9 +43,8 @@ public static final int PAGE_NUMBER = 7;
      */
     
     MaterialUnitDAO muDao = new MaterialUnitDAO();
-    SubCategoryDAO scDao = new SubCategoryDAO();
     MaterialsDAO mDao = new MaterialsDAO();
-    CategoryMaterialDAO cDao = new CategoryMaterialDAO();
+    CategoryDAO cDao = new CategoryDAO();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -75,6 +75,14 @@ public static final int PAGE_NUMBER = 7;
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+         // Kiểm tra đăng nhập
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+
+        if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
        String action = request.getParameter("action");
         if (action == null) {
             action = "list";
@@ -83,7 +91,7 @@ public static final int PAGE_NUMBER = 7;
         switch (action) {
             case "add":
                 request.setAttribute("units", muDao.getAllUnit());
-                request.setAttribute("categories", scDao.getAllSubCategory());
+                request.setAttribute("categories", cDao.getAllSubCategory());
                 if (request.getParameter("success") != null) {
                     request.setAttribute("success", "Thêm vật tư thành công");
                 }
@@ -97,7 +105,7 @@ public static final int PAGE_NUMBER = 7;
             case "edit":
                 int id = Integer.parseInt(request.getParameter("id"));
                 request.setAttribute("units", muDao.getAllUnit());
-                request.setAttribute("categories", scDao.getAllSubCategory());
+                request.setAttribute("categories", cDao.getAllSubCategory());
                 request.setAttribute("material", mDao.getMaterialsById(id));
                 request.getRequestDispatcher("/jsp/material/updateMaterial.jsp").forward(request, response);
                 break;
@@ -105,9 +113,41 @@ public static final int PAGE_NUMBER = 7;
                 int deleteId = Integer.parseInt(request.getParameter("id"));
                 if (mDao.hasRemainingQuantity(deleteId)) {
                     request.setAttribute("error", "Không thể xóa vật tư do còn số lượng tồn");
-                    doGet(request, response);
+//                    // load list view with error message
+                    String indexPage = request.getParameter("index");
+                    if (indexPage == null) {
+                        indexPage = "1";
+                    }
+                    int index = Integer.parseInt(indexPage);
+                    List<Materials> list;
+                    int count;
+                    try {
+                        list = mDao.pagingMaterials(index);
+                        count = mDao.getTotalMaterials();
+                    } catch (Exception e) {
+                        throw new ServletException(e);
+                    }
+
+                    int endP = count / PAGE_NUMBER;
+                    if (count % PAGE_NUMBER != 0) {
+                        endP++;
+                    }
+
+                    Map<Integer, Materials> updatedMap = new HashMap<>();
+                    for (Materials m : list) {
+                        Materials newVer = mDao.getNewVersionOf(m.getId());
+                        if (newVer != null) {
+                            updatedMap.put(m.getId(), newVer);
+                        }
+                    }
+                    request.setAttribute("materials", list);
+                    request.setAttribute("categoryFilter", cDao.getAllCategory());
+                    request.setAttribute("updatedMap", updatedMap);
+                    request.setAttribute("endP", endP);
+                    request.setAttribute("tag", index);
+                    request.getRequestDispatcher("/jsp/material/listMaterials.jsp").forward(request, response);
                 } else {
-                    mDao.deactivateMaterial(deleteId);
+                    mDao.deactivateMaterial(deleteId,loggedInUser.getId());
                     response.sendRedirect("materialController?action=list");
                 }
                 break;
@@ -140,7 +180,7 @@ public static final int PAGE_NUMBER = 7;
                 break;
             case "activate":
                int idRestore = Integer.parseInt(request.getParameter("id"));
-               mDao.activateMaterial(idRestore);
+               mDao.activateMaterial(idRestore,loggedInUser.getId());
                response.sendRedirect("materialController?action=deleted");
                break;
            default:
@@ -203,6 +243,15 @@ public static final int PAGE_NUMBER = 7;
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Kiểm tra đăng nhập
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("account");
+
+        if (loggedInUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        
         String idParam = request.getParameter("id");
         String name = request.getParameter("name");
         int unitId = Integer.parseInt(request.getParameter("unitId"));
@@ -210,7 +259,7 @@ public static final int PAGE_NUMBER = 7;
         
         if (!isValidName(name)) {
             request.setAttribute("units", muDao.getAllUnit());
-            request.setAttribute("categories", scDao.getAllSubCategory());
+            request.setAttribute("categories", cDao.getAllSubCategory());
             request.setAttribute("error", "Tên vật tư không hợp lệ");
             request.getRequestDispatcher("/jsp/material/createMaterial.jsp").forward(request, response);
             return;
@@ -238,9 +287,9 @@ public static final int PAGE_NUMBER = 7;
                     imageName = old.getImage();
                 }
             }
-            result = mDao.updateMaterialWithHistory(id, name, unitId, imageName, subCategoryId);
+            result = mDao.updateMaterialWithHistory(id, name, unitId, imageName, subCategoryId,loggedInUser.getId());
         } else {
-            result = mDao.createMaterial(name, unitId, imageName, subCategoryId);
+            result = mDao.createMaterial(name, unitId, imageName, subCategoryId,loggedInUser.getId());
         }
         if (result > 0) {
                         response.sendRedirect("materialController?action=list");

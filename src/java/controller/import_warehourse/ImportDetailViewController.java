@@ -8,6 +8,7 @@ package controller.import_warehourse;
 import controller.user.UserListController;
 import dao.request.InputDetailDAO;
 import dao.request.InputWarehourseDAO;
+import dao.request.requestDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -23,6 +24,7 @@ import model.InputDetail;
 import model.InputWarehourse;
 
 
+
 /**
  *
  * @author D E L L
@@ -33,6 +35,7 @@ public class ImportDetailViewController extends HttpServlet {
     
     InputWarehourseDAO iwdao = new InputWarehourseDAO();
     InputDetailDAO iddao = new InputDetailDAO();
+    requestDAO rdao = new requestDAO();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -53,10 +56,14 @@ public class ImportDetailViewController extends HttpServlet {
             return;
         }
         int importWarehouseId = Integer.parseInt(importWarehouseIdParam);
+        request.setAttribute("decription",rdao.getRequestByInputWarehouseId(importWarehouseId) );
         request.setAttribute("importId",importWarehouseId );
         
         InputWarehourse inputWarehouse = iwdao.getInputWarehourseById(importWarehouseId);
         request.setAttribute("inputWarehouse", inputWarehouse);
+        
+        double totalPrice = iwdao.getTotalValueByInputWarehouseId(importWarehouseId);
+        request.setAttribute("totalPrice",totalPrice);
 
         
         //Lấy giá trị trang
