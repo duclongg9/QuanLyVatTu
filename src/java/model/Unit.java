@@ -12,26 +12,15 @@ package model;
 public class Unit {
     private int id;
     private String unit;
-    private Boolean status;
+
 
     public Unit() {
     }
 
-    public Unit(int id, String unit, Boolean status) {
+    public Unit(int id, String unit) {
         this.id = id;
         this.unit = unit;
-        this.status = status;
     }
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-
 
     public int getId() {
         return id;
@@ -48,4 +37,7 @@ public class Unit {
     public void setUnit(String unit) {
         this.unit = unit;
     }
+    
+    
+    
 }

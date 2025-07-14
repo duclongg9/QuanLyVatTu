@@ -7,7 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page import="java.util.*"%>
 <%@page import="dao.user.UserDAO"%>
-<%@page import="dao.material.CategoryDAO"%>
+<%@page import="dao.Category.CategoryDAO"%>
 <%@page import="model.Statistic"%>
 
 <!DOCTYPE html>

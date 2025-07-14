@@ -5,13 +5,15 @@
 package controller.statistic;
 
 
+import dao.Category.CategoryDAO;
 import dao.connect.DBConnect;
 
 import model.Statistic;
 import model.Category;
 import model.User;
-import dao.Category.CategoryDAO;
+
 import dao.statistic.StatisticDAO;
+
 import dao.user.UserDAO;
 import java.sql.Connection;
 import java.sql.Date;

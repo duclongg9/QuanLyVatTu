@@ -38,7 +38,7 @@ public class UnitDAO {
         String sql = "SELECT * FROM MaterialUnit";
         try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                list.add(new Unit(rs.getInt("id"), rs.getString("unit"), rs.getBoolean("status")));
+                list.add(new Unit(rs.getInt("id"), rs.getString("unit")));
 
             }
         } catch (Exception e) {
@@ -53,7 +53,7 @@ public class UnitDAO {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new Unit(rs.getInt("id"), rs.getString("unit"), rs.getBoolean("status"));
+                    return new Unit(rs.getInt("id"), rs.getString("unit"));
                 }
             }
         } catch (Exception e) {
@@ -155,7 +155,7 @@ public class UnitDAO {
             ps.setString(1, "%" + keyword + "%");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new Unit(rs.getInt("id"), rs.getString("unit"), rs.getBoolean("status")));
+                list.add(new Unit(rs.getInt("id"), rs.getString("unit")));
 
             }
         } catch (Exception e) {
@@ -172,7 +172,7 @@ public class UnitDAO {
             ps.setInt(2, (page - 1) * pageSize);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new Unit(rs.getInt("id"), rs.getString("unit"), rs.getBoolean("status")));
+                list.add(new Unit(rs.getInt("id"), rs.getString("unit")));
             }
         } catch (Exception e) {
             e.printStackTrace();
